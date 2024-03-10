@@ -1,0 +1,207 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Filip\\source\\repos\\dotnet-facebook\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{BD073416-F32A-4117-9428-AF3566412D98}|dotnet-facebook.csproj|c:\\users\\filip\\source\\repos\\dotnet-facebook\\models\\databaseobjects\\group.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BD073416-F32A-4117-9428-AF3566412D98}|dotnet-facebook.csproj|solutionrelative:models\\databaseobjects\\group.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD073416-F32A-4117-9428-AF3566412D98}|dotnet-facebook.csproj|c:\\users\\filip\\source\\repos\\dotnet-facebook\\models\\databaseobjects\\users\\friendship.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BD073416-F32A-4117-9428-AF3566412D98}|dotnet-facebook.csproj|solutionrelative:models\\databaseobjects\\users\\friendship.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD073416-F32A-4117-9428-AF3566412D98}|dotnet-facebook.csproj|c:\\users\\filip\\source\\repos\\dotnet-facebook\\models\\databaseobjects\\users\\privatemessage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BD073416-F32A-4117-9428-AF3566412D98}|dotnet-facebook.csproj|solutionrelative:models\\databaseobjects\\users\\privatemessage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD073416-F32A-4117-9428-AF3566412D98}|dotnet-facebook.csproj|c:\\users\\filip\\source\\repos\\dotnet-facebook\\models\\databaseobjects\\posts\\post.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BD073416-F32A-4117-9428-AF3566412D98}|dotnet-facebook.csproj|solutionrelative:models\\databaseobjects\\posts\\post.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD073416-F32A-4117-9428-AF3566412D98}|dotnet-facebook.csproj|c:\\users\\filip\\source\\repos\\dotnet-facebook\\models\\databaseobjects\\tag.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BD073416-F32A-4117-9428-AF3566412D98}|dotnet-facebook.csproj|solutionrelative:models\\databaseobjects\\tag.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD073416-F32A-4117-9428-AF3566412D98}|dotnet-facebook.csproj|c:\\users\\filip\\source\\repos\\dotnet-facebook\\models\\databaseobjects\\posts\\mainpost.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BD073416-F32A-4117-9428-AF3566412D98}|dotnet-facebook.csproj|solutionrelative:models\\databaseobjects\\posts\\mainpost.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD073416-F32A-4117-9428-AF3566412D98}|dotnet-facebook.csproj|c:\\users\\filip\\source\\repos\\dotnet-facebook\\models\\databaseobjects\\users\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BD073416-F32A-4117-9428-AF3566412D98}|dotnet-facebook.csproj|solutionrelative:models\\databaseobjects\\users\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD073416-F32A-4117-9428-AF3566412D98}|dotnet-facebook.csproj|c:\\users\\filip\\source\\repos\\dotnet-facebook\\models\\databaseobjects\\users\\userprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BD073416-F32A-4117-9428-AF3566412D98}|dotnet-facebook.csproj|solutionrelative:models\\databaseobjects\\users\\userprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD073416-F32A-4117-9428-AF3566412D98}|dotnet-facebook.csproj|c:\\users\\filip\\source\\repos\\dotnet-facebook\\models\\databaseobjects\\users\\admin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BD073416-F32A-4117-9428-AF3566412D98}|dotnet-facebook.csproj|solutionrelative:models\\databaseobjects\\users\\admin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD073416-F32A-4117-9428-AF3566412D98}|dotnet-facebook.csproj|c:\\users\\filip\\source\\repos\\dotnet-facebook\\models\\databaseobjects\\posts\\comment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BD073416-F32A-4117-9428-AF3566412D98}|dotnet-facebook.csproj|solutionrelative:models\\databaseobjects\\posts\\comment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD073416-F32A-4117-9428-AF3566412D98}|dotnet-facebook.csproj|c:\\users\\filip\\source\\repos\\dotnet-facebook\\models\\databaseobjects\\posts\\like.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BD073416-F32A-4117-9428-AF3566412D98}|dotnet-facebook.csproj|solutionrelative:models\\databaseobjects\\posts\\like.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 5,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "PrivateMessage.cs",
+              "DocumentMoniker": "C:\\Users\\Filip\\source\\repos\\dotnet-facebook\\Models\\DatabaseObjects\\Users\\PrivateMessage.cs",
+              "RelativeDocumentMoniker": "Models\\DatabaseObjects\\Users\\PrivateMessage.cs",
+              "ToolTip": "C:\\Users\\Filip\\source\\repos\\dotnet-facebook\\Models\\DatabaseObjects\\Users\\PrivateMessage.cs",
+              "RelativeToolTip": "Models\\DatabaseObjects\\Users\\PrivateMessage.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABcAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-10T15:35:06.67Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "MainPost.cs",
+              "DocumentMoniker": "C:\\Users\\Filip\\source\\repos\\dotnet-facebook\\Models\\DatabaseObjects\\Posts\\MainPost.cs",
+              "RelativeDocumentMoniker": "Models\\DatabaseObjects\\Posts\\MainPost.cs",
+              "ToolTip": "C:\\Users\\Filip\\source\\repos\\dotnet-facebook\\Models\\DatabaseObjects\\Posts\\MainPost.cs",
+              "RelativeToolTip": "Models\\DatabaseObjects\\Posts\\MainPost.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-10T15:29:44.393Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Comment.cs",
+              "DocumentMoniker": "C:\\Users\\Filip\\source\\repos\\dotnet-facebook\\Models\\DatabaseObjects\\Posts\\Comment.cs",
+              "RelativeDocumentMoniker": "Models\\DatabaseObjects\\Posts\\Comment.cs",
+              "ToolTip": "C:\\Users\\Filip\\source\\repos\\dotnet-facebook\\Models\\DatabaseObjects\\Posts\\Comment.cs",
+              "RelativeToolTip": "Models\\DatabaseObjects\\Posts\\Comment.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-10T15:27:25.796Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Admin.cs",
+              "DocumentMoniker": "C:\\Users\\Filip\\source\\repos\\dotnet-facebook\\Models\\DatabaseObjects\\Users\\Admin.cs",
+              "RelativeDocumentMoniker": "Models\\DatabaseObjects\\Users\\Admin.cs",
+              "ToolTip": "C:\\Users\\Filip\\source\\repos\\dotnet-facebook\\Models\\DatabaseObjects\\Users\\Admin.cs",
+              "RelativeToolTip": "Models\\DatabaseObjects\\Users\\Admin.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-10T15:26:29.253Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Tag.cs",
+              "DocumentMoniker": "C:\\Users\\Filip\\source\\repos\\dotnet-facebook\\Models\\DatabaseObjects\\Tag.cs",
+              "RelativeDocumentMoniker": "Models\\DatabaseObjects\\Tag.cs",
+              "ToolTip": "C:\\Users\\Filip\\source\\repos\\dotnet-facebook\\Models\\DatabaseObjects\\Tag.cs",
+              "RelativeToolTip": "Models\\DatabaseObjects\\Tag.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-10T15:21:09.188Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Group.cs",
+              "DocumentMoniker": "C:\\Users\\Filip\\source\\repos\\dotnet-facebook\\Models\\DatabaseObjects\\Group.cs",
+              "RelativeDocumentMoniker": "Models\\DatabaseObjects\\Group.cs",
+              "ToolTip": "C:\\Users\\Filip\\source\\repos\\dotnet-facebook\\Models\\DatabaseObjects\\Group.cs",
+              "RelativeToolTip": "Models\\DatabaseObjects\\Group.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAABtAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-10T15:18:45.902Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "UserProfile.cs",
+              "DocumentMoniker": "C:\\Users\\Filip\\source\\repos\\dotnet-facebook\\Models\\DatabaseObjects\\Users\\UserProfile.cs",
+              "RelativeDocumentMoniker": "Models\\DatabaseObjects\\Users\\UserProfile.cs",
+              "ToolTip": "C:\\Users\\Filip\\source\\repos\\dotnet-facebook\\Models\\DatabaseObjects\\Users\\UserProfile.cs",
+              "RelativeToolTip": "Models\\DatabaseObjects\\Users\\UserProfile.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAAIAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-10T15:14:21.985Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Friendship.cs",
+              "DocumentMoniker": "C:\\Users\\Filip\\source\\repos\\dotnet-facebook\\Models\\DatabaseObjects\\Users\\Friendship.cs",
+              "RelativeDocumentMoniker": "Models\\DatabaseObjects\\Users\\Friendship.cs",
+              "ToolTip": "C:\\Users\\Filip\\source\\repos\\dotnet-facebook\\Models\\DatabaseObjects\\Users\\Friendship.cs",
+              "RelativeToolTip": "Models\\DatabaseObjects\\Users\\Friendship.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABcAAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-10T15:11:55.51Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\Filip\\source\\repos\\dotnet-facebook\\Models\\DatabaseObjects\\Users\\User.cs",
+              "RelativeDocumentMoniker": "Models\\DatabaseObjects\\Users\\User.cs",
+              "ToolTip": "C:\\Users\\Filip\\source\\repos\\dotnet-facebook\\Models\\DatabaseObjects\\Users\\User.cs",
+              "RelativeToolTip": "Models\\DatabaseObjects\\Users\\User.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAB0AAAA2AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-10T14:47:58.903Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Like.cs",
+              "DocumentMoniker": "C:\\Users\\Filip\\source\\repos\\dotnet-facebook\\Models\\DatabaseObjects\\Posts\\Like.cs",
+              "RelativeDocumentMoniker": "Models\\DatabaseObjects\\Posts\\Like.cs",
+              "ToolTip": "C:\\Users\\Filip\\source\\repos\\dotnet-facebook\\Models\\DatabaseObjects\\Posts\\Like.cs",
+              "RelativeToolTip": "Models\\DatabaseObjects\\Posts\\Like.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABMAAAAhAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-10T15:09:26.062Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Post.cs",
+              "DocumentMoniker": "C:\\Users\\Filip\\source\\repos\\dotnet-facebook\\Models\\DatabaseObjects\\Posts\\Post.cs",
+              "RelativeDocumentMoniker": "Models\\DatabaseObjects\\Posts\\Post.cs",
+              "ToolTip": "C:\\Users\\Filip\\source\\repos\\dotnet-facebook\\Models\\DatabaseObjects\\Posts\\Post.cs",
+              "RelativeToolTip": "Models\\DatabaseObjects\\Posts\\Post.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABMAAAAIAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-10T15:06:19.1Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
