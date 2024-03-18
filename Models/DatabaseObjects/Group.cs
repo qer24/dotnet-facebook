@@ -24,7 +24,7 @@ namespace dotnet_facebook.Models.DatabaseObjects
         public DateTime GroupCreationDate { get; set; }
 
         public string? GroupPictureFileName { get; set; }
-        public IFormFile? GroupPicture { get; set; }
+        //public IFormFile? GroupPicture { get; set; }
 
         public virtual ICollection<Post>? GroupPosts { get; set; }
         public virtual ICollection<User> Users { get; set; }

@@ -15,7 +15,7 @@ namespace dotnet_facebook.Models.DatabaseObjects.Users
         public string UserBio { get; set; }
 
         public string? ProfilePictureFileName { get; set; }
-        public IFormFile? ProfilePicture { get; set; }
+        //public IFormFile? ProfilePicture { get; set; }
 
         public virtual ICollection<Post>? UserPosts { get; set; }
     }

@@ -20,7 +20,7 @@ namespace dotnet_facebook.Models.DatabaseObjects.Posts
         public string Content { get; set; }
 
         public string? PostFileName { get; set; }
-        public IFormFile? PostPicture { get; set; }
+        //public IFormFile? PostPicture { get; set; }
 
         public virtual ICollection<Like>? Likes { get; set; }
         public virtual ICollection<Comment>? Comments { get; set; }

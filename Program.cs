@@ -1,3 +1,6 @@
+using dotnet_facebook.Models.Contexts;
+using Microsoft.EntityFrameworkCore;
+
 namespace dotnet_facebook
 {
     public class Program
@@ -5,6 +8,11 @@ namespace dotnet_facebook
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            //Pobieranie danych konfiguracyjnych z pliku
+            var connectionString = builder.Configuration.GetConnectionString("System");
+            //Dodawanie do zasobów klasy kontekstu dla bazy danych
+            builder.Services.AddDbContext<TestContext>(x => x.UseSqlServer(connectionString));
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
