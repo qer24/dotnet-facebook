@@ -9,9 +9,7 @@ namespace dotnet_facebook.Models.DatabaseObjects.Posts
         [Key]
         public int PostId { get; set; }
 
-        [ForeignKey("OwnerUser")]
-        public int OwnerUserId { get; set; }
-        public User OwnerUser { get; set; }
+        public virtual User OwnerUser { get; set; }
 
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
@@ -21,13 +19,11 @@ namespace dotnet_facebook.Models.DatabaseObjects.Posts
         [StringLength(200, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 1)]
         public string Content { get; set; }
 
-        [Required(ErrorMessage = "Please enter file name")]
-        public string PostFileName { get; set; }
-        [Required(ErrorMessage = "Please select file")]
-        public IFormFile PostPicture { get; set; }
+        public string? PostFileName { get; set; }
+        public IFormFile? PostPicture { get; set; }
 
-        public ICollection<Like> Likes { get; set; }
-        public ICollection<Comment> Comments { get; set; }
-        public ICollection<Tag> Tags { get; set; }
+        public virtual ICollection<Like>? Likes { get; set; }
+        public virtual ICollection<Comment>? Comments { get; set; }
+        public virtual ICollection<Tag>? Tags { get; set; }
     }
 }

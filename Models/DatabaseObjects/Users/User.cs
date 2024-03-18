@@ -8,10 +8,8 @@ namespace dotnet_facebook.Models.DatabaseObjects.Users
         [Key]
         public int UserId { get; set; }
 
-        [ForeignKey("UserProfile")]
-        public int UserProfileId { get; set; }
-        public UserProfile UserProfile { get; set; }
-
+        public virtual UserProfile UserProfile { get; set; }
+        
         [Required(ErrorMessage = "Please enter {0}.")]
         [Display(Name = "User Name")]
         [StringLength(20, MinimumLength = 2, ErrorMessage = "Your {0} must be at least {2} characters long.")]
@@ -27,6 +25,6 @@ namespace dotnet_facebook.Models.DatabaseObjects.Users
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime AccountCreationDate { get; set; }
 
-        public ICollection<Group> Groups { get; set; }
+        public virtual ICollection<Group>? Groups { get; set; }
     }
 }

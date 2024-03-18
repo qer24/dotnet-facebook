@@ -8,18 +8,13 @@ namespace dotnet_facebook.Models.DatabaseObjects.Users
         [Key]
         public int FriendshipId { get; set; }
 
-        [ForeignKey("User1")]
-        public int User1Id { get; set; }
-        public User User1 { get; set; }
-
-        [ForeignKey("User2")]
-        public int User2Id { get; set; }
-        public User User2 { get; set; }
+        public virtual User User1 { get; set; }
+        public virtual User User2 { get; set; }
 
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FriendshipDate { get; set; }
 
-        public ICollection<PrivateMessage> Messages { get; set; }
+        public virtual ICollection<PrivateMessage>? Messages { get; set; }
     }
 }

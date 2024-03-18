@@ -4,8 +4,6 @@ namespace dotnet_facebook.Models.DatabaseObjects.Posts
 {
     public class Comment : Post
     {
-        [ForeignKey("ParentPost")]
-        public int ParentPostId { get; set; }
-        public Post ParentPost { get; set; }
+        public virtual Post ParentPost { get; set; }
     }
 }

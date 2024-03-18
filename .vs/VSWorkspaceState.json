@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Models",
+    "\\Models\\DatabaseObjects",
+    "\\Models\\DatabaseObjects\\Posts",
+    "\\Models\\DatabaseObjects\\Users",
+    "\\Views"
+  ],
+  "SelectedNode": "\\Models\\DatabaseObjects\\Tag.cs",
+  "PreviewInSolutionExplorer": false
+}

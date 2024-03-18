@@ -9,13 +9,8 @@ namespace dotnet_facebook.Models.DatabaseObjects.Posts
         [Key]
         public int LikeId { get; set; }
 
-        [ForeignKey("User")]
-        public int UserId { get; set; }
-        public User User { get; set; }
-
-        [ForeignKey("Post")]
-        public int PostId { get; set; }
-        public Post Post { get; set; }
+        public virtual User User { get; set; }
+        public virtual Post Post { get; set; }
 
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
