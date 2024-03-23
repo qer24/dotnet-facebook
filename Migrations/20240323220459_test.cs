@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace dotnet_facebook.Migrations
 {
     /// <inheritdoc />
-    public partial class test1 : Migration
+    public partial class test : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -110,8 +110,8 @@ namespace dotnet_facebook.Migrations
                     Discriminator = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
                     GroupId = table.Column<int>(type: "int", nullable: true),
                     UserProfileId = table.Column<int>(type: "int", nullable: true),
-                    ParentPostPostId = table.Column<int>(type: "int", nullable: true),
-                    GroupId1 = table.Column<int>(type: "int", nullable: true),
+                    PostId1 = table.Column<int>(type: "int", nullable: true),
+                    ParentGroupGroupId = table.Column<int>(type: "int", nullable: true),
                     PostGeolocation = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -123,16 +123,15 @@ namespace dotnet_facebook.Migrations
                         principalTable: "Group",
                         principalColumn: "GroupId");
                     table.ForeignKey(
-                        name: "FK_Post_Group_GroupId1",
-                        column: x => x.GroupId1,
+                        name: "FK_Post_Group_ParentGroupGroupId",
+                        column: x => x.ParentGroupGroupId,
                         principalTable: "Group",
                         principalColumn: "GroupId");
                     table.ForeignKey(
-                        name: "FK_Post_Post_ParentPostPostId",
-                        column: x => x.ParentPostPostId,
+                        name: "FK_Post_Post_PostId1",
+                        column: x => x.PostId1,
                         principalTable: "Post",
-                        principalColumn: "PostId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "PostId");
                     table.ForeignKey(
                         name: "FK_Post_UserProfile_UserProfileId",
                         column: x => x.UserProfileId,
@@ -170,7 +169,7 @@ namespace dotnet_facebook.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -229,19 +228,19 @@ namespace dotnet_facebook.Migrations
                 column: "GroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Post_GroupId1",
-                table: "Post",
-                column: "GroupId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Post_OwnerUserUserId",
                 table: "Post",
                 column: "OwnerUserUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Post_ParentPostPostId",
+                name: "IX_Post_ParentGroupGroupId",
                 table: "Post",
-                column: "ParentPostPostId");
+                column: "ParentGroupGroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Post_PostId1",
+                table: "Post",
+                column: "PostId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Post_UserProfileId",
@@ -275,7 +274,7 @@ namespace dotnet_facebook.Migrations
                 column: "OwnerUserUserId",
                 principalTable: "Users",
                 principalColumn: "UserId",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Restrict);
         }
 
         /// <inheritdoc />

@@ -20,9 +20,24 @@ namespace dotnet_facebook.Models.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>()
-            .HasOne(a => a.UserProfile)
-            .WithOne(a => a.User)
-            .HasForeignKey<UserProfile>(c => c.UserID);
+                .HasOne(a => a.UserProfile)
+                .WithOne(a => a.User);
+
+            modelBuilder.Entity<Comment>()
+                .HasOne(Comment => Comment.ParentPost)
+                .WithMany()
+                .HasForeignKey(Comment => Comment.PostId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Like>()
+                .HasOne(Like => Like.User)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Group>()
+                .HasOne(Group => Group.OwnerUser)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
         public virtual DbSet<User> Users { get; set; }

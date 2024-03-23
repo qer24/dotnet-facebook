@@ -12,7 +12,7 @@ using dotnet_facebook.Models.Contexts;
 namespace dotnet_facebook.Migrations
 {
     [DbContext(typeof(TestContext))]
-    [Migration("20240323204056_test1")]
+    [Migration("20240323220942_test1")]
     partial class test1
     {
         /// <inheritdoc />
@@ -249,10 +249,10 @@ namespace dotnet_facebook.Migrations
                 {
                     b.HasBaseType("dotnet_facebook.Models.DatabaseObjects.Posts.Post");
 
-                    b.Property<int>("ParentPostPostId")
+                    b.Property<int?>("PostId1")
                         .HasColumnType("int");
 
-                    b.HasIndex("ParentPostPostId");
+                    b.HasIndex("PostId1");
 
                     b.HasDiscriminator().HasValue("Comment");
                 });
@@ -261,13 +261,13 @@ namespace dotnet_facebook.Migrations
                 {
                     b.HasBaseType("dotnet_facebook.Models.DatabaseObjects.Posts.Post");
 
-                    b.Property<int?>("GroupId1")
+                    b.Property<int?>("ParentGroupGroupId")
                         .HasColumnType("int");
 
                     b.Property<int>("PostGeolocation")
                         .HasColumnType("int");
 
-                    b.HasIndex("GroupId1");
+                    b.HasIndex("ParentGroupGroupId");
 
                     b.HasDiscriminator().HasValue("MainPost");
                 });
@@ -277,7 +277,7 @@ namespace dotnet_facebook.Migrations
                     b.HasOne("dotnet_facebook.Models.DatabaseObjects.Users.User", "OwnerUser")
                         .WithMany()
                         .HasForeignKey("OwnerUserUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("OwnerUser");
@@ -313,7 +313,7 @@ namespace dotnet_facebook.Migrations
                     b.HasOne("dotnet_facebook.Models.DatabaseObjects.Users.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Post");
@@ -372,21 +372,25 @@ namespace dotnet_facebook.Migrations
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Posts.Comment", b =>
                 {
                     b.HasOne("dotnet_facebook.Models.DatabaseObjects.Posts.Post", "ParentPost")
-                        .WithMany("Comments")
-                        .HasForeignKey("ParentPostPostId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Posts.Post", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("PostId1");
 
                     b.Navigation("ParentPost");
                 });
 
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Posts.MainPost", b =>
                 {
-                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Group", "Group")
+                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Group", "ParentGroup")
                         .WithMany()
-                        .HasForeignKey("GroupId1");
+                        .HasForeignKey("ParentGroupGroupId");
 
-                    b.Navigation("Group");
+                    b.Navigation("ParentGroup");
                 });
 
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Group", b =>
