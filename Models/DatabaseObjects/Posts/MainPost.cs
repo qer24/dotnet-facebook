@@ -7,6 +7,6 @@ namespace dotnet_facebook.Models.DatabaseObjects.Posts
     {
         public virtual Group? Group { get; set; }
 
-        public Vector2 PostGeolocation { get; set; }
+        public int PostGeolocation { get; set; }
     }
 }

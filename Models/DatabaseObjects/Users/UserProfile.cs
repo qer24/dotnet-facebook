@@ -9,6 +9,7 @@ namespace dotnet_facebook.Models.DatabaseObjects.Users
         [Key]
         public int UserProfileId { get; set; }
 
+        public int UserID { get; set; }
         public virtual User User { get; set; }
 
         [StringLength(200, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 1)]
