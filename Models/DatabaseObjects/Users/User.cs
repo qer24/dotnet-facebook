@@ -25,6 +25,6 @@ namespace dotnet_facebook.Models.DatabaseObjects.Users
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime AccountCreationDate { get; set; }
 
-        public virtual ICollection<Group>? Groups { get; set; }
+        public virtual ICollection<GroupUser>? Groups { get; set; }
     }
 }

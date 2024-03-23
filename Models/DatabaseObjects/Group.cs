@@ -27,8 +27,8 @@ namespace dotnet_facebook.Models.DatabaseObjects
         //public IFormFile? GroupPicture { get; set; }
 
         public virtual ICollection<Post>? GroupPosts { get; set; }
-        public virtual ICollection<User> Users { get; set; }
-        public virtual ICollection<User> Moderators { get; set; }
+        public virtual ICollection<GroupUser> Users { get; set; }
+        public virtual ICollection<GroupUser> Moderators { get; set; }
         public virtual ICollection<Tag>? Tags { get; set; }
     }
 }

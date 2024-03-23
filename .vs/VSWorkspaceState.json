@@ -1,13 +1,6 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\Models",
-    "\\Models\\Contexts",
-    "\\Models\\DatabaseObjects",
-    "\\Models\\DatabaseObjects\\Posts",
-    "\\Models\\DatabaseObjects\\Users",
-    "\\Views"
+    ""
   ],
-  "SelectedNode": "\\dotnet-facebook.csproj",
   "PreviewInSolutionExplorer": false
 }
