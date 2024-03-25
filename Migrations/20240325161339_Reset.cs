@@ -6,11 +6,26 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace dotnet_facebook.Migrations
 {
     /// <inheritdoc />
-    public partial class test : Migration
+    public partial class Reset : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nickname = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    AccountCreationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.UserId);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Group",
                 columns: table => new
@@ -26,54 +41,12 @@ namespace dotnet_facebook.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Group", x => x.GroupId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "User",
-                columns: table => new
-                {
-                    UserId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nickname = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    AccountCreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    GroupId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.UserId);
                     table.ForeignKey(
-                        name: "FK_Users_Group_GroupId",
-                        column: x => x.GroupId,
-                        principalTable: "Group",
-                        principalColumn: "GroupId");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "GroupUser",
-                columns: table => new
-                {
-                    GroupUserID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    IsModerator = table.Column<bool>(type: "bit", nullable: false),
-                    UsersUserId = table.Column<int>(type: "int", nullable: false),
-                    GroupsGroupId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GroupUser", x => x.GroupUserID);
-                    table.ForeignKey(
-                        name: "FK_GroupUser_Group_GroupsGroupId",
-                        column: x => x.GroupsGroupId,
-                        principalTable: "Group",
-                        principalColumn: "GroupId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_GroupUser_Users_UsersUserId",
-                        column: x => x.UsersUserId,
-                        principalTable: "User",
+                        name: "FK_Group_Users_OwnerUserUserId",
+                        column: x => x.OwnerUserUserId,
+                        principalTable: "Users",
                         principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -92,7 +65,34 @@ namespace dotnet_facebook.Migrations
                     table.ForeignKey(
                         name: "FK_UserProfile_Users_UserID",
                         column: x => x.UserID,
-                        principalTable: "User",
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GroupUser",
+                columns: table => new
+                {
+                    GroupUserID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IsModerator = table.Column<bool>(type: "bit", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    GroupId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupUser", x => x.GroupUserID);
+                    table.ForeignKey(
+                        name: "FK_GroupUser_Group_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Group",
+                        principalColumn: "GroupId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GroupUser_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -112,7 +112,8 @@ namespace dotnet_facebook.Migrations
                     UserProfileId = table.Column<int>(type: "int", nullable: true),
                     PostId1 = table.Column<int>(type: "int", nullable: true),
                     ParentGroupGroupId = table.Column<int>(type: "int", nullable: true),
-                    PostGeolocation = table.Column<int>(type: "int", nullable: true)
+                    PostLongitude = table.Column<int>(type: "int", nullable: true),
+                    PostLatitude = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -140,7 +141,7 @@ namespace dotnet_facebook.Migrations
                     table.ForeignKey(
                         name: "FK_Post_Users_OwnerUserUserId",
                         column: x => x.OwnerUserUserId,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -167,7 +168,7 @@ namespace dotnet_facebook.Migrations
                     table.ForeignKey(
                         name: "FK_Like_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -203,14 +204,14 @@ namespace dotnet_facebook.Migrations
                 column: "OwnerUserUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GroupUser_GroupsGroupId",
+                name: "IX_GroupUser_GroupId",
                 table: "GroupUser",
-                column: "GroupsGroupId");
+                column: "GroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GroupUser_UsersUserId",
+                name: "IX_GroupUser_UserId",
                 table: "GroupUser",
-                column: "UsersUserId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Like_PostId",
@@ -262,28 +263,11 @@ namespace dotnet_facebook.Migrations
                 table: "UserProfile",
                 column: "UserID",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_GroupId",
-                table: "User",
-                column: "GroupId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Group_Users_OwnerUserUserId",
-                table: "Group",
-                column: "OwnerUserUserId",
-                principalTable: "User",
-                principalColumn: "UserId",
-                onDelete: ReferentialAction.Restrict);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Group_Users_OwnerUserUserId",
-                table: "Group");
-
             migrationBuilder.DropTable(
                 name: "GroupUser");
 
@@ -297,13 +281,13 @@ namespace dotnet_facebook.Migrations
                 name: "Post");
 
             migrationBuilder.DropTable(
+                name: "Group");
+
+            migrationBuilder.DropTable(
                 name: "UserProfile");
 
             migrationBuilder.DropTable(
-                name: "User");
-
-            migrationBuilder.DropTable(
-                name: "Group");
+                name: "Users");
         }
     }
 }

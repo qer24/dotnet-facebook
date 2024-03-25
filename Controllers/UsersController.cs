@@ -62,8 +62,6 @@ namespace dotnet_facebook.Controllers
                 UserBio = "Hey, I'm a user!"
             };
 
-            Console.WriteLine(ModelState.IsValid);
-
             if (ModelState.IsValid)
             {
                 _context.Add(user);
