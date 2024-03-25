@@ -29,7 +29,7 @@ namespace dotnet_facebook.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Users",
+                name: "User",
                 columns: table => new
                 {
                     UserId = table.Column<int>(type: "int", nullable: false)
@@ -71,7 +71,7 @@ namespace dotnet_facebook.Migrations
                     table.ForeignKey(
                         name: "FK_GroupUser_Users_UsersUserId",
                         column: x => x.UsersUserId,
-                        principalTable: "Users",
+                        principalTable: "User",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -92,7 +92,7 @@ namespace dotnet_facebook.Migrations
                     table.ForeignKey(
                         name: "FK_UserProfile_Users_UserID",
                         column: x => x.UserID,
-                        principalTable: "Users",
+                        principalTable: "User",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -140,7 +140,7 @@ namespace dotnet_facebook.Migrations
                     table.ForeignKey(
                         name: "FK_Post_Users_OwnerUserUserId",
                         column: x => x.OwnerUserUserId,
-                        principalTable: "Users",
+                        principalTable: "User",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -167,7 +167,7 @@ namespace dotnet_facebook.Migrations
                     table.ForeignKey(
                         name: "FK_Like_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "Users",
+                        principalTable: "User",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -265,14 +265,14 @@ namespace dotnet_facebook.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_GroupId",
-                table: "Users",
+                table: "User",
                 column: "GroupId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Group_Users_OwnerUserUserId",
                 table: "Group",
                 column: "OwnerUserUserId",
-                principalTable: "Users",
+                principalTable: "User",
                 principalColumn: "UserId",
                 onDelete: ReferentialAction.Restrict);
         }
@@ -300,7 +300,7 @@ namespace dotnet_facebook.Migrations
                 name: "UserProfile");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "User");
 
             migrationBuilder.DropTable(
                 name: "Group");

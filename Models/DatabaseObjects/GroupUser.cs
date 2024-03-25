@@ -8,8 +8,8 @@ namespace dotnet_facebook.Models.DatabaseObjects
         [Key]
         public int GroupUserID { get; set; }
         public bool IsModerator { get; set; }
-        public virtual User Users { get; set; }
-        public virtual Group Groups { get; set; }
+        public virtual User User { get; set; }
+        public virtual Group Group { get; set; }
 
     }
 }
