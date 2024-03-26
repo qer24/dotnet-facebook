@@ -48,7 +48,7 @@ namespace dotnet_facebook.Migrations
 
                     b.HasKey("GroupId");
 
-                    b.ToTable("Group");
+                    b.ToTable("Group", (string)null);
                 });
 
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Groups.GroupUser", b =>
@@ -74,7 +74,7 @@ namespace dotnet_facebook.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("GroupUser");
+                    b.ToTable("GroupUser", (string)null);
                 });
 
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Posts.Like", b =>
@@ -100,7 +100,7 @@ namespace dotnet_facebook.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Like");
+                    b.ToTable("Like", (string)null);
                 });
 
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Posts.Post", b =>
@@ -144,7 +144,7 @@ namespace dotnet_facebook.Migrations
 
                     b.HasIndex("UserProfileId");
 
-                    b.ToTable("Post");
+                    b.ToTable("Post", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("Post");
 
@@ -176,7 +176,7 @@ namespace dotnet_facebook.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("Tags");
+                    b.ToTable("Tags", (string)null);
                 });
 
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Users.PrivateMessage", b =>
@@ -207,7 +207,7 @@ namespace dotnet_facebook.Migrations
 
                     b.HasIndex("SenderUserId");
 
-                    b.ToTable("PrivateMessages");
+                    b.ToTable("PrivateMessages", (string)null);
                 });
 
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Users.User", b =>
@@ -233,7 +233,7 @@ namespace dotnet_facebook.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Users.UserProfile", b =>
@@ -260,7 +260,7 @@ namespace dotnet_facebook.Migrations
                     b.HasIndex("UserID")
                         .IsUnique();
 
-                    b.ToTable("UserProfile");
+                    b.ToTable("UserProfile", (string)null);
                 });
 
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Posts.Comment", b =>
