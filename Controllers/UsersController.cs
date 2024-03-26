@@ -54,13 +54,20 @@ namespace dotnet_facebook.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserId,Nickname,Password,AccountCreationDate")] User user)
+        public async Task<IActionResult> Create([Bind("UserId,Nickname,Password")] User user)
         {
             user.UserProfile = new UserProfile()
             {
                 User = user,
                 UserBio = "Hey, I'm a user!"
             };
+
+            user.AccountCreationDate = DateTime.Now;
+
+            if (_context.Users.Any(u => u.Nickname == user.Nickname))
+            {
+                ModelState.AddModelError("Nickname", "Nickname already exists!");
+            }
 
             if (ModelState.IsValid)
             {
