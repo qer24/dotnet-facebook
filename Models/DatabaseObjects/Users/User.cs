@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using dotnet_facebook.Models.DatabaseObjects.Groups;
 
 namespace dotnet_facebook.Models.DatabaseObjects.Users
 {

@@ -12,8 +12,8 @@ using dotnet_facebook.Models.Contexts;
 namespace dotnet_facebook.Migrations
 {
     [DbContext(typeof(TestContext))]
-    [Migration("20240325161902_Test1")]
-    partial class Test1
+    [Migration("20240326022720_GroupRoles")]
+    partial class GroupRoles
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace dotnet_facebook.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Group", b =>
+            modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Groups.Group", b =>
                 {
                     b.Property<int>("GroupId")
                         .ValueGeneratedOnAdd()
@@ -49,17 +49,12 @@ namespace dotnet_facebook.Migrations
                     b.Property<string>("GroupPictureFileName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OwnerUserUserId")
-                        .HasColumnType("int");
-
                     b.HasKey("GroupId");
-
-                    b.HasIndex("OwnerUserUserId");
 
                     b.ToTable("Group");
                 });
 
-            modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.GroupUser", b =>
+            modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Groups.GroupUser", b =>
                 {
                     b.Property<int>("GroupUserID")
                         .ValueGeneratedOnAdd()
@@ -70,8 +65,8 @@ namespace dotnet_facebook.Migrations
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsModerator")
-                        .HasColumnType("bit");
+                    b.Property<int>("GroupRole")
+                        .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -184,7 +179,38 @@ namespace dotnet_facebook.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("Tag");
+                    b.ToTable("Tags");
+                });
+
+            modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Users.PrivateMessage", b =>
+                {
+                    b.Property<int>("PrivateMessageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PrivateMessageId"));
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("MessageDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ReceiverUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SenderUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PrivateMessageId");
+
+                    b.HasIndex("ReceiverUserId");
+
+                    b.HasIndex("SenderUserId");
+
+                    b.ToTable("PrivateMessages");
                 });
 
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Users.User", b =>
@@ -270,20 +296,9 @@ namespace dotnet_facebook.Migrations
                     b.HasDiscriminator().HasValue("MainPost");
                 });
 
-            modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Group", b =>
+            modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Groups.GroupUser", b =>
                 {
-                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Users.User", "OwnerUser")
-                        .WithMany()
-                        .HasForeignKey("OwnerUserUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("OwnerUser");
-                });
-
-            modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.GroupUser", b =>
-                {
-                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Group", "Group")
+                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Groups.Group", "Group")
                         .WithMany("Users")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -321,7 +336,7 @@ namespace dotnet_facebook.Migrations
 
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Posts.Post", b =>
                 {
-                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Group", null)
+                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Groups.Group", null)
                         .WithMany("GroupPosts")
                         .HasForeignKey("GroupId");
 
@@ -340,13 +355,32 @@ namespace dotnet_facebook.Migrations
 
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Tag", b =>
                 {
-                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Group", null)
+                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Groups.Group", null)
                         .WithMany("Tags")
                         .HasForeignKey("GroupId");
 
                     b.HasOne("dotnet_facebook.Models.DatabaseObjects.Posts.Post", null)
                         .WithMany("Tags")
                         .HasForeignKey("PostId");
+                });
+
+            modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Users.PrivateMessage", b =>
+                {
+                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Users.User", "Receiver")
+                        .WithMany()
+                        .HasForeignKey("ReceiverUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Users.User", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Receiver");
+
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Users.UserProfile", b =>
@@ -377,14 +411,14 @@ namespace dotnet_facebook.Migrations
 
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Posts.MainPost", b =>
                 {
-                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Group", "ParentGroup")
+                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Groups.Group", "ParentGroup")
                         .WithMany()
                         .HasForeignKey("ParentGroupGroupId");
 
                     b.Navigation("ParentGroup");
                 });
 
-            modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Group", b =>
+            modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Groups.Group", b =>
                 {
                     b.Navigation("GroupPosts");
 

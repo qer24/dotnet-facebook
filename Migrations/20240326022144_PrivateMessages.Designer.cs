@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using dotnet_facebook.Models.Contexts;
 
@@ -11,9 +12,11 @@ using dotnet_facebook.Models.Contexts;
 namespace dotnet_facebook.Migrations
 {
     [DbContext(typeof(TestContext))]
-    partial class TestContextModelSnapshot : ModelSnapshot
+    [Migration("20240326022144_PrivateMessages")]
+    partial class PrivateMessages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace dotnet_facebook.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Groups.Group", b =>
+            modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Group", b =>
                 {
                     b.Property<int>("GroupId")
                         .ValueGeneratedOnAdd()
@@ -46,12 +49,17 @@ namespace dotnet_facebook.Migrations
                     b.Property<string>("GroupPictureFileName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("OwnerUserUserId")
+                        .HasColumnType("int");
+
                     b.HasKey("GroupId");
+
+                    b.HasIndex("OwnerUserUserId");
 
                     b.ToTable("Group");
                 });
 
-            modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Groups.GroupUser", b =>
+            modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.GroupUser", b =>
                 {
                     b.Property<int>("GroupUserID")
                         .ValueGeneratedOnAdd()
@@ -62,8 +70,8 @@ namespace dotnet_facebook.Migrations
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
 
-                    b.Property<int>("GroupRole")
-                        .HasColumnType("int");
+                    b.Property<bool>("IsModerator")
+                        .HasColumnType("bit");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -293,9 +301,20 @@ namespace dotnet_facebook.Migrations
                     b.HasDiscriminator().HasValue("MainPost");
                 });
 
-            modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Groups.GroupUser", b =>
+            modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Group", b =>
                 {
-                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Groups.Group", "Group")
+                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Users.User", "OwnerUser")
+                        .WithMany()
+                        .HasForeignKey("OwnerUserUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("OwnerUser");
+                });
+
+            modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.GroupUser", b =>
+                {
+                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Group", "Group")
                         .WithMany("Users")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -333,7 +352,7 @@ namespace dotnet_facebook.Migrations
 
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Posts.Post", b =>
                 {
-                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Groups.Group", null)
+                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Group", null)
                         .WithMany("GroupPosts")
                         .HasForeignKey("GroupId");
 
@@ -352,7 +371,7 @@ namespace dotnet_facebook.Migrations
 
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Tag", b =>
                 {
-                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Groups.Group", null)
+                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Group", null)
                         .WithMany("Tags")
                         .HasForeignKey("GroupId");
 
@@ -408,14 +427,14 @@ namespace dotnet_facebook.Migrations
 
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Posts.MainPost", b =>
                 {
-                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Groups.Group", "ParentGroup")
+                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Group", "ParentGroup")
                         .WithMany()
                         .HasForeignKey("ParentGroupGroupId");
 
                     b.Navigation("ParentGroup");
                 });
 
-            modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Groups.Group", b =>
+            modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Group", b =>
                 {
                     b.Navigation("GroupPosts");
 

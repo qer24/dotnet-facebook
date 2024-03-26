@@ -3,14 +3,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 using dotnet_facebook.Models.DatabaseObjects.Posts;
 using dotnet_facebook.Models.DatabaseObjects.Users;
 
-namespace dotnet_facebook.Models.DatabaseObjects
+namespace dotnet_facebook.Models.DatabaseObjects.Groups
 {
     public class Group
     {
         [Key]
         public int GroupId { get; set; }
-
-        public virtual User OwnerUser { get; set; }
 
         [Required(ErrorMessage = "Please enter {0}.")]
         [StringLength(20, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]

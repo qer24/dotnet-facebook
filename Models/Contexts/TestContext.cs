@@ -4,6 +4,7 @@ using dotnet_facebook.Models.DatabaseObjects;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.Metadata;
 using System.Diagnostics.Metrics;
+using dotnet_facebook.Models.DatabaseObjects.Groups;
 
 namespace dotnet_facebook.Models.Contexts
 {
@@ -34,13 +35,20 @@ namespace dotnet_facebook.Models.Contexts
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Group>()
-                .HasOne(Group => Group.OwnerUser)
+            modelBuilder.Entity<PrivateMessage>()
+                .HasOne(PrivateMessage => PrivateMessage.Sender)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PrivateMessage>()
+                .HasOne(PrivateMessage => PrivateMessage.Receiver)
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
         }
 
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<MainPost> MainPosts { get; set; }
+        public virtual DbSet<PrivateMessage> PrivateMessages { get; set; }
+        public virtual DbSet<Tag> Tags { get; set; }
     }
 }
