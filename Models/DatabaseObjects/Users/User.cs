@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using dotnet_facebook.Models.DatabaseObjects.Groups;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace dotnet_facebook.Models.DatabaseObjects.Users
 {
@@ -9,6 +10,7 @@ namespace dotnet_facebook.Models.DatabaseObjects.Users
         [Key]
         public int UserId { get; set; }
 
+        [ValidateNever]
         public virtual UserProfile UserProfile { get; set; }
         
         [Required(ErrorMessage = "Please enter {0}.")]
