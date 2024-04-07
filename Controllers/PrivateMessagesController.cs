@@ -6,28 +6,30 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using dotnet_facebook.Models.Contexts;
-using dotnet_facebook.Models.DatabaseObjects.Groups;
-using Microsoft.IdentityModel.Tokens;
 using dotnet_facebook.Models.DatabaseObjects.Users;
 
 namespace dotnet_facebook.Controllers
 {
-    public class GroupsController : Controller
+    public class PrivateMessagesController : Controller
     {
         private readonly TestContext _context;
 
-        public GroupsController(TestContext context)
+        public PrivateMessagesController(TestContext context)
         {
             _context = context;
         }
 
-        // GET: Groups
+        // GET: PrivateMessages
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Groups.ToListAsync());
+            var privateMessages = await _context.PrivateMessages
+                .Include(pm => pm.Sender)
+                .Include(pm => pm.Receiver)
+                .ToListAsync();
+            return View(privateMessages);
         }
 
-        // GET: Groups/Details/5
+        // GET: PrivateMessages/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -35,22 +37,21 @@ namespace dotnet_facebook.Controllers
                 return NotFound();
             }
 
-            var @group = await _context.Groups
-                .Include(g => g.Users)
-                .ThenInclude(gu => gu.User)
-                .FirstOrDefaultAsync(m => m.GroupId == id);
-            if (@group == null)
+            var privateMessage = await _context.PrivateMessages
+                .Include(pm => pm.Sender)
+                .Include(pm => pm.Receiver)
+                .FirstOrDefaultAsync(m => m.PrivateMessageId == id);
+            if (privateMessage == null)
             {
                 return NotFound();
             }
 
-            return View(@group);
+            return View(privateMessage);
         }
 
-        // GET: Groups/Create
+        // GET: PrivateMessages/Create
         public IActionResult Create()
         {
-            // Populate ViewBag.Users with a list of users to select from
             ViewBag.Users = _context.Users.Select(u => new SelectListItem
             {
                 Value = u.UserId.ToString(),
@@ -60,58 +61,63 @@ namespace dotnet_facebook.Controllers
             return View();
         }
 
-        // POST: Groups/Create
+        // POST: PrivateMessages/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("GroupId,GroupName,GroupDescription,GroupPictureFileName")] Group @group)
+        public async Task<IActionResult> Create([Bind("PrivateMessageId,Message")] PrivateMessage privateMessage)
         {
-            var selecteUserIdString = Request.Form["selectedUserId"];
-            
-            if (string.IsNullOrWhiteSpace(selecteUserIdString))
+            var userId1 = Request.Form["selectedUserId1"];
+            var userId2 = Request.Form["selectedUserId2"];
+            User? user1 = null;
+            User? user2 = null;
+
+            if (string.IsNullOrWhiteSpace(userId1))
             {
-                ModelState.AddModelError("selectedUserId", "Please select a user.");
+                ModelState.AddModelError("selectedUserId1", "Please select a user to send a message from!");
             }
             else
             {
-                var selectedUserId = Convert.ToInt32(selecteUserIdString);
-                var user = _context.Users.Find(selectedUserId);
-                group.Users =
-                [
-                    new GroupUser
-                    {
-                        User = user,
-                        Group = group,
-                        GroupRole = GroupRole.Admin
-                    },
-                ];
+                user1 = _context.Users.Find(int.Parse(userId1));
             }
-            group.GroupCreationDate = DateTime.Now;
 
-            if (_context.Groups.Any(g => g.GroupName == group.GroupName))
+            if (string.IsNullOrWhiteSpace(userId2))
             {
-                ModelState.AddModelError("GroupName", "Group Name already exists!");
+                ModelState.AddModelError("selectedUserId2", "Please select a user to send a message to!");
             }
+            else
+            {
+                user2 = _context.Users.Find(int.Parse(userId2));
+            }
+
+            if (userId1 == userId2)
+            {
+                ModelState.AddModelError("selectedUserId2", "You can't send a message to yourself!");
+            }
+
+            privateMessage.MessageDate = DateTime.Now;
+
+            privateMessage.Sender = user1;
+            privateMessage.Receiver = user2;
 
             if (ModelState.IsValid)
             {
-                _context.Add(@group);
+                _context.Add(privateMessage);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            // Repopulate ViewBag.Users to maintain the data on validation failure
             ViewBag.Users = _context.Users.Select(u => new SelectListItem
             {
                 Value = u.UserId.ToString(),
                 Text = u.Nickname
             }).ToList();
 
-            return View(@group);
+            return View(privateMessage);
         }
 
-        // GET: Groups/Edit/5
+        // GET: PrivateMessages/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -119,41 +125,36 @@ namespace dotnet_facebook.Controllers
                 return NotFound();
             }
 
-            var @group = await _context.Groups.FindAsync(id);
-            if (@group == null)
+            var privateMessage = await _context.PrivateMessages.FindAsync(id);
+            if (privateMessage == null)
             {
                 return NotFound();
             }
-            return View(@group);
+            return View(privateMessage);
         }
 
-        // POST: Groups/Edit/5
+        // POST: PrivateMessages/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("GroupId,GroupName,GroupDescription,GroupCreationDate,GroupPictureFileName")] Group @group)
+        public async Task<IActionResult> Edit(int id, [Bind("PrivateMessageId,Message,MessageDate")] PrivateMessage privateMessage)
         {
-            if (id != @group.GroupId)
+            if (id != privateMessage.PrivateMessageId)
             {
                 return NotFound();
-            }
-
-            if (_context.Groups.Any(g => g.GroupName == @group.GroupName))
-            {
-                ModelState.AddModelError("GroupName", "Group Name already exists!");
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(@group);
+                    _context.Update(privateMessage);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!GroupExists(@group.GroupId))
+                    if (!PrivateMessageExists(privateMessage.PrivateMessageId))
                     {
                         return NotFound();
                     }
@@ -164,10 +165,10 @@ namespace dotnet_facebook.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(@group);
+            return View(privateMessage);
         }
 
-        // GET: Groups/Delete/5
+        // GET: PrivateMessages/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -175,34 +176,34 @@ namespace dotnet_facebook.Controllers
                 return NotFound();
             }
 
-            var @group = await _context.Groups
-                .FirstOrDefaultAsync(m => m.GroupId == id);
-            if (@group == null)
+            var privateMessage = await _context.PrivateMessages
+                .FirstOrDefaultAsync(m => m.PrivateMessageId == id);
+            if (privateMessage == null)
             {
                 return NotFound();
             }
 
-            return View(@group);
+            return View(privateMessage);
         }
 
-        // POST: Groups/Delete/5
+        // POST: PrivateMessages/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var @group = await _context.Groups.FindAsync(id);
-            if (@group != null)
+            var privateMessage = await _context.PrivateMessages.FindAsync(id);
+            if (privateMessage != null)
             {
-                _context.Groups.Remove(@group);
+                _context.PrivateMessages.Remove(privateMessage);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool GroupExists(int id)
+        private bool PrivateMessageExists(int id)
         {
-            return _context.Groups.Any(e => e.GroupId == id);
+            return _context.PrivateMessages.Any(e => e.PrivateMessageId == id);
         }
     }
 }

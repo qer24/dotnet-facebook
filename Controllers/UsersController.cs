@@ -106,6 +106,11 @@ namespace dotnet_facebook.Controllers
                 return NotFound();
             }
 
+            if (_context.Users.Any(u => u.Nickname == user.Nickname))
+            {
+                ModelState.AddModelError("Nickname", "Nickname already exists!");
+            }
+
             if (ModelState.IsValid)
             {
                 try

@@ -1,0 +1,42 @@
+﻿@model dotnet_facebook.Models.DatabaseObjects.Users.PrivateMessage
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>PrivateMessage</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Sender)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Sender.Nickname)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Receiver)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Receiver.Nickname)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Message)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Message)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.MessageDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MessageDate)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.PrivateMessageId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
