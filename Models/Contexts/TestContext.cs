@@ -50,7 +50,6 @@ namespace dotnet_facebook.Models.Contexts
         public virtual DbSet<MainPost> MainPosts { get; set; }
         public virtual DbSet<PrivateMessage> PrivateMessages { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
-        public DbSet<dotnet_facebook.Models.DatabaseObjects.Groups.Group> Group { get; set; } = default!;
-        public DbSet<dotnet_facebook.Models.DatabaseObjects.Posts.Post> Post { get; set; } = default!;
+        public virtual DbSet<Group> Groups { get; set; }
     }
 }

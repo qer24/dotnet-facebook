@@ -23,7 +23,7 @@ namespace dotnet_facebook.Controllers
         // GET: Groups
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Group.ToListAsync());
+            return View(await _context.Groups.ToListAsync());
         }
 
         // GET: Groups/Details/5
@@ -34,7 +34,9 @@ namespace dotnet_facebook.Controllers
                 return NotFound();
             }
 
-            var @group = await _context.Group
+            var @group = await _context.Groups
+                .Include(g => g.Users)
+                .ThenInclude(gu => gu.User)
                 .FirstOrDefaultAsync(m => m.GroupId == id);
             if (@group == null)
             {
@@ -112,7 +114,7 @@ namespace dotnet_facebook.Controllers
                 return NotFound();
             }
 
-            var @group = await _context.Group.FindAsync(id);
+            var @group = await _context.Groups.FindAsync(id);
             if (@group == null)
             {
                 return NotFound();
@@ -163,7 +165,7 @@ namespace dotnet_facebook.Controllers
                 return NotFound();
             }
 
-            var @group = await _context.Group
+            var @group = await _context.Groups
                 .FirstOrDefaultAsync(m => m.GroupId == id);
             if (@group == null)
             {
@@ -178,10 +180,10 @@ namespace dotnet_facebook.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var @group = await _context.Group.FindAsync(id);
+            var @group = await _context.Groups.FindAsync(id);
             if (@group != null)
             {
-                _context.Group.Remove(@group);
+                _context.Groups.Remove(@group);
             }
 
             await _context.SaveChangesAsync();
@@ -190,7 +192,7 @@ namespace dotnet_facebook.Controllers
 
         private bool GroupExists(int id)
         {
-            return _context.Group.Any(e => e.GroupId == id);
+            return _context.Groups.Any(e => e.GroupId == id);
         }
     }
 }

@@ -34,6 +34,13 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.GroupPictureFileName)
         </dd>
+        <h4>Users in Group:</h4>
+        <ul>
+            @foreach (var user in Model.Users)
+            {
+                <li><b>@user.User.Nickname</b> | @user.GroupRole</li>
+            }
+        </ul>
     </dl>
 </div>
 <div>
