@@ -58,6 +58,7 @@ namespace dotnet_facebook.Controllers
         {
 
             group.GroupCreationDate = DateTime.Now;
+
             if (ModelState.IsValid)
             {
                 _context.Add(@group);
