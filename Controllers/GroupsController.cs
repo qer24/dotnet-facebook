@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using dotnet_facebook.Models.Contexts;
 using dotnet_facebook.Models.DatabaseObjects.Groups;
+using Microsoft.IdentityModel.Tokens;
 
 namespace dotnet_facebook.Controllers
 {
@@ -46,6 +47,13 @@ namespace dotnet_facebook.Controllers
         // GET: Groups/Create
         public IActionResult Create()
         {
+            // Populate ViewBag.Users with a list of users to select from
+            ViewBag.Users = _context.Users.Select(u => new SelectListItem
+            {
+                Value = u.UserId.ToString(),
+                Text = u.Nickname
+            }).ToList();
+
             return View();
         }
 
@@ -56,6 +64,26 @@ namespace dotnet_facebook.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("GroupId,GroupName,GroupDescription,GroupPictureFileName")] Group @group)
         {
+            var selecteUserIdString = Request.Form["selectedUserId"];
+            
+            if (string.IsNullOrWhiteSpace(selecteUserIdString))
+            {
+                ModelState.AddModelError("selectedUserId", "Please select a user.");
+            }
+            else
+            {
+                var selectedUserId = Convert.ToInt32(selecteUserIdString);
+                var user = _context.Users.Find(selectedUserId);
+                group.Users =
+                [
+                    new GroupUser
+                    {
+                        User = user,
+                        Group = group,
+                        GroupRole = GroupRole.Admin
+                    },
+                ];
+            }
 
             group.GroupCreationDate = DateTime.Now;
 
@@ -65,6 +93,14 @@ namespace dotnet_facebook.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            // Repopulate ViewBag.Users to maintain the data on validation failure
+            ViewBag.Users = _context.Users.Select(u => new SelectListItem
+            {
+                Value = u.UserId.ToString(),
+                Text = u.Nickname
+            }).ToList();
+
             return View(@group);
         }
 

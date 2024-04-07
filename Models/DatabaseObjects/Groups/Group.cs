@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using dotnet_facebook.Models.DatabaseObjects.Posts;
 using dotnet_facebook.Models.DatabaseObjects.Users;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace dotnet_facebook.Models.DatabaseObjects.Groups
 {
@@ -25,7 +26,7 @@ namespace dotnet_facebook.Models.DatabaseObjects.Groups
         //public IFormFile? GroupPicture { get; set; }
 
         public virtual ICollection<Post>? GroupPosts { get; set; }
-        public virtual ICollection<GroupUser> Users { get; set; }
+        [ValidateNever] public virtual ICollection<GroupUser> Users { get; set; }
         public virtual ICollection<Tag>? Tags { get; set; }
     }
 }
