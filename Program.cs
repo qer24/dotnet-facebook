@@ -11,7 +11,7 @@ namespace dotnet_facebook
 
             //Pobieranie danych konfiguracyjnych z pliku
             var connectionString = builder.Configuration.GetConnectionString("System");
-            //Dodawanie do zasobów klasy kontekstu dla bazy danych
+            //Dodawanie do zasobï¿½w klasy kontekstu dla bazy danych
             builder.Services.AddDbContext<TestContext>(x => x.UseSqlServer(connectionString));
 
             // Add services to the container.

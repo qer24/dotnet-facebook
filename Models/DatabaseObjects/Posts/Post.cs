@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using dotnet_facebook.Models.DatabaseObjects.Users;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace dotnet_facebook.Models.DatabaseObjects.Posts
 {
@@ -9,6 +10,7 @@ namespace dotnet_facebook.Models.DatabaseObjects.Posts
         [Key]
         public int PostId { get; set; }
 
+        [ValidateNever]
         public virtual User OwnerUser { get; set; }
 
         [DataType(DataType.Date)]
