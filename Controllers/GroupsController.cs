@@ -127,6 +127,32 @@ namespace dotnet_facebook.Controllers
             return View(@group);
         }
 
+        public async Task<IActionResult> Manage(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var @group = await _context.Groups.FindAsync(id);
+            var @group2 = await _context.Groups
+                .Include(g => g.Users)
+                .ThenInclude(gu => gu.User)
+                .FirstOrDefaultAsync(m => m.GroupId == id);
+            if (@group == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.Users = _context.Users.Select(u => new SelectListItem
+            {
+                Value = u.UserId.ToString(),
+                Text = u.Nickname
+            }).ToList();
+
+            return View(@group);
+        }
+
         // POST: Groups/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.

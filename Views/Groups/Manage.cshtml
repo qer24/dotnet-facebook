@@ -1,0 +1,49 @@
+﻿@model dotnet_facebook.Models.DatabaseObjects.Groups.Group
+
+@{
+    ViewData["Title"] = "Manage";
+}
+
+<h1>Manage</h1>
+
+<h4>Group</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Manage">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="GroupId" />
+            
+            <h4>Users in Group:</h4>
+            <ul>
+                @foreach (var user in Model.Users)
+                {
+                    <li><b>@user.User.Nickname</b> | @user.GroupRole</li>
+                }
+            </ul>
+
+            <label>Select User</label>
+            <select name="selectedUserId" class="form-control">
+                <option value="">Select User</option>
+                @foreach (var user in ViewBag.Users)
+                {
+                    <option value="@user.Value">@user.Text</option>
+                }
+            </select>
+            <div class="form-group">
+                <input type="submit" value="Add" class="btn btn-primary" />
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
