@@ -1,4 +1,5 @@
 using dotnet_facebook.Models.Contexts;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 namespace dotnet_facebook
@@ -9,6 +10,14 @@ namespace dotnet_facebook
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(s =>
+                {
+                    s.LoginPath = "/Home/Login";
+                    s.LogoutPath = "/Home/Login";
+                }
+                    );
+
             //Pobieranie danych konfiguracyjnych z pliku
             var connectionString = builder.Configuration.GetConnectionString("System");
             //Dodawanie do zasob�w klasy kontekstu dla bazy danych
@@ -18,6 +27,8 @@ namespace dotnet_facebook
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
+
+
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -32,6 +43,7 @@ namespace dotnet_facebook
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

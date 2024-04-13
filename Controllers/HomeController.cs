@@ -1,4 +1,5 @@
 using dotnet_facebook.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -19,6 +20,10 @@ namespace dotnet_facebook.Controllers
         }
 
         public IActionResult Privacy()
+        {
+            return View();
+        }
+        public IActionResult Login()
         {
             return View();
         }
