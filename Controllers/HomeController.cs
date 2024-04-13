@@ -1,7 +1,9 @@
 using dotnet_facebook.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
 using System.Security.Policy;
 
 namespace dotnet_facebook.Controllers
@@ -20,6 +22,18 @@ namespace dotnet_facebook.Controllers
         }
         public void onPost()
         {
+            List<Claim> list = new List<Claim>()
+            {
+                new Claim(ClaimTypes.NameIdentifier, user),
+                new Claim(ClaimTypes.Name, user)
+            };
+            ClaimsIdentity identity = new ClaimsIdentity(list,
+                Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme
+
+                );
+            ClaimsPrincipal principal = new ClaimsPrincipal(identity);
+            HttpContext.SignInAsync(principal);
+
 
         }
 
