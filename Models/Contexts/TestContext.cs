@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Reflection.Metadata;
 using System.Diagnostics.Metrics;
 using dotnet_facebook.Models.DatabaseObjects.Groups;
+using Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore;
+using dotnet_facebook.Models.DatabaseObjects.Roles;
 
 namespace dotnet_facebook.Models.Contexts
 {
@@ -51,5 +53,7 @@ namespace dotnet_facebook.Models.Contexts
         public virtual DbSet<PrivateMessage> PrivateMessages { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
         public virtual DbSet<Group> Groups { get; set; }
+
+        public virtual DbSet<SiteRole> Roles { get; set; }
     }
 }
