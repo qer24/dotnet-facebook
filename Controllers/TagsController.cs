@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using dotnet_facebook.Models.Contexts;
 using dotnet_facebook.Models.DatabaseObjects;
+using Microsoft.AspNetCore.Authorization;
 
 namespace dotnet_facebook.Controllers
 {
+    [Authorize]
     public class TagsController : Controller
     {
         private readonly TestContext _context;
