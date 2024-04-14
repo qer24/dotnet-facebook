@@ -29,5 +29,10 @@ namespace dotnet_facebook.Models.DatabaseObjects.Users
         public DateTime AccountCreationDate { get; set; }
 
         public virtual ICollection<GroupUser>? Groups { get; set; }
+
+        public override string ToString()
+        {
+            return Nickname;
+        }
     }
 }

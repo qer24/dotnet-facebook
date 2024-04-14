@@ -54,6 +54,7 @@ namespace dotnet_facebook.Models.Contexts
         public virtual DbSet<Tag> Tags { get; set; }
         public virtual DbSet<Group> Groups { get; set; }
 
-        public virtual DbSet<SiteRole> Roles { get; set; }
+        public virtual DbSet<SiteRole> SiteRoles { get; set; }
+        public virtual DbSet<UserSiteRole> UserSiteRoles { get; set; }
     }
 }

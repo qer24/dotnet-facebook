@@ -6,27 +6,26 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using dotnet_facebook.Models.Contexts;
-using dotnet_facebook.Models.DatabaseObjects.Users;
 using dotnet_facebook.Models.DatabaseObjects.Roles;
 
 namespace dotnet_facebook.Controllers
 {
-    public class UsersController : Controller
+    public class SiteRolesController : Controller
     {
         private readonly TestContext _context;
 
-        public UsersController(TestContext context)
+        public SiteRolesController(TestContext context)
         {
             _context = context;
         }
 
-        // GET: User
+        // GET: SiteRoles
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Users.ToListAsync());
+            return View(await _context.SiteRoles.ToListAsync());
         }
 
-        // GET: User/Details/5
+        // GET: SiteRoles/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,60 +33,39 @@ namespace dotnet_facebook.Controllers
                 return NotFound();
             }
 
-            var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.UserId == id);
-            if (user == null)
+            var siteRole = await _context.SiteRoles
+                .FirstOrDefaultAsync(m => m.SiteRoleId == id);
+            if (siteRole == null)
             {
                 return NotFound();
             }
 
-            return View(user);
+            return View(siteRole);
         }
 
-        // GET: User/Create
+        // GET: SiteRoles/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: User/Create
+        // POST: SiteRoles/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserId,Nickname,Password")] User user)
+        public async Task<IActionResult> Create([Bind("SiteRoleId,SiteRoleName,IsDefault,AdministrativePerms")] SiteRole siteRole)
         {
-            user.UserProfile = new UserProfile()
-            {
-                User = user,
-                UserBio = "Hey, I'm a user!"
-            };
-
-            user.AccountCreationDate = DateTime.Now;
-
-            if (_context.Users.Any(u => u.Nickname == user.Nickname))
-            {
-                ModelState.AddModelError("Nickname", "Nickname already exists!");
-            }
-
             if (ModelState.IsValid)
             {
-                _context.Add(user);
-                
-                await _context.UserSiteRoles.AddAsync(new UserSiteRole()
-                {
-                    User = user,
-                    Role = _context.SiteRoles.First(sr => sr.SiteRoleName == "User")
-                });
-
+                _context.Add(siteRole);
                 await _context.SaveChangesAsync();
-
                 return RedirectToAction(nameof(Index));
             }
-            return View(user);
-        }   
+            return View(siteRole);
+        }
 
-        // GET: User/Edit/5
+        // GET: SiteRoles/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -95,41 +73,36 @@ namespace dotnet_facebook.Controllers
                 return NotFound();
             }
 
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
+            var siteRole = await _context.SiteRoles.FindAsync(id);
+            if (siteRole == null)
             {
                 return NotFound();
             }
-            return View(user);
+            return View(siteRole);
         }
 
-        // POST: User/Edit/5
+        // POST: SiteRoles/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserId,Nickname,Password,AccountCreationDate")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("SiteRoleId,SiteRoleName,IsDefault,AdministrativePerms")] SiteRole siteRole)
         {
-            if (id != user.UserId)
+            if (id != siteRole.SiteRoleId)
             {
                 return NotFound();
-            }
-
-            if (_context.Users.Any(u => u.Nickname == user.Nickname))
-            {
-                ModelState.AddModelError("Nickname", "Nickname already exists!");
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(user);
+                    _context.Update(siteRole);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserExists(user.UserId))
+                    if (!SiteRoleExists(siteRole.SiteRoleId))
                     {
                         return NotFound();
                     }
@@ -140,10 +113,10 @@ namespace dotnet_facebook.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(user);
+            return View(siteRole);
         }
 
-        // GET: User/Delete/5
+        // GET: SiteRoles/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -151,34 +124,34 @@ namespace dotnet_facebook.Controllers
                 return NotFound();
             }
 
-            var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.UserId == id);
-            if (user == null)
+            var siteRole = await _context.SiteRoles
+                .FirstOrDefaultAsync(m => m.SiteRoleId == id);
+            if (siteRole == null)
             {
                 return NotFound();
             }
 
-            return View(user);
+            return View(siteRole);
         }
 
-        // POST: User/Delete/5
+        // POST: SiteRoles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var user = await _context.Users.FindAsync(id);
-            if (user != null)
+            var siteRole = await _context.SiteRoles.FindAsync(id);
+            if (siteRole != null)
             {
-                _context.Users.Remove(user);
+                _context.SiteRoles.Remove(siteRole);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool UserExists(int id)
+        private bool SiteRoleExists(int id)
         {
-            return _context.Users.Any(e => e.UserId == id);
+            return _context.SiteRoles.Any(e => e.SiteRoleId == id);
         }
     }
 }

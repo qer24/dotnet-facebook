@@ -1,4 +1,5 @@
 ﻿using dotnet_facebook.Models.DatabaseObjects.Users;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
 
 namespace dotnet_facebook.Models.DatabaseObjects.Roles
@@ -8,7 +9,7 @@ namespace dotnet_facebook.Models.DatabaseObjects.Roles
         [Key]
         public int UserSiteRoleId { get; set; }
 
-        public virtual User User { get; set; }
-        public virtual SiteRole Role { get; set; }
+        [ValidateNever] public virtual User User { get; set; }
+        [ValidateNever] public virtual SiteRole Role { get; set; }
     }
 }

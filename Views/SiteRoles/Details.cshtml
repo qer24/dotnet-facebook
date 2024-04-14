@@ -1,0 +1,36 @@
+﻿@model dotnet_facebook.Models.DatabaseObjects.Roles.SiteRole
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>SiteRole</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.SiteRoleName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.SiteRoleName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IsDefault)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IsDefault)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.AdministrativePerms)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.AdministrativePerms)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.SiteRoleId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
