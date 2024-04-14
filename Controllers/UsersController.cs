@@ -73,12 +73,17 @@ namespace dotnet_facebook.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(user);
-                
-                await _context.UserSiteRoles.AddAsync(new UserSiteRole()
+
+                // Set default roles for the user
+                var defaultRoles = _context.SiteRoles.Where(r => r.IsDefault).ToList();
+                foreach (var role in defaultRoles)
                 {
-                    User = user,
-                    Role = _context.SiteRoles.First(sr => sr.SiteRoleName == "User")
-                });
+                    _context.UserSiteRoles.Add(new UserSiteRole()
+                    {
+                        User = user,
+                        Role = role
+                    });
+                }
 
                 await _context.SaveChangesAsync();
 
