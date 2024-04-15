@@ -10,18 +10,15 @@ namespace dotnet_facebook.Controllers
 {
     public class HomeController : Controller
     {
-        [BindProperty]
-        public string user { get; set; }
 
-        [BindProperty]
-        public string password { get; set; }
-
-        public void onGet()
+        [HttpPost]
+        public void Login(string user, string password)
         {
+            //check if user exist
+            //check if password match
+            //check if user have admin role
 
-        }
-        public void onPost()
-        {
+
             List<Claim> list = new List<Claim>()
             {
                 new Claim(ClaimTypes.NameIdentifier, user),
@@ -33,8 +30,6 @@ namespace dotnet_facebook.Controllers
                 );
             ClaimsPrincipal principal = new ClaimsPrincipal(identity);
             HttpContext.SignInAsync(principal);
-
-
         }
 
         private readonly ILogger<HomeController> _logger;

@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace dotnet_facebook.Controllers
 {
-    //  [Authorize]
+    [Authorize]
     public class TagsController : Controller
     {
         private readonly TestContext _context;
