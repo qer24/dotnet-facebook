@@ -10,18 +10,18 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Manage">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="GroupId" />
-            
-            <h4>Users in Group:</h4>
-            <ul>
-                @foreach (var user in Model.Users)
-                {
-                    <li><b>@user.User.Nickname</b> | @user.GroupRole</li>
-                }
-            </ul>
+        <h4>Users in Group:</h4>
+        <ul>
+            @foreach (var user in Model.Users)
+            {
+                <li><b>@user.User.Nickname</b> | @user.GroupRole</li>
+            }
+        </ul>
 
+        <hr />
+
+        <form asp-action="AddUser">
+            <input type="hidden" asp-for="GroupId" />
             <label>Select User</label>
             <select name="selectedUserId" class="form-control">
                 <option value="">Select User</option>
@@ -30,10 +30,7 @@
                     <option value="@user.Value">@user.Text</option>
                 }
             </select>
-            <div class="form-group">
-                <input type="submit" value="Add" class="btn btn-primary" />
-            </div>
-
+            <input type="submit" value="Add User" class="btn btn-primary" />
         </form>
     </div>
 </div>

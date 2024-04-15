@@ -51,11 +51,7 @@ namespace dotnet_facebook.Controllers
         public IActionResult Create()
         {
             // Populate ViewBag.Users with a list of users to select from
-            ViewBag.Users = _context.Users.Select(u => new SelectListItem
-            {
-                Value = u.UserId.ToString(),
-                Text = u.Nickname
-            }).ToList();
+            GenerateViewBag();
 
             return View();
         }
@@ -102,11 +98,7 @@ namespace dotnet_facebook.Controllers
             }
 
             // Repopulate ViewBag.Users to maintain the data on validation failure
-            ViewBag.Users = _context.Users.Select(u => new SelectListItem
-            {
-                Value = u.UserId.ToString(),
-                Text = u.Nickname
-            }).ToList();
+            GenerateViewBag();
 
             return View(@group);
         }
@@ -127,8 +119,35 @@ namespace dotnet_facebook.Controllers
             return View(@group);
         }
 
+        // GET: Groups/Manage
         public async Task<IActionResult> Manage(int? id)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var @group = await _context.Groups
+                .Include(g => g.Users)
+                .ThenInclude(gu => gu.User)
+                .FirstOrDefaultAsync(m => m.GroupId == id);
+            if (@group == null)
+            {
+                return NotFound();
+            }
+
+            GenerateViewBag();
+
+            return View(@group);
+        }
+
+        // POST: Groups/AddUser
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddUser(int? id)
+        {
+            Console.WriteLine("Post");
+
             if (id == null)
             {
                 return NotFound();
@@ -144,11 +163,7 @@ namespace dotnet_facebook.Controllers
                 return NotFound();
             }
 
-            ViewBag.Users = _context.Users.Select(u => new SelectListItem
-            {
-                Value = u.UserId.ToString(),
-                Text = u.Nickname
-            }).ToList();
+            GenerateViewBag();
 
             return View(@group);
         }
@@ -229,6 +244,15 @@ namespace dotnet_facebook.Controllers
         private bool GroupExists(int id)
         {
             return _context.Groups.Any(e => e.GroupId == id);
+        }
+
+        private void GenerateViewBag()
+        {
+            ViewBag.Users = _context.Users.Select(u => new SelectListItem
+            {
+                Value = u.UserId.ToString(),
+                Text = u.Nickname
+            }).ToList();
         }
     }
 }
