@@ -14,6 +14,11 @@ namespace dotnet_facebook.Controllers
         [HttpPost]
         public void Login(string user, string password)
         {
+            //check if user exist
+            //check if password match
+            //check if user have admin role
+
+
             List<Claim> list = new List<Claim>()
             {
                 new Claim(ClaimTypes.NameIdentifier, user),
@@ -25,12 +30,6 @@ namespace dotnet_facebook.Controllers
                 );
             ClaimsPrincipal principal = new ClaimsPrincipal(identity);
             HttpContext.SignInAsync(principal);
-        }
-        public void onPost()
-        {
-            
-
-
         }
 
         private readonly ILogger<HomeController> _logger;
