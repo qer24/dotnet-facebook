@@ -10,17 +10,9 @@ namespace dotnet_facebook.Controllers
 {
     public class HomeController : Controller
     {
-        [BindProperty]
-        public string user { get; set; }
 
-        [BindProperty]
-        public string password { get; set; }
-
-        public void onGet()
-        {
-
-        }
-        public void onPost()
+        [HttpPost]
+        public void Login(string user, string password)
         {
             List<Claim> list = new List<Claim>()
             {
@@ -33,6 +25,10 @@ namespace dotnet_facebook.Controllers
                 );
             ClaimsPrincipal principal = new ClaimsPrincipal(identity);
             HttpContext.SignInAsync(principal);
+        }
+        public void onPost()
+        {
+            
 
 
         }
