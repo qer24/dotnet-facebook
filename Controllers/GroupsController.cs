@@ -51,7 +51,7 @@ namespace dotnet_facebook.Controllers
         public IActionResult Create()
         {
             // Populate ViewBag.Users with a list of users to select from
-            GenerateViewBag();
+            GenerateUsersBag();
 
             return View();
         }
@@ -98,7 +98,7 @@ namespace dotnet_facebook.Controllers
             }
 
             // Repopulate ViewBag.Users to maintain the data on validation failure
-            GenerateViewBag();
+            GenerateUsersBag();
 
             return View(@group);
         }
@@ -141,7 +141,62 @@ namespace dotnet_facebook.Controllers
                 ModelState.AddModelError("selectedUserId", userIdError);
             }
 
-            GenerateViewBag();
+            GenerateUsersBag();
+            GenerateRolesBag();
+
+            return View(@group);
+        }
+
+        // POST: Groups/Manage
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Manage(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var @group = await _context.Groups
+                .Include(g => g.Users)
+                .ThenInclude(gu => gu.User)
+                .FirstOrDefaultAsync(m => m.GroupId == id);
+            if (@group == null)
+            {
+                return NotFound();
+            }
+
+            var selectedUserRoleString = Request.Form["selectedUserRole"];
+            var selectedUserIdStrings = Request.Form["changedRoleUserId"];
+
+            // select first non empty array element from selected user id string
+            var selectedUserIdString = selectedUserIdStrings.FirstOrDefault(s => !string.IsNullOrWhiteSpace(s));
+
+            if (string.IsNullOrWhiteSpace(selectedUserIdString))
+            {
+                ModelState.AddModelError("selectedUserId", "Please select a user.");
+            }
+            else
+            {
+                var selectedUserId = Convert.ToInt32(selectedUserIdString);
+                var groupUser = @group.Users.FirstOrDefault(gu => gu.User.UserId == selectedUserId);
+
+                if (groupUser == null)
+                {
+                    ModelState.AddModelError("selectedUserId", "User not found in group.");
+                }
+                else
+                {
+                    var selectedUserRole = Enum.Parse<GroupRole>(selectedUserRoleString);
+                    groupUser.GroupRole = selectedUserRole;
+
+                    _context.Update(@group);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            GenerateUsersBag();
+            GenerateRolesBag();
 
             return View(@group);
         }
@@ -210,7 +265,8 @@ namespace dotnet_facebook.Controllers
                 }
             }
 
-            GenerateViewBag();
+            GenerateUsersBag();
+            GenerateRolesBag();
 
             return RedirectToAction(nameof(Manage), new { id = @group.GroupId, userIdError = userStringError });
         }
@@ -293,12 +349,21 @@ namespace dotnet_facebook.Controllers
             return _context.Groups.Any(e => e.GroupId == id);
         }
 
-        private void GenerateViewBag()
+        private void GenerateUsersBag()
         {
             ViewBag.Users = _context.Users.Select(u => new SelectListItem
             {
                 Value = u.UserId.ToString(),
                 Text = u.Nickname
+            }).ToList();
+        }
+
+        private void GenerateRolesBag()
+        {
+            ViewBag.Roles = Enum.GetValues(typeof(GroupRole)).Cast<GroupRole>().Select(r => new SelectListItem
+            {
+                Value = r.ToString(),
+                Text = r.ToString()
             }).ToList();
         }
     }

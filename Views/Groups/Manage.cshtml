@@ -11,12 +11,25 @@
 <div class="row">
     <div class="col-md-4">
         <h4>Users in Group:</h4>
-        <ul>
-            @foreach (var user in Model.Users)
-            {
-                <li><b>@user.User.Nickname</b> | @user.GroupRole</li>
-            }
-        </ul>
+        <form asp-action="Manage" class="form-group form-inline">
+            <input type="hidden" asp-for="GroupId" />
+            <ul>
+                @foreach (var user in Model.Users)
+                {
+                    <li>
+                        <b>@user.User.Nickname</b> | @user.GroupRole |
+                        <select name="selectedUserRole" class="form-control-inline" onchange="updateUserId(this, @user.User.UserId)">
+                            <option value="">Change role</option>
+                            @foreach (var role in ViewBag.Roles)
+                            {
+                                <option value="@role.Value">@role.Text</option>
+                            }
+                        </select>
+                        <input type="hidden" name="changedRoleUserId"/>
+                    </li>
+                }
+            </ul>
+        </form>
 
         <hr />
 
@@ -47,6 +60,14 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+
+<script>
+    function updateUserId(select, userId) {
+        var userIdInput = select.nextElementSibling; // Get the hidden input next to the select element
+        userIdInput.setAttribute("value", userId); // Set the value of the hidden input to the user id
+        select.form.submit(); // Submit the form
+    }
+</script>
 
 @section Scripts {
     @{
