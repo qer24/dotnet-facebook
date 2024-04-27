@@ -185,6 +185,11 @@ namespace dotnet_facebook.Controllers
                 {
                     ModelState.AddModelError("selectedUserId", "User not found in group.");
                 }
+                // make sure user is not the last admin in the group
+                else if (groupUser.GroupRole == GroupRole.Admin && @group.Users.Count(gu => gu.GroupRole == GroupRole.Admin) == 1)
+                {
+                    ModelState.AddModelError("selectedUserId", "Cannot remove the last admin from the group.");
+                }
                 else
                 {
                     var selectedUserRole = Enum.Parse<GroupRole>(selectedUserRoleString);
@@ -269,6 +274,46 @@ namespace dotnet_facebook.Controllers
             GenerateRolesBag();
 
             return RedirectToAction(nameof(Manage), new { id = @group.GroupId, userIdError = userStringError });
+        }
+
+        public async Task<IActionResult> RemoveUser(int? userId, int? groupId)
+        {
+            if (userId == null || groupId == null)
+            {
+                return NotFound();
+            }
+
+            var @group = await _context.Groups
+                .Include(g => g.Users)
+                .ThenInclude(gu => gu.User)
+                .FirstOrDefaultAsync(m => m.GroupId == groupId);
+            if (@group == null)
+            {
+                return NotFound();
+            }
+
+            var @user = await _context.Users.FindAsync(userId);
+            if (@user == null)
+            {
+                return NotFound();
+            }
+
+            // Can't remove last admin
+            if (@group.Users.Count(gu => gu.GroupRole == GroupRole.Admin) == 1 && @group.Users.Any(gu => gu.User.UserId == userId && gu.GroupRole == GroupRole.Admin))
+            {
+                return RedirectToAction(nameof(Manage), new { id = @group.GroupId, userIdError = "Cannot remove the last admin from the group." });
+            }
+
+            var groupUser = @group.Users.FirstOrDefault(gu => gu.User.UserId == userId);
+            if (groupUser != null)
+            {
+                @group.Users.Remove(groupUser);
+
+                _context.Update(@group);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Manage), new { id = @group.GroupId });
         }
 
         // POST: Groups/Edit/5

@@ -17,7 +17,7 @@
                 @foreach (var user in Model.Users)
                 {
                     <li>
-                        <b>@user.User.Nickname</b> | @user.GroupRole |
+                        <b>@user.User.Nickname</b> | @user.GroupRole | 
                         <select name="selectedUserRole" class="form-control-inline" onchange="updateUserId(this, @user.User.UserId)">
                             <option value="">Change role</option>
                             @foreach (var role in ViewBag.Roles)
@@ -26,6 +26,7 @@
                             }
                         </select>
                         <input type="hidden" name="changedRoleUserId"/>
+                        | <a class="btn btn-outline-primary" asp-action="RemoveUser" asp-route-userId="@user.User.UserId" asp-route-groupId="@Model.GroupId">Remove</a>
                     </li>
                 }
             </ul>
