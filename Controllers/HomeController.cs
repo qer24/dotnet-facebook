@@ -37,6 +37,13 @@ namespace dotnet_facebook.Controllers
             {
                 return BadRequest("Incorrect password.");
             }
+            
+            var isAdmin = _context.UserSiteRoles.Any(r => (r.User.Nickname == user & r.Role.AdministrativePerms == true));
+            if (!isAdmin)
+            {
+                return BadRequest("You are not authorized to access this resource.");
+            }
+
 
             List<Claim> list = new List<Claim>()
             {
