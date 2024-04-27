@@ -63,15 +63,15 @@ namespace dotnet_facebook.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("GroupId,GroupName,GroupDescription,GroupPictureFileName")] Group @group)
         {
-            var selecteUserIdString = Request.Form["selectedUserId"];
+            var selectedUserIdString = Request.Form["selectedUserId"];
             
-            if (string.IsNullOrWhiteSpace(selecteUserIdString))
+            if (string.IsNullOrWhiteSpace(selectedUserIdString))
             {
                 ModelState.AddModelError("selectedUserId", "Please select a user.");
             }
             else
             {
-                var selectedUserId = Convert.ToInt32(selecteUserIdString);
+                var selectedUserId = Convert.ToInt32(selectedUserIdString);
                 var user = _context.Users.Find(selectedUserId);
                 group.Users =
                 [
@@ -120,7 +120,7 @@ namespace dotnet_facebook.Controllers
         }
 
         // GET: Groups/Manage
-        public async Task<IActionResult> Manage(int? id)
+        public async Task<IActionResult> Manage(int? id, string? userIdError = null)
         {
             if (id == null)
             {
@@ -136,6 +136,11 @@ namespace dotnet_facebook.Controllers
                 return NotFound();
             }
 
+            if (!string.IsNullOrWhiteSpace(userIdError))
+            {
+                ModelState.AddModelError("selectedUserId", userIdError);
+            }
+
             GenerateViewBag();
 
             return View(@group);
@@ -146,15 +151,12 @@ namespace dotnet_facebook.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddUser(int? id)
         {
-            Console.WriteLine("Post");
-
             if (id == null)
             {
                 return NotFound();
             }
 
-            var @group = await _context.Groups.FindAsync(id);
-            var @group2 = await _context.Groups
+            var @group = await _context.Groups
                 .Include(g => g.Users)
                 .ThenInclude(gu => gu.User)
                 .FirstOrDefaultAsync(m => m.GroupId == id);
@@ -163,9 +165,54 @@ namespace dotnet_facebook.Controllers
                 return NotFound();
             }
 
+            var userStringError = "";
+
+            // if user is already in the group, throw error
+            var selectedUserIdString = Request.Form["selectedUserId"];
+            if (string.IsNullOrWhiteSpace(selectedUserIdString))
+            {
+                userStringError = "Please select a user.";
+            }
+            else
+            {
+                var userAlreadyInGroup = @group.Users.Any(gu => gu.User.UserId == Convert.ToInt32(selectedUserIdString));
+
+                if (userAlreadyInGroup)
+                {
+                    userStringError = "User is already in the group.";
+                }
+                else
+                {
+                    var user = _context.Users.Find(Convert.ToInt32(selectedUserIdString));
+                    @group.Users.Add(new GroupUser
+                    {
+                        User = user,
+                        Group = @group,
+                        GroupRole = GroupRole.Member
+                    });
+
+                    try
+                    {
+                        _context.Update(@group);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!GroupExists(@group.GroupId))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                }
+            }
+
             GenerateViewBag();
 
-            return View(@group);
+            return RedirectToAction(nameof(Manage), new { id = @group.GroupId, userIdError = userStringError });
         }
 
         // POST: Groups/Edit/5

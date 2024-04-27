@@ -20,17 +20,26 @@
 
         <hr />
 
-        <form asp-action="AddUser">
+        <form asp-action="AddUser" asp-route-id="@Context.Request.RouteValues["id"]">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="GroupId" />
-            <label>Select User</label>
-            <select name="selectedUserId" class="form-control">
-                <option value="">Select User</option>
-                @foreach (var user in ViewBag.Users)
-                {
-                    <option value="@user.Value">@user.Text</option>
-                }
-            </select>
-            <input type="submit" value="Add User" class="btn btn-primary" />
+
+            <div class="form-group">
+                <label>Select User</label>
+                <select name="selectedUserId" class="form-control">
+                    <option value="">Select User</option>
+                    @foreach (var user in ViewBag.Users)
+                    {
+                        <option value="@user.Value">@user.Text</option>
+                    }
+                </select>
+            </div>
+
+            <span class="text-danger">@Html.ValidationMessage("selectedUserId")</span>
+
+            <div class="form-group">
+                <input type="submit" value="Add User" class="btn btn-primary" />
+            </div>
         </form>
     </div>
 </div>
