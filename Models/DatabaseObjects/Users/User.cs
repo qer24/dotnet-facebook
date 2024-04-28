@@ -23,6 +23,10 @@ namespace dotnet_facebook.Models.DatabaseObjects.Users
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
+        [StringLength(32)]
+        [DataType(DataType.Password)]
+        public string? HashedPassword { get; set; }
+
         [DataType(DataType.Date)]
         [Display(Name = "Account created on")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]

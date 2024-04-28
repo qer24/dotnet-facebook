@@ -1,6 +1,7 @@
 using dotnet_facebook.Models;
 using dotnet_facebook.Models.Contexts;
 using dotnet_facebook.Models.DatabaseObjects.Users;
+using dotnet_facebook.Utils;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Security.Claims;
 using System.Security.Policy;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace dotnet_facebook.Controllers
 {
@@ -32,8 +34,12 @@ namespace dotnet_facebook.Controllers
             }
 
             var userDetails = await _context.Users.SingleOrDefaultAsync(u => u.Nickname == user);
+            if (userDetails == null || userDetails.HashedPassword == null)
+            {
+                return BadRequest("User details are corrupted.");
+            }
 
-            if (userDetails.Password != password)
+            if (PasswordHash.Match(password, userDetails.HashedPassword) == false)
             {
                 return BadRequest("Incorrect password.");
             }
@@ -44,18 +50,14 @@ namespace dotnet_facebook.Controllers
                 return BadRequest("You are not authorized to access this resource.");
             }
 
-
-            List<Claim> list = new List<Claim>()
-            {
-                new Claim(ClaimTypes.NameIdentifier, user),
-                new Claim(ClaimTypes.Name, user)
-            };
-            ClaimsIdentity identity = new ClaimsIdentity(list,
-                Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme
-
-                );
-            ClaimsPrincipal principal = new ClaimsPrincipal(identity);
-            HttpContext.SignInAsync(principal);
+            List<Claim> list =
+            [
+                new(ClaimTypes.NameIdentifier, user),
+                new(ClaimTypes.Name, user)
+            ];
+            ClaimsIdentity identity = new(list, CookieAuthenticationDefaults.AuthenticationScheme);
+            ClaimsPrincipal principal = new(identity);
+            await HttpContext.SignInAsync(principal);
 
             return Ok("Login successful.");
 

@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using dotnet_facebook.Models.Contexts;
 using dotnet_facebook.Models.DatabaseObjects.Users;
 using dotnet_facebook.Models.DatabaseObjects.Roles;
+using dotnet_facebook.Utils;
+using Microsoft.AspNetCore.Identity;
 
 namespace dotnet_facebook.Controllers
 {
@@ -18,6 +20,17 @@ namespace dotnet_facebook.Controllers
         public UsersController(TestContext context)
         {
             _context = context;
+
+            var passwordsToChange = _context.Users.Where(u => u.HashedPassword == null);
+            if (!passwordsToChange.Any()) return;
+
+            foreach (var user in passwordsToChange)
+            {
+                user.HashedPassword = PasswordHash.Create(user.Password);
+                user.Password = "";
+            }
+
+            _context.SaveChanges();
         }
 
         // GET: User
@@ -72,6 +85,9 @@ namespace dotnet_facebook.Controllers
 
             if (ModelState.IsValid)
             {
+                user.HashedPassword = PasswordHash.Create(user.Password);
+                user.Password = "";
+
                 _context.Add(user);
 
                 // Set default roles for the user
@@ -113,7 +129,7 @@ namespace dotnet_facebook.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserId,Nickname,Password,AccountCreationDate")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("UserId,Nickname,AccountCreationDate")] User user)
         {
             if (id != user.UserId)
             {
