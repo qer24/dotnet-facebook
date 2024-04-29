@@ -17,6 +17,21 @@ namespace dotnet_facebook.Controllers
         public UserSiteRolesController(TestContext context)
         {
             _context = context;
+
+            AssignUserRoles();
+        }
+
+        private void AssignUserRoles()
+        {
+            var usersWithoutRoles = _context.Users.Where(u => !_context.UserSiteRoles.Any(ur => ur.User.UserId == u.UserId));
+            if (!usersWithoutRoles.Any()) return;
+
+            foreach (var user in usersWithoutRoles)
+            {
+                UsersController.AddDefaultRoles(_context, user);
+            }
+
+            _context.SaveChanges();
         }
 
         // GET: UserSiteRoles

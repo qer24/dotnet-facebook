@@ -21,6 +21,11 @@ namespace dotnet_facebook.Controllers
         {
             _context = context;
 
+            HashOldPasswords();
+        }
+
+        private void HashOldPasswords()
+        {
             var passwordsToChange = _context.Users.Where(u => u.HashedPassword == null);
             if (!passwordsToChange.Any()) return;
 
@@ -89,17 +94,7 @@ namespace dotnet_facebook.Controllers
                 user.Password = "";
 
                 _context.Add(user);
-
-                // Set default roles for the user
-                var defaultRoles = _context.SiteRoles.Where(r => r.IsDefault).ToList();
-                foreach (var role in defaultRoles)
-                {
-                    _context.UserSiteRoles.Add(new UserSiteRole()
-                    {
-                        User = user,
-                        Role = role
-                    });
-                }
+                AddDefaultRoles(_context, user);
 
                 await _context.SaveChangesAsync();
 
@@ -107,6 +102,20 @@ namespace dotnet_facebook.Controllers
             }
             return View(user);
         }   
+
+        public static void AddDefaultRoles(TestContext context, User user)
+        {
+            // Set default roles for the user
+            var defaultRoles = context.SiteRoles.Where(r => r.IsDefault).ToList();
+            foreach (var role in defaultRoles)
+            {
+                context.UserSiteRoles.Add(new UserSiteRole()
+                {
+                    User = user,
+                    Role = role
+                });
+            }
+        }
 
         // GET: User/Edit/5
         public async Task<IActionResult> Edit(int? id)
