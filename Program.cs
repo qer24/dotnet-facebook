@@ -50,6 +50,12 @@ namespace dotnet_facebook
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
+            app.UseCors(
+             options => options
+             .AllowAnyHeader()
+             .AllowAnyOrigin()
+             .AllowAnyMethod()
+             );
             app.Run();
         }
     }

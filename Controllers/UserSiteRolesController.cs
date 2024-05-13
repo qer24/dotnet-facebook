@@ -23,7 +23,7 @@ namespace dotnet_facebook.Controllers
 
         private void AssignUserRoles()
         {
-            var usersWithoutRoles = _context.Users.Where(u => !_context.UserSiteRoles.Any(ur => ur.User.UserId == u.UserId));
+            var usersWithoutRoles = _context.Users.Where(u => !_context.UserSiteRoles.Any(ur => ur.User.UserId == u.UserId)).ToList();
             if (!usersWithoutRoles.Any()) return;
 
             foreach (var user in usersWithoutRoles)
