@@ -6,53 +6,53 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using dotnet_facebook.Models.Contexts;
-using dotnet_facebook.Models.DatabaseObjects;
+using dotnet_facebook.Models.DatabaseObjects.Users;
 
-namespace dotnet_facebook.Controllers
+namespace dotnet_facebook.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class Tags1Controller : ControllerBase
+    public class UsersAPIController : ControllerBase
     {
         private readonly TestContext _context;
 
-        public Tags1Controller(TestContext context)
+        public UsersAPIController(TestContext context)
         {
             _context = context;
         }
 
-        // GET: api/Tags1
+        // GET: api/UsersAPI
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Tag>>> GetTags()
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            return await _context.Tags.ToListAsync();
+            return await _context.Users.ToListAsync();
         }
 
-        // GET: api/Tags1/5
+        // GET: api/UsersAPI/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Tag>> GetTag(int id)
+        public async Task<ActionResult<User>> GetUser(int id)
         {
-            var tag = await _context.Tags.FindAsync(id);
+            var user = await _context.Users.FindAsync(id);
 
-            if (tag == null)
+            if (user == null)
             {
                 return NotFound();
             }
 
-            return tag;
+            return user;
         }
 
-        // PUT: api/Tags1/5
+        // PUT: api/UsersAPI/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTag(int id, Tag tag)
+        public async Task<IActionResult> PutUser(int id, User user)
         {
-            if (id != tag.TagId)
+            if (id != user.UserId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(tag).State = EntityState.Modified;
+            _context.Entry(user).State = EntityState.Modified;
 
             try
             {
@@ -60,7 +60,7 @@ namespace dotnet_facebook.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TagExists(id))
+                if (!UserExists(id))
                 {
                     return NotFound();
                 }
@@ -73,36 +73,36 @@ namespace dotnet_facebook.Controllers
             return NoContent();
         }
 
-        // POST: api/Tags1
+        // POST: api/UsersAPI
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Tag>> PostTag(Tag tag)
+        public async Task<ActionResult<User>> PostUser(User user)
         {
-            _context.Tags.Add(tag);
+            _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetTag", new { id = tag.TagId }, tag);
+            return CreatedAtAction("GetUser", new { id = user.UserId }, user);
         }
 
-        // DELETE: api/Tags1/5
+        // DELETE: api/UsersAPI/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTag(int id)
+        public async Task<IActionResult> DeleteUser(int id)
         {
-            var tag = await _context.Tags.FindAsync(id);
-            if (tag == null)
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
             {
                 return NotFound();
             }
 
-            _context.Tags.Remove(tag);
+            _context.Users.Remove(user);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool TagExists(int id)
+        private bool UserExists(int id)
         {
-            return _context.Tags.Any(e => e.TagId == id);
+            return _context.Users.Any(e => e.UserId == id);
         }
     }
 }
