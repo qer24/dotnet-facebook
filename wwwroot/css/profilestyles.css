@@ -1,0 +1,117 @@
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #8e44ad, #3498db);
+}
+
+.card {
+    background-color: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 30vw;
+    min-width: 350px;
+    height: 85vh;
+
+}
+
+.profile-img {
+
+    width: 245px;
+    height: 245px;
+    border-radius: 5%;
+    margin-bottom: 15px;
+    margin-right: 15px;
+    background-color: #e0e0e0;
+    float: left;
+}
+
+.nickname {
+    overflow: hidden;
+}
+.name, .surname {
+
+    background-color: #e0e0e0;
+    min-width: 100px;
+    height: 25px;
+    width: 10wv;
+    border-radius: 10px;
+    padding: 5px;
+    margin-bottom: 10px;
+
+}
+
+.bio {
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    padding: 10px;
+    max-height: 150px;
+    max-width: 30vw;
+    min-width: 275px;
+    min-height: 85px;
+    margin-bottom: 15px;
+    overflow: hidden;
+    float: left;
+
+}
+
+.buttons {
+    margin-bottom: 15px;
+    /* margin-left: 15px; */
+    /* float: left; */
+    display: flex;
+    justify-content: space-between;
+    overflow: hidden;
+
+}
+
+.btn {
+    background-color: #e0e0e0;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+
+
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #d5d5d5;
+}
+
+.common-friends {
+    min-width: 30vw;
+    float: left;
+    text-align: left;
+}
+
+ .common-friends h3 {
+    margin: 0 0 10px 0;
+}
+
+.friend {
+    display: flex;
+    align-items: center;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+.friend-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.friend-name {
+    flex-grow: 1;
+}
