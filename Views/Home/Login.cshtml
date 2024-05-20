@@ -1,34 +1,27 @@
 ﻿@{
-    ViewData["Title"] = "login";
+    ViewData["Title"] = "Login";
     Layout = "_LayoutRegular";
 }
 
-<!DOCTYPE html>
-<html lang="en">
-
-<body>
-    <div class="card">
-        <h1 class="mx-auto p-2 m-2">Login</h1>
-        <form method="POST">
-            <div class="row p-2 m-2">
-                <div class="form-floating form-floating-outlined-primary p-2 m-2">
-                    <input type="text" class="form-control" id="user" placeholder="User Name" autocomplete="off" name="user">
-                    <label for="firstname-outline">User Name</label>
-                </div>
-                <div class="form-floating form-floating-outlined-primary p-2 m-2">
-                    <input type="password" class="form-control" id="password" placeholder="User Name" autocomplete="off" name="password">
-                    <label for="firstname-outline">Password</label>
-                </div>
-                <span class="text-danger">@Html.ValidationMessage("error")</span>
-                <button type="submit" value="login" class="btn btn-outline-primary p-2 m-2">
-                    Login
-                    <span class="ripple-surface"></span>
-                </button>
+<div class="card">
+    <h1 class="mx-auto p-2 m-2">Login</h1>
+    <form method="POST">
+        <div class="row p-2 m-2">
+            <div class="form-floating form-floating-outlined-primary p-2 m-2">
+                <input type="text" class="form-control" id="user" placeholder="User Name" autocomplete="off" name="user">
+                <label for="firstname-outline">User Name</label>
             </div>
-        </form>
-        <a href="#" class="link-secondary mx-auto m-2 ps-3">Register</a>
-    </div>
-</body>
-
-</html>
+            <div class="form-floating form-floating-outlined-primary p-2 m-2">
+                <input type="password" class="form-control" id="password" placeholder="User Name" autocomplete="off" name="password">
+                <label for="firstname-outline">Password</label>
+            </div>
+            <span class="text-danger">@Html.ValidationMessage("error")</span>
+            <button type="submit" value="login" class="btn btn-outline-primary p-2 m-2">
+                Login
+                <span class="ripple-surface"></span>
+            </button>
+        </div>
+    </form>
+    <a href="#" class="link-secondary mx-auto m-2 ps-3">Register</a>
+</div>
 

@@ -1,36 +1,33 @@
 ﻿@{
+    ViewData["Title"] = "Profile Card";
     Layout = "_LayoutRegular";
 }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Profile Card</title>
+@section Styles
+{
     <link rel="stylesheet" href="~/css/profilestyles.css" />
-</head>
-<body>
-    <div class="card">
-        <div class="profile-img"> <img alt="Jan Kowalski"></div>
-        <div class="nickname">
-            <div class="name">Jan</div>
-            <div class="surname">Kowalski</div>
+}
+
+<div class="card">
+    <div class="profile-img"> <img alt="Jan Kowalski"></div>
+    <div class="nickname">
+        <div class="name">Jan</div>
+        <div class="surname">Kowalski</div>
+    </div>
+    <div class="buttons">
+        <button class="btn">Zaproś</button>
+        <button class="btn">Napisz</button>
+    </div>
+    <div class="bio">hej</div>
+    <div class="common-friends">
+        <h3>Wspólni znajomi:</h3>
+        <div class="friend">
+            <img src="avatar.jpg" alt="Adam Kowalski" class="friend-avatar">
+            <div class="friend-name">Adam Kowalski</div>
         </div>
-        <div class="buttons">
-            <button class="btn">Zaproś</button>
-            <button class="btn">Napisz</button>
-        </div>
-        <div class="bio">hej</div>
-        <div class="common-friends">
-            <h3>Wspólni znajomi:</h3>
-            <div class="friend">
-                <img src="avatar.jpg" alt="Adam Kowalski" class="friend-avatar">
-                <div class="friend-name">Adam Kowalski</div>
-            </div>
-            <div class="friend">
-                <img src="avatar.jpg" alt="Adam Kowalski" class="friend-avatar">
-                <div class="friend-name">Adam Kowalski</div>
-            </div>
+        <div class="friend">
+            <img src="avatar.jpg" alt="Adam Kowalski" class="friend-avatar">
+            <div class="friend-name">Adam Kowalski</div>
         </div>
     </div>
-</body>
-</html>
+</div>
