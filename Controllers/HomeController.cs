@@ -67,6 +67,23 @@ namespace dotnet_facebook.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Register(string user, string password, string passwordConfirm)
+        {
+            var userExists = await _context.Users.AnyAsync(u => u.Nickname == user);
+            if (userExists)
+            {
+                return RedirectToAction("Register", new { error = "User Name taken!" });
+            }
+
+            if (password != passwordConfirm)
+            {
+                return RedirectToAction("Register", new { error = "Passwords do not match!" });
+            }
+
+            return RedirectToAction("Login");
+        }
+
         private readonly ILogger<HomeController> _logger;
 
   //      public HomeController(ILogger<HomeController> logger)
@@ -89,7 +106,18 @@ namespace dotnet_facebook.Controllers
         {
             return View();
         }
+
         public IActionResult Login(string? error = null)
+        {
+            if (!string.IsNullOrWhiteSpace(error))
+            {
+                ModelState.AddModelError("error", error);
+            }
+
+            return View();
+        }
+
+        public IActionResult Register(string? error = null)
         {
             if (!string.IsNullOrWhiteSpace(error))
             {
