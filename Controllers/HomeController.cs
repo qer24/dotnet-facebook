@@ -72,6 +72,12 @@ namespace dotnet_facebook.Controllers
 
         public IActionResult Index()
         {
+            // if not logged in, redirect to login page
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login");
+            }
+
             return View();
         }
 
@@ -82,6 +88,13 @@ namespace dotnet_facebook.Controllers
         public IActionResult Login()
         {
             return View();
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            // deauthenticate user
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("Login");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

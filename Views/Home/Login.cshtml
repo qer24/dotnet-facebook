@@ -1,26 +1,33 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "login";
+    Layout = "_LayoutRegular";
 }
 
-<h1>login</h1>
+<!DOCTYPE html>
+<html lang="en">
 
-<form method="POST">
-    <div class="row">
-        <div class="col">
-            user
-            <input type="text" name="user" id="user" />
-        </div>
-        <div class="col">
-            password
-            <input type="text" name="password" id="password" />
-        </div>
-        <div class="col">
-            <input type="submit" value="login" />
-        </div>
-
+<body>
+    <div class="card">
+        <h1 class="mx-auto p-2 m-2">Login</h1>
+        <form method="POST">
+            <div class="row p-2 m-2">
+                <div class="form-floating form-floating-outlined-primary p-2 m-2">
+                    <input type="text" class="form-control" id="user" placeholder="User Name" autocomplete="off" name="user">
+                    <label for="firstname-outline">User Name</label>
+                </div>
+                <div class="form-floating form-floating-outlined-primary p-2 m-2">
+                    <input type="password" class="form-control" id="password" placeholder="User Name" autocomplete="off" name="password">
+                    <label for="firstname-outline">Password</label>
+                </div>
+                <button type="submit" value="login" class="btn btn-outline-primary p-2 m-2">
+                    Login
+                    <span class="ripple-surface"></span>
+                </button>
+            </div>
+        </form>
+        <a href="#" class="link-secondary mx-auto p-2">Nie masz konta? Zarejestruj się</a>
     </div>
+</body>
 
+</html>
 
-
-</form>
