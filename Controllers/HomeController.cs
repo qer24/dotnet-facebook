@@ -30,24 +30,28 @@ namespace dotnet_facebook.Controllers
             var userExists = await _context.Users.AnyAsync(u => u.Nickname == user);
             if (!userExists)
             {
-                return BadRequest("User not found.");
+                return RedirectToAction("Login", new { error = "User not found." });
+                //return BadRequest("User not found.");
             }
 
             var userDetails = await _context.Users.SingleOrDefaultAsync(u => u.Nickname == user);
             if (userDetails == null || userDetails.HashedPassword == null)
             {
-                return BadRequest("User details are corrupted.");
+                return RedirectToAction("Login", new { error = "User details are corrupted." });
+                //return BadRequest("User details are corrupted.");
             }
 
             if (PasswordHash.Match(password, userDetails.HashedPassword) == false)
             {
-                return BadRequest("Incorrect password.");
+                return RedirectToAction("Login", new { error = "Incorrect password." });
+                //return BadRequest("Incorrect password.");
             }
             
             var isAdmin = _context.UserSiteRoles.Any(r => (r.User.Nickname == user & r.Role.AdministrativePerms == true));
             if (!isAdmin)
             {
-                return BadRequest("You are not authorized to access this resource.");
+                return RedirectToAction("Login", new { error = "You are not authorized to access this resource." });
+                //return BadRequest("You are not authorized to access this resource.");
             }
 
             List<Claim> list =
@@ -59,8 +63,8 @@ namespace dotnet_facebook.Controllers
             ClaimsPrincipal principal = new(identity);
             await HttpContext.SignInAsync(principal);
 
-            return Ok("Login successful.");
-
+            //return Ok("Login successful.");
+            return RedirectToAction("Index");
         }
 
         private readonly ILogger<HomeController> _logger;
@@ -85,8 +89,13 @@ namespace dotnet_facebook.Controllers
         {
             return View();
         }
-        public IActionResult Login()
+        public IActionResult Login(string? error = null)
         {
+            if (!string.IsNullOrWhiteSpace(error))
+            {
+                ModelState.AddModelError("error", error);
+            }
+
             return View();
         }
 
