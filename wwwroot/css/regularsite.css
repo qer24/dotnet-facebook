@@ -31,3 +31,8 @@ body {
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
+
+:root, [data-bs-theme="light"] {
+    --bs-secondary: #e0e0e0 !important;
+    --bs-secondary-rgb: 224, 224, 224 !important;
+}
