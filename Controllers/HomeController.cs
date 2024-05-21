@@ -10,54 +10,54 @@ using System.Diagnostics;
 using System.Security.Claims;
 using System.Security.Policy;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using dotnet_facebook.Controllers.Services;
 
 namespace dotnet_facebook.Controllers
 {
     public class HomeController : Controller
     {
         private readonly TestContext _context;
+        private readonly UserService _userService;
         //private readonly ILogger;
 
-        public HomeController(TestContext context,ILogger<HomeController> logger)
+        public HomeController(TestContext context, UserService userService, ILogger<HomeController> logger)
         {
             _context = context;
+            _userService = userService;
             _logger = logger;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(string user, string password)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login([Bind("Nickname,Password")] User userLoginAttempt)
         {
-            var userExists = await _context.Users.AnyAsync(u => u.Nickname == user);
+            var userExists = await _context.Users.AnyAsync(u => u.Nickname == userLoginAttempt.Nickname);
             if (!userExists)
             {
                 return RedirectToAction("Login", new { error = "User not found." });
-                //return BadRequest("User not found.");
             }
 
-            var userDetails = await _context.Users.SingleOrDefaultAsync(u => u.Nickname == user);
-            if (userDetails == null || userDetails.HashedPassword == null)
+            var user = await _context.Users.SingleOrDefaultAsync(u => u.Nickname == userLoginAttempt.Nickname);
+            if (user == null || user.HashedPassword == null)
             {
                 return RedirectToAction("Login", new { error = "User details are corrupted." });
-                //return BadRequest("User details are corrupted.");
             }
 
-            if (PasswordHash.Match(password, userDetails.HashedPassword) == false)
+            if (PasswordHash.Match(userLoginAttempt.Password, user.HashedPassword) == false)
             {
                 return RedirectToAction("Login", new { error = "Incorrect password." });
-                //return BadRequest("Incorrect password.");
             }
             
-            var isAdmin = _context.UserSiteRoles.Any(r => (r.User.Nickname == user & r.Role.AdministrativePerms == true));
+            var isAdmin = _context.UserSiteRoles.Any(r => (r.User.Nickname == userLoginAttempt.Nickname & r.Role.AdministrativePerms == true));
             if (!isAdmin)
             {
                 return RedirectToAction("Login", new { error = "You are not authorized to access this resource." });
-                //return BadRequest("You are not authorized to access this resource.");
             }
 
             List<Claim> list =
             [
-                new(ClaimTypes.NameIdentifier, user),
-                new(ClaimTypes.Name, user)
+                new(ClaimTypes.NameIdentifier, user.Nickname),
+                new(ClaimTypes.Name, user.Nickname)
             ];
             ClaimsIdentity identity = new(list, CookieAuthenticationDefaults.AuthenticationScheme);
             ClaimsPrincipal principal = new(identity);
@@ -68,20 +68,18 @@ namespace dotnet_facebook.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(string user, string password, string passwordConfirm)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register([Bind("UserId,Nickname,Password")] User user)
         {
-            var userExists = await _context.Users.AnyAsync(u => u.Nickname == user);
+            var userExists = await _context.Users.AnyAsync(u => u.Nickname == user.Nickname);
             if (userExists)
             {
                 return RedirectToAction("Register", new { error = "User Name taken!" });
             }
 
-            if (password != passwordConfirm)
-            {
-                return RedirectToAction("Register", new { error = "Passwords do not match!" });
-            }
+            await _userService.Create(user, ModelState);
 
-            return RedirectToAction("Login");
+            return RedirectToAction("Login", new { snackBar = "Registration Successful! You can now log in." });
         }
 
         private readonly ILogger<HomeController> _logger;
@@ -107,11 +105,16 @@ namespace dotnet_facebook.Controllers
             return View();
         }
 
-        public IActionResult Login(string? error = null)
+        public IActionResult Login(string? error = null, string? snackBar = null)
         {
             if (!string.IsNullOrWhiteSpace(error))
             {
                 ModelState.AddModelError("error", error);
+            }
+
+            if (!string.IsNullOrWhiteSpace(snackBar))
+            {
+                ViewBag.snackBar = snackBar;
             }
 
             return View();

@@ -1,4 +1,6 @@
-﻿@{
+﻿@model dotnet_facebook.Models.DatabaseObjects.Users.User
+
+@{
     ViewData["Title"] = "Register";
     Layout = "_LayoutRegular";
 }
@@ -8,16 +10,12 @@
     <form method="POST">
         <div class="row p-2 m-2">
             <div class="form-floating form-floating-outlined-primary p-2 m-2">
-                <input type="text" class="form-control" id="user" placeholder="User Name" autocomplete="off" name="user">
+                <input asp-for="Nickname" type="text" class="form-control" id="user" placeholder="User Name" autocomplete="off">
                 <label for="firstname-outline">User Name</label>
             </div>
             <div class="form-floating form-floating-outlined-primary p-2 m-2">
-                <input type="password" class="form-control" id="password" placeholder="User Name" autocomplete="off" name="password">
+                <input asp-for="Password" type="password" class="form-control" id="password" placeholder="User Name" autocomplete="off">
                 <label for="firstname-outline">Password</label>
-            </div>
-            <div class="form-floating form-floating-outlined-primary p-2 m-2">
-                <input type="password" class="form-control" id="passwordConfirm" placeholder="User Name" autocomplete="off" name="passwordConfirm">
-                <label for="firstname-outline">Confirm Password</label>
             </div>
             <span class="text-danger">@Html.ValidationMessage("error")</span>
             <button type="submit" value="register" class="btn btn-outline-primary p-2 m-2">
@@ -26,6 +24,11 @@
             </button>
         </div>
     </form>
-    <a href="Login" class="link-secondary mx-auto m-2 ps-3">Already registered?</a>
+    <a asp-action="Login" class="link-secondary mx-auto m-2 ps-3">Already registered?</a>
 </div>
 
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -10,16 +10,19 @@ using dotnet_facebook.Models.DatabaseObjects.Users;
 using dotnet_facebook.Models.DatabaseObjects.Roles;
 using dotnet_facebook.Utils;
 using Microsoft.AspNetCore.Identity;
+using dotnet_facebook.Controllers.Services;
 
 namespace dotnet_facebook.Controllers
 {
     public class UsersController : Controller
     {
         private readonly TestContext _context;
+        private readonly UserService _userService;
 
-        public UsersController(TestContext context)
+        public UsersController(TestContext context, UserService userService)
         {
             _context = context;
+            _userService = userService;
 
             HashOldPasswords();
         }
@@ -75,47 +78,14 @@ namespace dotnet_facebook.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("UserId,Nickname,Password")] User user)
         {
-            user.UserProfile = new UserProfile()
-            {
-                User = user,
-                UserBio = "Hey, I'm a user!"
-            };
-
-            user.AccountCreationDate = DateTime.Now;
-
-            if (_context.Users.Any(u => u.Nickname == user.Nickname))
-            {
-                ModelState.AddModelError("Nickname", "Nickname already exists!");
-            }
+            await _userService.Create(user, ModelState);
 
             if (ModelState.IsValid)
             {
-                user.HashedPassword = PasswordHash.Create(user.Password);
-                user.Password = "";
-
-                _context.Add(user);
-                AddDefaultRoles(_context, user);
-
-                await _context.SaveChangesAsync();
-
                 return RedirectToAction(nameof(Index));
             }
             return View(user);
         }   
-
-        public static void AddDefaultRoles(TestContext context, User user)
-        {
-            // Set default roles for the user
-            var defaultRoles = context.SiteRoles.Where(r => r.IsDefault).ToList();
-            foreach (var role in defaultRoles)
-            {
-                context.UserSiteRoles.Add(new UserSiteRole()
-                {
-                    User = user,
-                    Role = role
-                });
-            }
-        }
 
         // GET: User/Edit/5
         public async Task<IActionResult> Edit(int? id)

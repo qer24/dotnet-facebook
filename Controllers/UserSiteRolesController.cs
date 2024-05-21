@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using dotnet_facebook.Models.Contexts;
 using dotnet_facebook.Models.DatabaseObjects.Roles;
+using dotnet_facebook.Controllers.Services;
 
 namespace dotnet_facebook.Controllers
 {
@@ -28,7 +29,7 @@ namespace dotnet_facebook.Controllers
 
             foreach (var user in usersWithoutRoles)
             {
-                UsersController.AddDefaultRoles(_context, user);
+                UserService.AddDefaultRoles(_context, user);
             }
 
             _context.SaveChanges();

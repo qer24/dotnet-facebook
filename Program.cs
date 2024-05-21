@@ -26,6 +26,8 @@ namespace dotnet_facebook
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddTransient<Controllers.Services.UserService>();
+
             var app = builder.Build();
 
 
