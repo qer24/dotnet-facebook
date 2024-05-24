@@ -28,21 +28,22 @@ namespace dotnet_facebook.Controllers.RegularUser
 
                 if (localUser == null)
                 {
-                    return NotFound();
+                    return RedirectToAction("UserNotFound");
                 }
-                
-                return View(localUser);
+
+                return RedirectToAction("Index", new { id = localUserId });
             }
 
             var user = await userService.GetUserByIdAsync(id);
             if (user == null)
             {
-                return NotFound();
+                return RedirectToAction("UserNotFound");
             }
 
             return View(user);
         }
-        public async Task<IActionResult> UserNotFound()
+        [HttpGet("UserNotFound")]
+        public IActionResult UserNotFound()
         {
             return View();
 

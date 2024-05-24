@@ -1,6 +1,42 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model dotnet_facebook.Models.DatabaseObjects.Users.User
+
 @{
+    ViewData["Title"] = "Profile Card";
+    Layout = "_LayoutRegular";
+
+    //  id: @Model.UserId
 }
-<p> not found</p>
+
+@section Styles
+{
+    <link rel="stylesheet" href="~/css/profilestyles.css" />
+}
+
+<div class="card">
+    <div class="container">
+        <div class="row">
+            <img class="col profile-img" src="https://cdn.discordapp.com/attachments/557312456150745099/1243666288203796501/image.png?ex=66524dfd&is=6650fc7d&hm=ed202aad662b31c477e86793a7d849dba08e271bb936571fd284d85c7f208700&" alt="Jan Kowalski">
+            <div class="col container">
+                <div class="row h-25 bg-secondary mx-3 mb-3 rounded justify-content-center align-items-center"><p class="m-0 text-center">@Model.Nickname</p></div>
+                <div class="row h-25 bg-secondary mx-3 my-3 rounded justify-content-center align-items-center"><p class="m-0 text-center">Dołączył 01/01/1999</p></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="buttons">
+        <button class="btn">Zaproś</button>
+        <button class="btn">Napisz</button>
+    </div>
+    <div class="bio">hej</div>
+    <div class="common-friends">
+        <h3>Wspólni znajomi:</h3>
+        <div class="friend">
+            <img src="avatar.jpg" alt="" class="friend-avatar">
+            <div class="friend-name"></div>
+        </div>
+        <div class="friend">
+            <img src="avatar.jpg" alt="Adam Kowalski" class="friend-avatar">
+            <div class="friend-name">Adam Kowalski</div>
+        </div>
+    </div>
+</div>
