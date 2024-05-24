@@ -1,6 +1,7 @@
 ﻿using dotnet_facebook.Controllers.Services;
 using dotnet_facebook.Models.Contexts;
 using dotnet_facebook.Models.DatabaseObjects.Users;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -20,7 +21,7 @@ namespace dotnet_facebook.Controllers.RegularUser
                 var localUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (localUserId == null)
                 {
-                    return NotFound();
+                    return RedirectToAction("UserNotFound");
                 }
 
                 var localUser = await userService.GetUserByIdAsync(int.Parse(localUserId));
@@ -41,5 +42,11 @@ namespace dotnet_facebook.Controllers.RegularUser
 
             return View(user);
         }
+        public async Task<IActionResult> UserNotFound()
+        {
+            return View();
+
+        }
     }
+
 }
