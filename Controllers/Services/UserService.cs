@@ -4,6 +4,7 @@ using dotnet_facebook.Models.DatabaseObjects.Users;
 using dotnet_facebook.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
 
 namespace dotnet_facebook.Controllers.Services
 {
@@ -55,6 +56,10 @@ namespace dotnet_facebook.Controllers.Services
                     Role = role
                 });
             }
+        }
+        public async Task<User> GetUserByIdAsync(int id)
+        {
+            return await _context.Users.SingleOrDefaultAsync(u => u.UserId == id); ;
         }
     }
 }
