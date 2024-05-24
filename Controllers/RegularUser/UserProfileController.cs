@@ -30,8 +30,8 @@ namespace dotnet_facebook.Controllers.RegularUser
                 {
                     return NotFound();
                 }
-                
-                return View(localUser);
+
+                return RedirectToAction("Index", new { id = localUserId });
             }
 
             var user = await userService.GetUserByIdAsync(id);
@@ -42,6 +42,7 @@ namespace dotnet_facebook.Controllers.RegularUser
 
             return View(user);
         }
+        [HttpGet("UserNotFound")]
         public async Task<IActionResult> UserNotFound()
         {
             return View();
