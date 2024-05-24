@@ -56,7 +56,7 @@ namespace dotnet_facebook.Controllers
 
             List<Claim> list =
             [
-                new(ClaimTypes.NameIdentifier, user.Nickname),
+                new(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                 new(ClaimTypes.Name, user.Nickname)
             ];
             ClaimsIdentity identity = new(list, CookieAuthenticationDefaults.AuthenticationScheme);

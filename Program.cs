@@ -54,8 +54,8 @@ namespace dotnet_facebook
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapControllerRoute(
-                    name: "userprofile",
-                    pattern: "UserProfile/{action=Index}/{id?}",
+                    name: "userProfile",
+                    pattern: "UserProfile/{id?}",
                     defaults: new { controller = "UserProfile", action = "Index" });
             });
 
