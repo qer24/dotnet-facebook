@@ -29,7 +29,7 @@ namespace dotnet_facebook.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login([Bind("Nickname,Password")] User userLoginAttempt)
+        public async Task<IActionResult> Login([Bind("Nickname,Password")] User userLoginAttempt, string? returnUrl = null)
         {
             var userExists = await _context.Users.AnyAsync(u => u.Nickname == userLoginAttempt.Nickname);
             if (!userExists)
@@ -63,8 +63,12 @@ namespace dotnet_facebook.Controllers
             ClaimsPrincipal principal = new(identity);
             await HttpContext.SignInAsync(principal);
 
-            //return Ok("Login successful.");
-            return RedirectToAction("Index");
+            // if no routing is specified, redirect to index
+            if (string.IsNullOrWhiteSpace(returnUrl))
+            {
+                return RedirectToAction("Index");
+            }
+            return View();
         }
 
         [HttpPost]
