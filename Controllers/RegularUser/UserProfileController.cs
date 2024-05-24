@@ -21,7 +21,7 @@ namespace dotnet_facebook.Controllers.RegularUser
                 var localUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (localUserId == null)
                 {
-                    return NotFound();
+                    return RedirectToAction("UserNotFound");
                 }
 
                 var localUser = await userService.GetUserByIdAsync(int.Parse(localUserId));
@@ -31,8 +31,7 @@ namespace dotnet_facebook.Controllers.RegularUser
                     return NotFound();
                 }
                 
-                // route to the user's profile (without View())
-                return RedirectToAction("Index", new { id = localUserId });
+                return View(localUser);
             }
 
             var user = await userService.GetUserByIdAsync(id);
@@ -43,12 +42,10 @@ namespace dotnet_facebook.Controllers.RegularUser
 
             return View(user);
         }
-
-        // GET: UserProfile/UserNotFound
-        [HttpGet("UserNotFound")]
-        public IActionResult UserNotFound()
+        public async Task<IActionResult> UserNotFound()
         {
             return View();
+
         }
     }
 
