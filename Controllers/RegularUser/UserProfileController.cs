@@ -6,15 +6,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace dotnet_facebook.Controllers.RegularUser
 {
-
-    public class UserProfileController : Controller
+    public class UserProfileController(TestContext context, UserService userService) : Controller
     {
-        private readonly TestContext _context;
-        private readonly UserService _userService;
-
-        public async Task<IActionResult> Index(int id)
+        // GET: UserProfile
+        public async Task<IActionResult> Index(int? id)
         {
-            var user = await _userService.GetUserByIdAsync(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var user = await userService.GetUserByIdAsync(1);
             if (user == null)
             {
                 return NotFound();

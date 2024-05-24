@@ -57,9 +57,14 @@ namespace dotnet_facebook.Controllers.Services
                 });
             }
         }
-        public async Task<User> GetUserByIdAsync(int id)
+        public async Task<User> GetUserByIdAsync(int? id)
         {
-            return await _context.Users.SingleOrDefaultAsync(u => u.UserId == id); ;
+            if (id == null)
+            {
+                return null;
+            }
+
+            return await _context.Users.SingleOrDefaultAsync(u => u.UserId == id);
         }
     }
 }
