@@ -1,42 +1,49 @@
-﻿@{
+﻿@model IEnumerable<dotnet_facebook.Models.DatabaseObjects.Posts.MainPost>
+
+@{
     ViewData["Title"] = "Facebuk";
     Layout = "_LayoutRegular";
 }
 
 <div class="card">
-    <div class="bg-secondary w-100 rounded-4 container" style="height:275px">
+    @foreach (var item in Model)
+    {
+    <div class="bg-secondary w-100 rounded-4 container my-3" style="height:275px">
         <div class="row h-100">
             <div class="col p-2">
                 <a href="#">
                     <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="https://preview.redd.it/silly-cat-v0-ket76730w05a1.jpg?width=1080&crop=smart&auto=webp&s=5a426cf6c948be50fe23fd4d262d6461c4b84b39" alt="Profile Picture">
                     <span class="bg-white rounded-4 m-2 d-inline-block w-auto px-3 text-center">
-                        Angelica
+                        @item.OwnerUser.Nickname
                     </span>
                 </a>
             </div>
             <div class="col-9 p-2 m-2">
-                <div class="bg-white w-auto rounded-4 container py-2" style="height:80%">
-                    <h2>Lorem Ipsum</h2>
+                <div class="bg-white w-auto h-auto rounded-4 container py-2" style="height:80%">
                     <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sit amet quam varius, finibus lorem nec, condimentum ante. Aliquam in ex consequat, tempus nunc eget, porta dolor. Etiam accumsan sit amet eros eu ullamcorper.
+                        @item.Content
                     </p>
                 </div>
                 <div class="container" style="height:20%">
                     <div class="row h-100">
-						<div class="col p-0">
-                            <button class="h-auto w-auto btn btn-primary my-2 rounded-4">Like</button>
-						</div>
+                        <div class="col p-0">
+                            <button class="h-auto w-auto btn btn-primary my-2 rounded-4 d-inline">Like</button>
+                            <span class="d-inline">@item.Likes!.Count</span>
+                        </div>
                         <div class="col p-0">
                             <button class="h-auto w-auto btn btn-primary my-2 rounded-4">Reply</button>
-						</div>
+                        </div>
                         <div class="col-6 p-0">
                             <span class="h-auto w-auto btn disabled btn-primary my-2 float-end opacity-100 rounded-4"><i>Katowice, Polska</i></span>
                         </div>
-					</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    }
+
+    <a asp-action="LoadMorePosts" class="btn btn-close-white w-100 rounded-4 mt-3">Load more</a>
 </div>
 
 @section Scripts {

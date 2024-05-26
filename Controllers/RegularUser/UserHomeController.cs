@@ -1,15 +1,41 @@
 ﻿using dotnet_facebook.Controllers.Services;
 using dotnet_facebook.Models.Contexts;
+using dotnet_facebook.Models.DatabaseObjects.Posts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
 namespace dotnet_facebook.Controllers.RegularUser;
 
 public class UserHomeController(TestContext context) : Controller
 {
-    public IActionResult Index()
+    private static int _currentPostCount = 0;
+
+    public async Task<IActionResult> Index(List<MainPost> postsToView)
     {
-        return View();
+        if (postsToView.Count == 0)
+        {
+            _currentPostCount = 0;
+            return await LoadMorePosts();
+        }
+
+        return View(postsToView);
+    }
+
+    public async Task<IActionResult> LoadMorePosts()
+    {
+        _currentPostCount += 5;
+
+        var posts = await context.MainPosts
+            .OrderByDescending(p => p.PostId)
+            .Take(_currentPostCount)
+            .Include(p => p.OwnerUser)
+            .Include(p => p.Likes)
+            .ToListAsync();
+
+        _currentPostCount = posts.Count;
+
+        return View("Index", posts);
     }
 
     [HttpPost]
