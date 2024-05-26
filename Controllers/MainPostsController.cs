@@ -57,13 +57,6 @@ namespace dotnet_facebook.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("PostId,Content")] MainPost mainPost)
         {
-            // get userid from identity
-            var localUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (localUserId == null)
-            {
-                ModelState.AddModelError("Content", "Logged in User not found!");
-            }
-
             mainPost.PostDate = DateTime.Now;
 
             var lat = double.Parse(Request.Cookies["latitude"]!, CultureInfo.InvariantCulture);
@@ -72,11 +65,18 @@ namespace dotnet_facebook.Controllers
             mainPost.PostLatitude = MainPost.FromDouble(lat);
             mainPost.PostLongitude = MainPost.FromDouble(lon);
 
+            var localUser = await userService.GetLocalUserAsync(User);
+            if (localUser == null)
+            {
+                ModelState.AddModelError("Content", "Logged in User not found!");
+            }
+            else
+            {
+                mainPost.OwnerUser = localUser;
+            }
+
             if (ModelState.IsValid)
             {
-                var localUser = await userService.GetUserByIdAsync(int.Parse(localUserId!));
-                mainPost.OwnerUser = localUser!;
-
                 context.Add(mainPost);
                 await context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

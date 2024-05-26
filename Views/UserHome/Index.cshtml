@@ -27,8 +27,8 @@
                 <div class="container" style="height:20%">
                     <div class="row h-100">
                         <div class="col p-0">
-                            <button class="h-auto w-auto btn btn-primary my-2 rounded-4 d-inline">Like</button>
-                            <span class="d-inline">@item.Likes!.Count</span>
+                            <button class="h-auto w-auto btn btn-primary my-2 rounded-4" id="likeButton" onclick="likePost(@item.PostId)">Like</button>
+                                <span class="d-inline-block my-2 py-0 h-auto w-auto btn btn-primary disabled" id="likeCount-@item.PostId">@item.Likes!.Count</span>
                         </div>
                         <div class="col p-0">
                             <button class="h-auto w-auto btn btn-primary my-2 rounded-4">Reply</button>
@@ -48,6 +48,31 @@
 
 @section Scripts {
     <script>
+        function likePost(postId) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("LikePost", "UserHome")',
+                data: { postId: postId },
+                success: function (data) {
+                    // get like count span
+                    var likeCountSpan = document.getElementById('likeCount-' + postId);
+                    if (data.alreadyLiked)
+                    {
+                        // decrement like by 1
+                        likeCountSpan.innerHTML = parseInt(likeCountSpan.innerHTML) - 1;
+                    }
+                    else
+                    {
+                        // increment like by 1
+                        likeCountSpan.innerHTML = parseInt(likeCountSpan.innerHTML) + 1;
+                    }
+                },
+                error: function (xhr, status, error) {
+
+                }
+            });
+        }
+
         function getLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(sendPosition, showError);

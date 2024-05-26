@@ -5,6 +5,7 @@ using dotnet_facebook.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace dotnet_facebook.Controllers.Services
 {
@@ -66,6 +67,20 @@ namespace dotnet_facebook.Controllers.Services
             }
 
             return await _context.Users.SingleOrDefaultAsync(u => u.UserId == id);
+        }
+
+        public async Task<User?> GetLocalUserAsync(ClaimsPrincipal user)
+        {
+            var userClaim = user.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userClaim == null)
+            {
+                return null;
+            }
+
+            var localUserId = int.Parse(userClaim);
+            var localUser = await GetUserByIdAsync(localUserId);
+
+            return localUser;
         }
     }
 }

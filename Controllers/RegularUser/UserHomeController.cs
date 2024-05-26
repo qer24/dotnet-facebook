@@ -1,13 +1,14 @@
 ﻿using dotnet_facebook.Controllers.Services;
 using dotnet_facebook.Models.Contexts;
 using dotnet_facebook.Models.DatabaseObjects.Posts;
+using dotnet_facebook.Models.DatabaseObjects.Users;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
 namespace dotnet_facebook.Controllers.RegularUser;
 
-public class UserHomeController(TestContext context) : Controller
+public class UserHomeController(TestContext context, UserService userService) : Controller
 {
     private static int _currentPostCount = 0;
 
@@ -36,6 +37,70 @@ public class UserHomeController(TestContext context) : Controller
         _currentPostCount = posts.Count;
 
         return View("Index", posts);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> LikePost(int postId)
+    {
+        var likeResult = await Like(postId);
+
+        switch (likeResult)
+        {
+            case LikeResult.AlreadyLiked:
+                return Json(new { success = true, alreadyLiked = true });
+            case LikeResult.Success:
+                return Json(new { success = true });
+            default:
+                return Json(new { success = false, message = "An error occurred while liking the post." });
+        }
+    }
+
+    private enum LikeResult { Success, Error, AlreadyLiked }
+
+    private async Task<LikeResult> Like(int? postId)
+    {
+        if (postId == null)
+        {
+            return LikeResult.Error;
+        }
+
+        var post = await context.MainPosts
+            .Include(p => p.Likes)
+            .FirstOrDefaultAsync(p => p.PostId == postId);
+
+        if (post == null || post.Likes == null)
+        {
+            return LikeResult.Error;
+        }
+
+        // get the user id from the identity
+        var localUser = await userService.GetLocalUserAsync(User);
+
+        Console.WriteLine(localUser);
+
+        if (localUser == null)
+        {
+            return LikeResult.Error;
+        }
+
+        var previousLike = post.Likes.FirstOrDefault(l => l.User.UserId == localUser.UserId);
+
+        if (previousLike != null)
+        {
+            post.Likes.Remove(previousLike);
+            await context.SaveChangesAsync();
+            return LikeResult.AlreadyLiked;
+        }
+
+        post.Likes.Add(new Like
+        {
+            Post = post,
+            User = localUser,
+            LikeDate = DateTime.Now
+        });
+        await context.SaveChangesAsync();
+
+        return LikeResult.Success;
     }
 
     [HttpPost]
