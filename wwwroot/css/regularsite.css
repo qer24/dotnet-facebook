@@ -44,4 +44,6 @@ body {
 :root, [data-bs-theme="light"] {
     --bs-secondary: #e0e0e0 !important;
     --bs-secondary-rgb: 224, 224, 224 !important;
+    --bs-primary: #583879 !important;
+    --bs-primary-rgb: 88, 56, 121 !important;
 }

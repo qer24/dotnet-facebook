@@ -1,0 +1,54 @@
+﻿@model dotnet_facebook.Models.DatabaseObjects.Posts.MainPost
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>MainPost</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="PostId" />
+            <div class="form-group">
+                <label asp-for="PostDate" class="control-label"></label>
+                <input asp-for="PostDate" class="form-control" />
+                <span asp-validation-for="PostDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Content" class="control-label"></label>
+                <input asp-for="Content" class="form-control" />
+                <span asp-validation-for="Content" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PostFileName" class="control-label"></label>
+                <input asp-for="PostFileName" class="form-control" />
+                <span asp-validation-for="PostFileName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PostLongitude" class="control-label"></label>
+                <input asp-for="PostLongitude" class="form-control" />
+                <span asp-validation-for="PostLongitude" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PostLatitude" class="control-label"></label>
+                <input asp-for="PostLatitude" class="form-control" />
+                <span asp-validation-for="PostLatitude" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
