@@ -48,16 +48,14 @@ namespace dotnet_facebook
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
+            app.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapControllerRoute(
+                    pattern: "{controller=UserHome}/{action=Index}");
+
+            app.MapControllerRoute(
                     name: "userProfile",
                     pattern: "UserProfile/{id?}",
                     defaults: new { controller = "UserProfile", action = "Index" });
-            });
 
             app.UseCors(
              options => options

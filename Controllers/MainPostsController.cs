@@ -66,9 +66,6 @@ namespace dotnet_facebook.Controllers
 
             mainPost.PostDate = DateTime.Now;
 
-            //var (latitude, longitude) = await new GeolocationApi().GetCurrentLocation();
-
-            //Console.WriteLine($"Latitude: {latitude}, Longitude: {longitude}");
             var lat = double.Parse(Request.Cookies["latitude"]!, CultureInfo.InvariantCulture);
             var lon = double.Parse(Request.Cookies["longitude"]!, CultureInfo.InvariantCulture);
 
