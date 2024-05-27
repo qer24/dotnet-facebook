@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using dotnet_facebook.Models.Contexts;
 
@@ -11,9 +12,11 @@ using dotnet_facebook.Models.Contexts;
 namespace dotnet_facebook.Migrations
 {
     [DbContext(typeof(TestContext))]
-    partial class TestContextModelSnapshot : ModelSnapshot
+    [Migration("20240527172213_PostsRefactor")]
+    partial class PostsRefactor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,7 +51,7 @@ namespace dotnet_facebook.Migrations
 
                     b.HasKey("GroupId");
 
-                    b.ToTable("Groups", (string)null);
+                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Groups.GroupUser", b =>
@@ -74,7 +77,7 @@ namespace dotnet_facebook.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("GroupUser", (string)null);
+                    b.ToTable("GroupUser");
                 });
 
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Posts.Like", b =>
@@ -100,7 +103,7 @@ namespace dotnet_facebook.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Like", (string)null);
+                    b.ToTable("Like");
                 });
 
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Posts.Post", b =>
@@ -144,7 +147,7 @@ namespace dotnet_facebook.Migrations
 
                     b.HasIndex("UserProfileId");
 
-                    b.ToTable("Post", (string)null);
+                    b.ToTable("Post");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("Post");
 
@@ -171,7 +174,7 @@ namespace dotnet_facebook.Migrations
 
                     b.HasKey("SiteRoleId");
 
-                    b.ToTable("SiteRoles", (string)null);
+                    b.ToTable("SiteRoles");
                 });
 
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Roles.UserSiteRole", b =>
@@ -194,7 +197,7 @@ namespace dotnet_facebook.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserSiteRoles", (string)null);
+                    b.ToTable("UserSiteRoles");
                 });
 
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Tag", b =>
@@ -222,7 +225,7 @@ namespace dotnet_facebook.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("Tags", (string)null);
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Users.PrivateMessage", b =>
@@ -253,7 +256,7 @@ namespace dotnet_facebook.Migrations
 
                     b.HasIndex("SenderUserId");
 
-                    b.ToTable("PrivateMessages", (string)null);
+                    b.ToTable("PrivateMessages");
                 });
 
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Users.User", b =>
@@ -283,7 +286,7 @@ namespace dotnet_facebook.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Users.UserProfile", b =>
@@ -310,7 +313,7 @@ namespace dotnet_facebook.Migrations
                     b.HasIndex("UserID")
                         .IsUnique();
 
-                    b.ToTable("UserProfile", (string)null);
+                    b.ToTable("UserProfile");
                 });
 
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Posts.Comment", b =>
@@ -332,9 +335,15 @@ namespace dotnet_facebook.Migrations
                     b.Property<int?>("ParentGroupGroupId")
                         .HasColumnType("int");
 
+                    b.Property<int>("PostLatitude")
+                        .HasColumnType("int");
+
                     b.Property<string>("PostLocation")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PostLongitude")
+                        .HasColumnType("int");
 
                     b.HasIndex("ParentGroupGroupId");
 

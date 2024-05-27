@@ -48,9 +48,12 @@
                             <button class="h-auto w-auto btn btn-primary my-2 rounded-4">Reply</button>
                         </div>
                         <div class="col-6 p-0">
+                            @if (item.PostLocation != null)
+                            {
                             <span class="h-auto w-auto btn disabled btn-primary my-2 float-end opacity-100 rounded-4">
-                                <i>@await item.GetCityAndCountryFromCoordinates()</i>
+                                <i>@item.PostLocation</i>
                             </span>
+                            }
                         </div>
                     </div>
                 </div>

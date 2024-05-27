@@ -25,10 +25,7 @@
                 @Html.DisplayNameFor(model => model.PostFileName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PostLongitude)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PostLatitude)
+                @Html.DisplayNameFor(model => model.PostLocation)
             </th>
             <th></th>
         </tr>
@@ -49,10 +46,7 @@
                 @Html.DisplayFor(modelItem => item.PostFileName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.PostLongitude)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PostLatitude)
+                @Html.DisplayFor(modelItem => item.PostLocation)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.PostId">Edit</a> |

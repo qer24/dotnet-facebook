@@ -62,8 +62,16 @@ namespace dotnet_facebook.Controllers
             var lat = double.Parse(Request.Cookies["latitude"]!, CultureInfo.InvariantCulture);
             var lon = double.Parse(Request.Cookies["longitude"]!, CultureInfo.InvariantCulture);
 
-            mainPost.PostLatitude = MainPost.FromDouble(lat);
-            mainPost.PostLongitude = MainPost.FromDouble(lon);
+            var geoResponse = await GeocodingService.GetCityCountryAsync(lat, lon);
+            if (geoResponse != null)
+            {
+                var (city, country) = GeocodingService.ParseCityCountry(geoResponse);
+                mainPost.PostLocation = $"{city}, {country}";
+            }
+            else
+            {
+                mainPost.PostLocation = "";
+            }
 
             var localUser = await userService.GetLocalUserAsync(User);
             if (localUser == null)
