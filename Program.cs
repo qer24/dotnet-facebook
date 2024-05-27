@@ -50,7 +50,7 @@ namespace dotnet_facebook
 
             app.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=UserHome}/{action=Index}");
+                    pattern: "{controller=UserHome}/{action=Index}/{id?}");
 
             app.MapControllerRoute(
                     name: "userProfile",
