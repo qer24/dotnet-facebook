@@ -15,6 +15,7 @@ public class UserHomeController(TestContext context, UserService userService, Ta
     public async Task<IActionResult> Index(List<MainPost> postsToView)
     {
         tagsService.GenerateTagsBag(ViewBag);
+        userService.GenerateLocalUserBag(ViewBag, User);
 
         if (User.Identity == null || !User.Identity.IsAuthenticated)
         {
@@ -33,6 +34,7 @@ public class UserHomeController(TestContext context, UserService userService, Ta
     public async Task<IActionResult> LoadMorePosts()
     {
         tagsService.GenerateTagsBag(ViewBag);
+        userService.GenerateLocalUserBag(ViewBag, User);
 
         _currentPostCount += 5;
 

@@ -4,6 +4,7 @@ using dotnet_facebook.Models.DatabaseObjects.Users;
 using dotnet_facebook.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -81,6 +82,11 @@ namespace dotnet_facebook.Controllers.Services
             var localUser = await GetUserByIdAsync(localUserId);
 
             return localUser;
+        }
+
+        public void GenerateLocalUserBag(dynamic viewBag, ClaimsPrincipal user)
+        {
+            viewBag.LocalUser = GetLocalUserAsync(user).Result;
         }
     }
 }

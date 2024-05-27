@@ -8,11 +8,11 @@
     <form asp-action="NewPost">
         <div class="row p-0 m-0">
             <div class="col p-0 m-0">
-                <div class="form-floating form-floating-outlined-primary w-100 p-2 m-0 d-flex rounded-4">
-                    <textarea maxlength="200" type="text" class="form-control overflow-visible" id="post-outline" placeholder="User Name" autocomplete="off" style="resize:none; height:150px"></textarea>
-                    <label for="post-outline">New Post</label>
+                <div class="d-inline-block">
+                    <img class="rounded-4 d-inline-block mx-2" style="height:48px; width:48px" src="https://preview.redd.it/silly-cat-v0-ket76730w05a1.jpg?width=1080&crop=smart&auto=webp&s=5a426cf6c948be50fe23fd4d262d6461c4b84b39" alt="pfp">
+                    <span>@ViewBag.LocalUser.Nickname</span>
                 </div>
-                <div class="form-floating multi-select w-50 my-2 rounded-top-4">
+                <div class="form-floating multi-select w-50 float-end me-2 rounded-top-4">
                     <select class="form-select" name="tags[]" multiple>
                         @foreach (var tag in ViewBag.Tags)
                         {
@@ -21,14 +21,21 @@
                     </select>
                     <label>Select Tags</label>
                 </div>
+                <div class="form-floating form-floating-outlined-primary w-100 p-2 m-0 d-flex rounded-4">
+                    <textarea maxlength="200" type="text" class="form-control overflow-visible" id="post-outline" placeholder="User Name" autocomplete="off" style="resize:none; height:150px"></textarea>
+                    <label for="post-outline">New Post</label>
+                </div>
                 <span class="text-danger">@Html.ValidationMessage("error")</span>
-                <button type="submit" value="NewPost" class="btn btn-outline-primary p-2 m-0 my-2 w-25 rounded-4 mx-auto">
+                <button type="submit" value="NewPost" class="btn btn-outline-primary p-2 my-2 w-100 rounded-4">
                     Post!
                     <span class="ripple-surface"></span>
                 </button>
+                
             </div>
         </div>
     </form>
+
+    <hr class="my-5 mx-5" />
     
     @foreach (var item in Model)
     {
@@ -156,12 +163,6 @@
 
         document.addEventListener('DOMContentLoaded', (event) => {
             getLocation();
-
-            // Initialize
-            var selectList = [].slice.call(document.querySelectorAll('.form-select'))
-            var selectFields = selectList.map(function (select) {
-                return new materialstyle.SelectField(select)
-            })
         });
     </script>
 }

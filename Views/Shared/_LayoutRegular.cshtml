@@ -38,5 +38,20 @@
             integrity="sha384-rqhP61M9WSmzd7+ssgyoWP2I+R68vVHx7o+UmmIs6/Nxe8Lt1DoF6+0CKptZIXC0"
             crossorigin="anonymous"></script>
     @RenderSection("Scripts", required: false)
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // Initialize
+            var selectList = [].slice.call(document.querySelectorAll('.form-select'))
+            var selectFields = selectList.map(function (select) {
+            return new materialstyle.SelectField(select)
+            })
+
+            // Initialize Ripple
+            const rippleSurface = Array.prototype.slice.call(document.querySelectorAll('.ripple-surface'))
+            rippleSurface.map(s => {
+            return new mdc.ripple.MDCRipple(s)
+            })
+        });
+    </script>
 </body>
 </html>
