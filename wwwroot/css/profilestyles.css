@@ -27,14 +27,19 @@
     justify-content: space-between;
     overflow: hidden;
 
+
 }
 
-.btn:hover {
-    background-color: #d5d5d5;
+.btn {
+    background-color: #e0e0e0;
 }
+
+    .btn:hover {
+        background: linear-gradient(135deg, #8e44ad, #3498db);
+
+    }
 
 .common-friends {
-    min-width: 30vw;
     float: left;
     text-align: left;
 }
