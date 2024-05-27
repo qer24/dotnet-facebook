@@ -4,19 +4,29 @@
     ViewData["Title"] = "Facebuk";
     Layout = "_LayoutRegular";
 }
-
 <div class="card">
     <form asp-action="NewPost">
         <div class="row p-0 m-0">
-            <div class="form-floating form-floating-outlined-primary w-100 p-2 m-0 d-flex rounded-4">
-                <textarea maxlength="200" type="text" class="form-control overflow-visible" id="post-outline" placeholder="User Name" autocomplete="off" style="resize:none; height:150px"></textarea>
-                <label for="post-outline">New Post</label>
+            <div class="col p-0 m-0">
+                <div class="form-floating form-floating-outlined-primary w-100 p-2 m-0 d-flex rounded-4">
+                    <textarea maxlength="200" type="text" class="form-control overflow-visible" id="post-outline" placeholder="User Name" autocomplete="off" style="resize:none; height:150px"></textarea>
+                    <label for="post-outline">New Post</label>
+                </div>
+                <div class="form-floating multi-select w-50 my-2 rounded-top-4">
+                    <select class="form-select" name="tags[]" multiple>
+                        @foreach (var tag in ViewBag.Tags)
+                        {
+                            <option value="@tag.Value">@tag.Text</option>
+                        }
+                    </select>
+                    <label>Select Tags</label>
+                </div>
+                <span class="text-danger">@Html.ValidationMessage("error")</span>
+                <button type="submit" value="NewPost" class="btn btn-outline-primary p-2 m-0 my-2 w-25 rounded-4 mx-auto">
+                    Post!
+                    <span class="ripple-surface"></span>
+                </button>
             </div>
-            <span class="text-danger">@Html.ValidationMessage("error")</span>
-            <button type="submit" value="NewPost" class="btn btn-outline-primary p-2 m-0 my-2 w-25 rounded-4 mx-auto">
-                Post!
-                <span class="ripple-surface"></span>
-            </button>
         </div>
     </form>
     
@@ -33,7 +43,12 @@
                 </a>
             </div>
             <div class="col-9 p-2 m-2">
-                <div class="bg-white w-auto h-auto rounded-4 container py-2" style="height:80%">
+                <p class="w-auto text-black-50" style="height:10%">
+                    <i>
+                        @item.PostDate.ToString("dd/MM/yyyy HH:mm")
+                    </i>
+                </p>
+                <div class="bg-white w-auto h-auto rounded-4 container py-2" style="height:70%">
                     <p>
                         @item.Content
                     </p>
@@ -141,6 +156,12 @@
 
         document.addEventListener('DOMContentLoaded', (event) => {
             getLocation();
+
+            // Initialize
+            var selectList = [].slice.call(document.querySelectorAll('.form-select'))
+            var selectFields = selectList.map(function (select) {
+                return new materialstyle.SelectField(select)
+            })
         });
     </script>
 }

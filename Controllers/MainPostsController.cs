@@ -11,15 +11,18 @@ using System.Security.Claims;
 using dotnet_facebook.Controllers.Services;
 using dotnet_facebook.Utils;
 using System.Globalization;
+using dotnet_facebook.Models.DatabaseObjects.Groups;
 
 namespace dotnet_facebook.Controllers
 {
-    public class MainPostsController(TestContext context, UserService userService) : Controller
+    public class MainPostsController(TestContext context, UserService userService, TagsService tagsService) : Controller
     {
 
         // GET: MainPosts
         public async Task<IActionResult> Index()
         {
+            tagsService.GenerateTagsBag(ViewBag);
+
             return View(await context.MainPosts
                 .Include(p => p.OwnerUser)
                 .ToListAsync());

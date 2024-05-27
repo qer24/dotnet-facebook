@@ -8,12 +8,14 @@ using System.Globalization;
 
 namespace dotnet_facebook.Controllers.RegularUser;
 
-public class UserHomeController(TestContext context, UserService userService) : Controller
+public class UserHomeController(TestContext context, UserService userService, TagsService tagsService) : Controller
 {
     private static int _currentPostCount = 0;
 
     public async Task<IActionResult> Index(List<MainPost> postsToView)
     {
+        tagsService.GenerateTagsBag(ViewBag);
+
         if (User.Identity == null || !User.Identity.IsAuthenticated)
         {
             return RedirectToAction("Login", "Home");
@@ -30,6 +32,8 @@ public class UserHomeController(TestContext context, UserService userService) : 
 
     public async Task<IActionResult> LoadMorePosts()
     {
+        tagsService.GenerateTagsBag(ViewBag);
+
         _currentPostCount += 5;
 
         var posts = await context.MainPosts
