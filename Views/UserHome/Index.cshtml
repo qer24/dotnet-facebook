@@ -8,10 +8,10 @@
 <div class="card">
     @foreach (var item in Model)
     {
-    <div class="bg-secondary w-100 rounded-4 container my-3" style="height:275px">
+    <div class="bg-secondary w-100 h-auto rounded-4 container my-3">
         <div class="row h-100">
             <div class="col p-2">
-                <a href="#">
+                <a asp-action="Index" asp-controller="UserProfile" asp-route-id="@item.OwnerUser.UserId">
                     <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="https://preview.redd.it/silly-cat-v0-ket76730w05a1.jpg?width=1080&crop=smart&auto=webp&s=5a426cf6c948be50fe23fd4d262d6461c4b84b39" alt="Profile Picture">
                     <span class="bg-white rounded-4 m-2 d-inline-block w-auto px-3 text-center">
                         @item.OwnerUser.Nickname

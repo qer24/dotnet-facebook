@@ -14,6 +14,11 @@ public class UserHomeController(TestContext context, UserService userService) : 
 
     public async Task<IActionResult> Index(List<MainPost> postsToView)
     {
+        if (User.Identity == null || !User.Identity.IsAuthenticated)
+        {
+            return RedirectToAction("Login", "Home");
+        }
+
         if (postsToView.Count == 0)
         {
             _currentPostCount = 0;

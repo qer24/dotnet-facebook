@@ -67,7 +67,7 @@ namespace dotnet_facebook.Controllers
             // if no routing is specified, redirect to index
             if (string.IsNullOrWhiteSpace(returnUrl))
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "UserHome");
             }
             return View();
         }
