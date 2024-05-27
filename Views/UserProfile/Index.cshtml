@@ -3,8 +3,6 @@
 @{
     ViewData["Title"] = "Profile Card";
     Layout = "_LayoutRegular";
-    
-    //  id: @Model.UserId
 }
 
 @section Styles
@@ -17,17 +15,50 @@
         <div class="row">
             <img class="col profile-img" src="https://preview.redd.it/silly-cat-v0-ket76730w05a1.jpg?width=1080&crop=smart&auto=webp&s=5a426cf6c948be50fe23fd4d262d6461c4b84b39" alt="Jan Kowalski">
             <div class="col container">
-                <div class="row h-25 bg-secondary mx-3 mb-3 rounded justify-content-center align-items-center"><p class="m-0 text-center">@Model.Nickname</p></div>
-                <div class="row h-25 bg-secondary mx-3 my-3 rounded justify-content-center align-items-center"><p class="m-0 text-center">Dołączył: @Model.AccountCreationDate.ToShortDateString()</p></div>
+                <div class="row h-25 bg-secondary mx-3 mb-3 rounded justify-content-center align-items-center">
+                    <p class="m-0 text-center">@Model.Nickname</p>
+                </div>
+                <div class="row h-25 bg-secondary mx-3 my-3 rounded justify-content-center align-items-center">
+                    <p class="m-0 text-center">Dołączył: @Model.AccountCreationDate.ToShortDateString()</p>
+                </div>
             </div>
         </div>
     </div>
-    
+
     <div class="buttons">
-        <button class="btn">Zaproś</button>
-        <button class="btn">Napisz</button>
+        @if (User.Identity.IsAuthenticated && User.Identity.Name == Model.Nickname)
+        {
+            <button class="btn">Zmien zdjecie</button>
+        }
+        else
+        {
+            <button class="btn">Zaproś</button>
+        }
+
+        @if (User.Identity.IsAuthenticated && User.Identity.Name == Model.Nickname)
+        {
+            <button class="btn" id="edit-btn" onclick="showEditForm()">Edytuj opis</button>
+            <div id="btn-cont" style="display: none;">
+            <button class="btn" id="save-btn" style="display:none;" onclick="submitForm()">Zapisz</button>
+            <button class="btn" id="cancel-btn" style="display:none;" onclick="hideEditForm()">Anuluj</button>
+            </div>
+        }
+        else
+        {
+            <button class="btn">Napisz</button>
+        }
     </div>
-    <div class="bio">hej</div>
+    <div class="bio" id="bio-text">@Model.UserProfile.UserBio</div>
+
+    <div class="edit-bio-form" id="edit-bio-form" style="display: none;">
+        <form asp-action="UpdateBio" method="post" id="bio-form">
+            @Html.AntiForgeryToken()
+            <textarea style="min-height: 85px; margin-bottom: 15px;" name="UserBio" class="form-control" oninput="validateBioLength()">@Model.UserProfile.UserBio</textarea>
+            <input type="hidden" name="UserId" value="@Model.UserId" />
+            <div id="bio-error" style="color: red; display: none;">Opis nie może przekraczać 200 znaków.</div>
+        </form>
+    </div>
+
     <div class="common-friends">
         <h3>Wspólni znajomi:</h3>
         <div class="friend">
@@ -40,3 +71,49 @@
         </div>
     </div>
 </div>
+
+@section Scripts
+{
+    <script>
+        function showEditForm() {
+            document.getElementById('bio-text').style.display = 'none';
+            document.getElementById('edit-bio-form').style.display = 'block';
+            document.getElementById('edit-btn').style.display = 'none';
+            document.getElementById('save-btn').style.display = 'inline-block';
+            document.getElementById('cancel-btn').style.display = 'inline-block';
+            document.getElementById('btn-cont').style.display = 'inline-block';
+        }
+
+        function hideEditForm() {
+            document.getElementById('bio-text').style.display = 'block';
+            document.getElementById('edit-bio-form').style.display = 'none';
+            document.getElementById('edit-btn').style.display = 'inline-block';
+            document.getElementById('save-btn').style.display = 'none';
+            document.getElementById('cancel-btn').style.display = 'none';
+            document.getElementById('btn-cont').style.display = 'none';
+        }
+
+        function validateBioLength() {
+            var bioTextarea = document.querySelector('textarea[name="UserBio"]');
+            var submitButton = document.getElementById('save-btn');
+            var bioLength = bioTextarea.value.length;
+
+            if (bioLength > 200) {
+                submitButton.disabled = true;
+                document.getElementById('bio-error').style.display = 'block';
+            } else {
+                submitButton.disabled = false;
+                document.getElementById('bio-error').style.display = 'none';
+            }
+        }
+
+        function submitForm() {
+            document.getElementById('bio-form').submit();
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var bioTextarea = document.querySelector('textarea[name="UserBio"]');
+            bioTextarea.addEventListener('input', validateBioLength);
+        });
+    </script>
+}

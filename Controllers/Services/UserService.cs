@@ -67,7 +67,9 @@ namespace dotnet_facebook.Controllers.Services
                 return null;
             }
 
-            return await _context.Users.SingleOrDefaultAsync(u => u.UserId == id);
+            return await _context.Users
+                .Include(u => u.UserProfile)
+                .SingleOrDefaultAsync(u => u.UserId == id);
         }
 
         public async Task<User?> GetLocalUserAsync(ClaimsPrincipal user)

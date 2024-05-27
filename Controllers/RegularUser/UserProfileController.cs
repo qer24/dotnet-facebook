@@ -48,6 +48,21 @@ namespace dotnet_facebook.Controllers.RegularUser
             return View();
 
         }
+        [HttpPost]
+        public async Task<IActionResult> UpdateBio(int UserId, string UserBio)
+        {
+            var user = await userService.GetUserByIdAsync(UserId);
+            if (user == null)
+            {
+                return RedirectToAction("UserNotFound");
+            }
+
+            user.UserProfile.UserBio = UserBio;
+
+            await context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
     }
 
 }
