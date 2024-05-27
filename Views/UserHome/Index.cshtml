@@ -9,7 +9,7 @@
     <form asp-action="NewPost">
         <div class="row p-0 m-0">
             <div class="form-floating form-floating-outlined-primary w-100 p-2 m-0 d-flex rounded-4">
-                <textarea type="text" class="form-control overflow-visible" id="post-outline" placeholder="User Name" autocomplete="off" style="resize:none; height:150px"></textarea>
+                <textarea maxlength="200" type="text" class="form-control overflow-visible" id="post-outline" placeholder="User Name" autocomplete="off" style="resize:none; height:150px"></textarea>
                 <label for="post-outline">New Post</label>
             </div>
             <span class="text-danger">@Html.ValidationMessage("error")</span>
