@@ -6,6 +6,20 @@
 }
 
 <div class="card">
+    <form asp-action="NewPost">
+        <div class="row p-0 m-0">
+            <div class="form-floating form-floating-outlined-primary w-100 p-2 m-0 d-flex rounded-4">
+                <textarea type="text" class="form-control overflow-visible" id="post-outline" placeholder="User Name" autocomplete="off" style="resize:none; height:150px"></textarea>
+                <label for="post-outline">New Post</label>
+            </div>
+            <span class="text-danger">@Html.ValidationMessage("error")</span>
+            <button type="submit" value="NewPost" class="btn btn-outline-primary p-2 m-0 my-2 w-25 rounded-4 mx-auto">
+                Post!
+                <span class="ripple-surface"></span>
+            </button>
+        </div>
+    </form>
+    
     @foreach (var item in Model)
     {
     <div class="bg-secondary w-100 h-auto rounded-4 container my-3">
