@@ -15,7 +15,7 @@ using dotnet_facebook.Models.DatabaseObjects.Groups;
 
 namespace dotnet_facebook.Controllers
 {
-    public class MainPostsController(TestContext context, UserService userService, TagsService tagsService) : Controller
+    public class MainPostsController(TestContext context, TagsService tagsService, PostService postService) : Controller
     {
 
         // GET: MainPosts
@@ -60,36 +60,10 @@ namespace dotnet_facebook.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("PostId,Content")] MainPost mainPost)
         {
-            mainPost.PostDate = DateTime.Now;
-
-            var lat = double.Parse(Request.Cookies["latitude"]!, CultureInfo.InvariantCulture);
-            var lon = double.Parse(Request.Cookies["longitude"]!, CultureInfo.InvariantCulture);
-
-            var geoResponse = await GeocodingService.GetCityCountryAsync(lat, lon);
-            if (geoResponse != null)
-            {
-                var (city, country) = GeocodingService.ParseCityCountry(geoResponse);
-                mainPost.PostLocation = $"{city}, {country}";
-            }
-            else
-            {
-                mainPost.PostLocation = "";
-            }
-
-            var localUser = await userService.GetLocalUserAsync(User);
-            if (localUser == null)
-            {
-                ModelState.AddModelError("Content", "Logged in User not found!");
-            }
-            else
-            {
-                mainPost.OwnerUser = localUser;
-            }
+            await postService.Create(mainPost, User, ModelState, Request.Cookies);
 
             if (ModelState.IsValid)
             {
-                context.Add(mainPost);
-                await context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(mainPost);

@@ -48,18 +48,18 @@ namespace dotnet_facebook.Controllers
             {
                 return RedirectToAction("Login", new { error = "Incorrect password." });
             }
-            
-            var isAdmin = _context.UserSiteRoles.Any(r => (r.User.Nickname == userLoginAttempt.Nickname & r.Role.AdministrativePerms == true));
-            if (!isAdmin)
-            {
-                return RedirectToAction("Login", new { error = "You are not authorized to access this resource." });
-            }
 
             List<Claim> list =
             [
                 new(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                 new(ClaimTypes.Name, user.Nickname)
             ];
+            var isAdmin = _context.UserSiteRoles.Any(r => (r.User.Nickname == userLoginAttempt.Nickname & r.Role.AdministrativePerms == true));
+            if (isAdmin)
+            {
+                list.Add(new(ClaimTypes.Role, "Admin"));
+            }
+
             ClaimsIdentity identity = new(list, CookieAuthenticationDefaults.AuthenticationScheme);
             ClaimsPrincipal principal = new(identity);
             await HttpContext.SignInAsync(principal);

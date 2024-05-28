@@ -13,7 +13,7 @@
                     <span>@ViewBag.LocalUser.Nickname</span>
                 </div>
                 <div class="form-floating multi-select w-50 float-end me-2 rounded-top-4">
-                    <select class="form-select" name="tags[]" multiple>
+                    <select class="form-select" name="selectedTagIds" multiple>
                         @foreach (var tag in ViewBag.Tags)
                         {
                             <option value="@tag.Value">@tag.Text</option>
@@ -22,10 +22,10 @@
                     <label>Select Tags</label>
                 </div>
                 <div class="form-floating form-floating-outlined-primary w-100 p-2 m-0 d-flex rounded-4">
-                    <textarea maxlength="200" type="text" class="form-control overflow-visible" id="post-outline" placeholder="User Name" autocomplete="off" style="resize:none; height:150px"></textarea>
+                    <textarea maxlength="200" type="text" class="form-control overflow-visible" name="Content" id="post-outline" autocomplete="off" style="resize:none; height:150px"></textarea>
                     <label for="post-outline">New Post</label>
                 </div>
-                <span class="text-danger">@Html.ValidationMessage("error")</span>
+                <span class="text-danger">@Html.ValidationMessage("Content")</span>
                 <button type="submit" value="NewPost" class="btn btn-outline-primary p-2 my-2 w-100 rounded-4">
                     Post!
                     <span class="ripple-surface"></span>

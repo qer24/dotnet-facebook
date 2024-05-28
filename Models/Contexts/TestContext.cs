@@ -46,6 +46,26 @@ namespace dotnet_facebook.Models.Contexts
                 .HasOne(PrivateMessage => PrivateMessage.Receiver)
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<MainPost>()
+                .HasOne(MainPost => MainPost.OwnerUser)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<MainPost>()
+                .HasMany(MainPost => MainPost.Comments)
+                .WithOne()
+                .HasForeignKey(Comment => Comment.PostId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Post>()
+                .HasMany(Post => Post.Likes)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<MainPost>()
+                .HasMany(MainPost => MainPost.Tags)
+                .WithMany();
         }
 
         public virtual DbSet<User> Users { get; set; }

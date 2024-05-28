@@ -8,11 +8,11 @@ using System.Globalization;
 
 namespace dotnet_facebook.Controllers.RegularUser;
 
-public class UserHomeController(TestContext context, UserService userService, TagsService tagsService) : Controller
+public class UserHomeController(TestContext context, UserService userService, PostService postService, TagsService tagsService) : Controller
 {
     private static int _currentPostCount = 0;
 
-    public async Task<IActionResult> Index(List<MainPost> postsToView)
+    public async Task<IActionResult> Index(List<MainPost> postsToView, string? error = null)
     {
         tagsService.GenerateTagsBag(ViewBag);
         userService.GenerateLocalUserBag(ViewBag, User);
@@ -25,13 +25,18 @@ public class UserHomeController(TestContext context, UserService userService, Ta
         if (postsToView.Count == 0)
         {
             _currentPostCount = 0;
-            return await LoadMorePosts();
+            return await LoadMorePosts(error);
+        }
+
+        if (error != null)
+        {
+            ModelState.AddModelError("Content", error);
         }
 
         return View(postsToView);
     }
 
-    public async Task<IActionResult> LoadMorePosts()
+    public async Task<IActionResult> LoadMorePosts(string? error = null)
     {
         tagsService.GenerateTagsBag(ViewBag);
         userService.GenerateLocalUserBag(ViewBag, User);
@@ -46,6 +51,11 @@ public class UserHomeController(TestContext context, UserService userService, Ta
             .ToListAsync();
 
         _currentPostCount = posts.Count;
+
+        if (error != null)
+        {
+            ModelState.AddModelError("Content", error);
+        }
 
         return View("Index", posts);
     }
@@ -112,6 +122,19 @@ public class UserHomeController(TestContext context, UserService userService, Ta
         await context.SaveChangesAsync();
 
         return LikeResult.Success;
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> NewPost([Bind("PostId,Content")] MainPost mainPost, List<string> selectedTagIds)
+    {
+        var selectedTagsIdsInt = selectedTagIds.Select(int.Parse).ToArray();
+        var tags = tagsService.GetTagsByIds(selectedTagsIdsInt);
+
+        mainPost.Tags = tags.ToArray();
+
+        await postService.Create(mainPost, User, ModelState, Request.Cookies);
+
+        return await Index([], ModelState.IsValid ? null : ModelState.Values.First().Errors.First().ErrorMessage);
     }
 
     [HttpPost]

@@ -28,6 +28,7 @@ namespace dotnet_facebook
 
             builder.Services.AddTransient<Controllers.Services.UserService>();
             builder.Services.AddTransient<Controllers.Services.TagsService>();
+            builder.Services.AddTransient<Controllers.Services.PostService>();
 
             var app = builder.Build();
 

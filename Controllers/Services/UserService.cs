@@ -10,15 +10,8 @@ using System.Security.Claims;
 
 namespace dotnet_facebook.Controllers.Services
 {
-    public class UserService
+    public class UserService(TestContext context)
     {
-        private readonly TestContext _context;
-
-        public UserService(TestContext context)
-        {
-            _context = context;
-        }
-
         public async Task Create(User user, ModelStateDictionary modelState)
         {
             user.UserProfile = new UserProfile()
@@ -29,7 +22,7 @@ namespace dotnet_facebook.Controllers.Services
 
             user.AccountCreationDate = DateTime.Now;
 
-            if (_context.Users.Any(u => u.Nickname == user.Nickname))
+            if (context.Users.Any(u => u.Nickname == user.Nickname))
             {
                 modelState.AddModelError("Nickname", "Nickname already exists!");
             }
@@ -39,10 +32,10 @@ namespace dotnet_facebook.Controllers.Services
                 user.HashedPassword = PasswordHash.Create(user.Password);
                 user.Password = "";
 
-                _context.Add(user);
-                AddDefaultRoles(_context, user);
+                context.Add(user);
+                AddDefaultRoles(context, user);
 
-                await _context.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
         }
 
@@ -67,7 +60,7 @@ namespace dotnet_facebook.Controllers.Services
                 return null;
             }
 
-            return await _context.Users
+            return await context.Users
                 .Include(u => u.UserProfile)
                 .SingleOrDefaultAsync(u => u.UserId == id);
         }
