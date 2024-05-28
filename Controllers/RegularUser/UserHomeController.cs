@@ -12,6 +12,14 @@ public class UserHomeController(TestContext context, UserService userService, Po
 {
     private static int _currentPostCount = 0;
 
+    // GET: UserHome/Error
+    [HttpGet("UserHome/{error?}")]
+    public async Task<IActionResult> Index(string? error = null)
+    {
+        return await Index(new List<MainPost>(), error);
+    }
+
+    // GET: UserHome
     public async Task<IActionResult> Index(List<MainPost> postsToView, string? error = null)
     {
         tagsService.GenerateTagsBag(ViewBag);
@@ -135,7 +143,11 @@ public class UserHomeController(TestContext context, UserService userService, Po
 
         await postService.Create(mainPost, User, ModelState, Request.Cookies);
 
-        return await Index([], ModelState.IsValid ? null : ModelState.Values.First().Errors.First().ErrorMessage);
+        if (ModelState.IsValid)
+        {
+            return RedirectToAction(nameof(Index));
+        }
+        return RedirectToAction("Index", new { error = ModelState.IsValid ? null : ModelState.Values.First().Errors.First().ErrorMessage });
     }
 
     [HttpPost]

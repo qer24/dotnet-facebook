@@ -50,10 +50,12 @@ namespace dotnet_facebook
             app.UseAuthentication();
             app.UseAuthorization();
 
+            // Default route
             app.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=UserHome}/{action=Index}/{id?}");
 
+            // User profile route
             app.MapControllerRoute(
                     name: "userProfile",
                     pattern: "UserProfile/{id?}",
