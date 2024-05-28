@@ -48,6 +48,7 @@ public class UserHomeController(TestContext context, UserService userService, Po
             .Take(_currentPostCount)
             .Include(p => p.OwnerUser)
             .Include(p => p.Likes)
+            .Include(p => p.Tags)
             .ToListAsync();
 
         _currentPostCount = posts.Count;

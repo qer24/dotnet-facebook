@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using dotnet_facebook.Models.Contexts;
 
@@ -11,9 +12,11 @@ using dotnet_facebook.Models.Contexts;
 namespace dotnet_facebook.Migrations
 {
     [DbContext(typeof(TestContext))]
-    partial class TestContextModelSnapshot : ModelSnapshot
+    [Migration("20240528002449_NewTags")]
+    partial class NewTags
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace dotnet_facebook.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("GroupTag", b =>
-                {
-                    b.Property<int>("GroupId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TagsTagId")
-                        .HasColumnType("int");
-
-                    b.HasKey("GroupId", "TagsTagId");
-
-                    b.HasIndex("TagsTagId");
-
-                    b.ToTable("GroupTag", (string)null);
-                });
 
             modelBuilder.Entity("MainPostTag", b =>
                 {
@@ -235,12 +223,17 @@ namespace dotnet_facebook.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TagId"));
 
+                    b.Property<int?>("GroupId")
+                        .HasColumnType("int");
+
                     b.Property<string>("TagName")
                         .IsRequired()
                         .HasMaxLength(16)
                         .HasColumnType("nvarchar(16)");
 
                     b.HasKey("TagId");
+
+                    b.HasIndex("GroupId");
 
                     b.ToTable("Tags");
                 });
@@ -360,21 +353,6 @@ namespace dotnet_facebook.Migrations
                     b.HasDiscriminator().HasValue("MainPost");
                 });
 
-            modelBuilder.Entity("GroupTag", b =>
-                {
-                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Groups.Group", null)
-                        .WithMany()
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Tag", null)
-                        .WithMany()
-                        .HasForeignKey("TagsTagId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("MainPostTag", b =>
                 {
                     b.HasOne("dotnet_facebook.Models.DatabaseObjects.Posts.MainPost", null)
@@ -466,6 +444,13 @@ namespace dotnet_facebook.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Tag", b =>
+                {
+                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Groups.Group", null)
+                        .WithMany("Tags")
+                        .HasForeignKey("GroupId");
+                });
+
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Users.PrivateMessage", b =>
                 {
                     b.HasOne("dotnet_facebook.Models.DatabaseObjects.Users.User", "Receiver")
@@ -523,6 +508,8 @@ namespace dotnet_facebook.Migrations
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Groups.Group", b =>
                 {
                     b.Navigation("GroupPosts");
+
+                    b.Navigation("Tags");
 
                     b.Navigation("Users");
                 });

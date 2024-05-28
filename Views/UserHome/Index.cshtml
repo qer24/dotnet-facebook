@@ -50,7 +50,7 @@
                 </a>
             </div>
             <div class="col-9 p-2 m-2">
-                <p class="w-auto text-black-50" style="height:10%">
+                <p class="w-auto text-black-50" style="height:5%">
                     <i>
                         @item.PostDate.ToString("dd/MM/yyyy HH:mm")
                     </i>
@@ -60,6 +60,17 @@
                         @item.Content
                     </p>
                 </div>
+                @if (item.Tags != null && item.Tags.Count > 0)
+                {
+                    <p class="w-auto h-auto mt-2">
+                        <i>
+                            @foreach (var tag in item.Tags)
+                            {
+                                <span class="badge bg-primary opacity-50 rounded-4">@tag.TagName</span>
+                            }
+                        </i>
+                    </p>
+                }
                 <div class="container" style="height:20%">
                     <div class="row h-100">
                         <div class="col p-0">
