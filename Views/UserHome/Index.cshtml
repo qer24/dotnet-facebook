@@ -78,7 +78,7 @@
                             <span class="d-inline-block my-2 py-0 h-auto w-auto btn btn-primary disabled rounded-4" id="likeCount-@item.PostId">@item.Likes!.Count</span>
                         </div>
                         <div class="col p-0">
-                            <button class="h-auto w-auto btn btn-primary my-2 rounded-4">Reply</button>
+                            <a asp-action="ViewPost" asp-route-id="@item.PostId" class="h-auto w-auto btn btn-primary my-2 rounded-4">Reply</a>
                         </div>
                         <div class="col-6 p-0">
                             @if (item.PostLocation != null)

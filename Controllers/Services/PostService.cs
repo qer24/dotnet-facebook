@@ -4,6 +4,7 @@ using dotnet_facebook.Models.DatabaseObjects.Posts;
 using dotnet_facebook.Models.DatabaseObjects.Users;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using System.Security.Claims;
 
@@ -11,22 +12,37 @@ namespace dotnet_facebook.Controllers.Services;
 
 public class PostService(TestContext context, UserService userService)
 {
-    public async Task Create(MainPost mainPost, ClaimsPrincipal user, ModelStateDictionary modelState, IRequestCookieCollection cookies)
+    public async Task Create(Post post, ClaimsPrincipal user, ModelStateDictionary modelState, IRequestCookieCollection cookies)
     {
-        mainPost.PostDate = DateTime.Now;
+        post.PostDate = DateTime.Now;
 
         var lat = double.Parse(cookies["latitude"]!, CultureInfo.InvariantCulture);
         var lon = double.Parse(cookies["longitude"]!, CultureInfo.InvariantCulture);
 
-        var geoResponse = await GeocodingService.GetCityCountryAsync(lat, lon);
-        if (geoResponse != null)
+        if (post is MainPost mainPost)
         {
-            var (city, country) = GeocodingService.ParseCityCountry(geoResponse);
-            mainPost.PostLocation = $"{city}, {country}";
+            var geoResponse = await GeocodingService.GetCityCountryAsync(lat, lon);
+            if (geoResponse != null)
+            {
+                var (city, country) = GeocodingService.ParseCityCountry(geoResponse);
+                mainPost.PostLocation = $"{city}, {country}";
+            }
+            else
+            {
+                mainPost.PostLocation = "";
+            }
         }
-        else
+        else if (post is Comment comment)
         {
-            mainPost.PostLocation = "";
+            var parentPost = await context.MainPosts.FindAsync(comment.ParentPost.PostId);
+            if (parentPost == null)
+            {
+                modelState.AddModelError("Content", "Parent Post not found!");
+            }
+            else
+            {
+                comment.ParentPost = parentPost;
+            }
         }
 
         var localUser = await userService.GetLocalUserAsync(user);
@@ -36,12 +52,12 @@ public class PostService(TestContext context, UserService userService)
         }
         else
         {
-            mainPost.OwnerUser = localUser;
+            post.OwnerUser = localUser;
         }
 
         if (modelState.IsValid)
         {
-            context.Add(mainPost);
+            context.Add(post);
             await context.SaveChangesAsync();
         }
     }

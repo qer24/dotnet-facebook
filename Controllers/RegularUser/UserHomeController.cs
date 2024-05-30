@@ -16,6 +16,12 @@ public class UserHomeController(TestContext context, UserService userService, Po
     [HttpGet("UserHome/{error?}")]
     public async Task<IActionResult> Index(string? error = null)
     {
+        // if error is a name of any action, show just the index
+        if (error != null && error == nameof(LoadMorePosts))
+        {
+            error = null;
+        }
+
         return await Index(new List<MainPost>(), error);
     }
 
@@ -94,9 +100,16 @@ public class UserHomeController(TestContext context, UserService userService, Po
             return LikeResult.Error;
         }
 
-        var post = await context.MainPosts
+        Post? post = await context.MainPosts
             .Include(p => p.Likes)
             .FirstOrDefaultAsync(p => p.PostId == postId);
+
+        if (post == null || post.Likes == null)
+        {
+            post = await context.Comments
+                .Include(p => p.Likes)
+                .FirstOrDefaultAsync(p => p.PostId == postId);
+        }
 
         if (post == null || post.Likes == null)
         {
@@ -148,6 +161,68 @@ public class UserHomeController(TestContext context, UserService userService, Po
             return RedirectToAction(nameof(Index));
         }
         return RedirectToAction("Index", new { error = ModelState.IsValid ? null : ModelState.Values.First().Errors.First().ErrorMessage });
+    }
+
+    // GET: UserHome/ViewPost/5
+    [HttpGet("UserHome/ViewPost/{postId}.{error?}")]
+    public async Task<IActionResult> ViewPost([FromRoute] int postId, string? error = null)
+    {
+        var post = await context.MainPosts
+            .Include(p => p.OwnerUser)
+            .Include(p => p.Likes)
+            .Include(p => p.Tags)
+            .FirstOrDefaultAsync(p => p.PostId == postId);
+
+        if (post == null)
+        {
+            return NotFound();
+        }
+
+        post.Comments = await context.Comments
+            .Include(c => c.OwnerUser)
+            .Include(c => c.Likes)
+            .Where(c => c.ParentPost.PostId == postId)
+            .OrderByDescending(c => c.PostId)
+            .ToListAsync();
+
+        tagsService.GenerateTagsBag(ViewBag);
+        userService.GenerateLocalUserBag(ViewBag, User);
+
+        if (error != null)
+        {
+            ModelState.AddModelError("Content", error);
+        }
+
+        return View(post);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Reply([Bind("PostId,Content")] Comment comment, int? parentPostId)
+    {
+        if (parentPostId == null)
+        {
+            return BadRequest();
+        }
+
+        var mainPost = await context.MainPosts.FirstOrDefaultAsync(p => p.PostId == parentPostId);
+
+        if (mainPost == null)
+        {
+            return NotFound();
+        }
+
+        comment.ParentPost = mainPost;
+
+        // get new post id for the comment because it tries to bind the post id from the parent post
+        //comment.PostId = postService.GetNewPostId();
+
+        await postService.Create(comment, User, ModelState, Request.Cookies);
+
+        if (ModelState.IsValid)
+        {
+            return RedirectToAction("ViewPost", new { postId = comment.ParentPost.PostId });
+        }
+        return RedirectToAction("ViewPost", new { postId = comment.ParentPost.PostId, error = ModelState.IsValid ? null : ModelState.Values.First().Errors.First().ErrorMessage });
     }
 
     [HttpPost]

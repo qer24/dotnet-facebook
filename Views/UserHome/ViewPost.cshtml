@@ -1,0 +1,208 @@
+﻿@model dotnet_facebook.Models.DatabaseObjects.Posts.MainPost
+
+@{
+    ViewData["Title"] = "Facebuk";
+    Layout = "_LayoutRegular";
+}
+<div class="card">
+    <div class="bg-secondary w-100 h-auto rounded-4 container my-3">
+        <div class="row h-100">
+            <div class="col p-2">
+                <a asp-action="Index" asp-controller="UserProfile" asp-route-id="@Model.OwnerUser.UserId">
+                    <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="https://preview.redd.it/silly-cat-v0-ket76730w05a1.jpg?width=1080&crop=smart&auto=webp&s=5a426cf6c948be50fe23fd4d262d6461c4b84b39" alt="Profile Picture">
+                    <span class="bg-white rounded-4 m-2 d-inline-block w-auto px-3 text-center">
+                        @Model.OwnerUser.Nickname
+                    </span>
+                </a>
+            </div>
+            <div class="col-9 p-2 m-2">
+                <p class="w-auto text-black-50" style="height:5%">
+                    <i>
+                        @Model.PostDate.ToString("dd/MM/yyyy HH:mm")
+                    </i>
+                </p>
+                <div class="bg-white w-auto h-auto rounded-4 container py-2" style="height:70%">
+                    <p>
+                        @Model.Content
+                    </p>
+                </div>
+                @if (Model.Tags != null && Model.Tags.Count > 0)
+                {
+                    <p class="w-auto h-auto mt-2">
+                        <i>
+                            @foreach (var tag in Model.Tags)
+                            {
+                                <span class="badge bg-primary opacity-50 rounded-4">@tag.TagName</span>
+                            }
+                        </i>
+                    </p>
+                }
+                <div class="container" style="height:20%">
+                    <div class="row h-100">
+                        <div class="col p-0">
+                            <button class="h-auto w-auto btn btn-primary my-2 rounded-4" id="likeButton" onclick="likePost(@Model.PostId)">Like</button>
+                            <span class="d-inline-block my-2 py-0 h-auto w-auto btn btn-primary disabled rounded-4" id="likeCount-@Model.PostId">@Model.Likes!.Count</span>
+                        </div>
+                        <div class="col-6 p-0">
+                            @if (Model.PostLocation != null)
+                            {
+                                <span class="h-auto w-auto btn disabled btn-primary my-2 float-end opacity-100 rounded-4">
+                                    <i>@Model.PostLocation</i>
+                                </span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col bg-white rounded-4 border border-secondary" style="border-style: dashed !important">
+
+            </div>
+            <div class="col-11">
+                <form asp-action="Reply">
+                    <div class="row p-0 m-0">
+                        <div class="col p-0 m-0">
+                            <div class="d-inline-block my-2">
+                                <img class="rounded-4 d-inline-block mx-2" style="height:48px; width:48px" src="https://preview.redd.it/silly-cat-v0-ket76730w05a1.jpg?width=1080&crop=smart&auto=webp&s=5a426cf6c948be50fe23fd4d262d6461c4b84b39" alt="pfp">
+                                <span>@ViewBag.LocalUser.Nickname</span>
+                            </div>
+                            <div class="form-floating form-floating-outlined-primary w-100 p-2 m-0 d-flex rounded-4">
+                                <textarea maxlength="200" type="text" class="form-control overflow-visible" name="Content" id="post-outline" autocomplete="off" style="resize:none; height:150px"></textarea>
+                                <label for="post-outline">Reply</label>
+                            </div>
+                            <input type="hidden" name="parentPostId" value="@Model.PostId" />
+                            <span class="text-danger">@Html.ValidationMessage("Content")</span>
+                            <button type="submit" value="NewPost" class="btn btn-outline-primary p-2 my-2 w-25 rounded-4">
+                                Reply
+                                <span class="ripple-surface"></span>
+                            </button>
+
+                        </div>  
+                    </div>
+                </form>
+
+                @foreach (var comment in Model.Comments!)
+                {
+                    <div class="bg-secondary w-100 h-auto rounded-4 container my-2">
+                        <div class="row h-100">
+                            <div class="col px-2 py-1">
+                                <a asp-action="Index" asp-controller="UserProfile" asp-route-id="@comment.OwnerUser.UserId">
+                                    <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="https://preview.redd.it/silly-cat-v0-ket76730w05a1.jpg?width=1080&crop=smart&auto=webp&s=5a426cf6c948be50fe23fd4d262d6461c4b84b39" alt="Profile Picture">
+                                    <span class="bg-white rounded-4 m-2 d-inline-block w-auto px-3 text-center">
+                                        @comment.OwnerUser.Nickname
+                                    </span>
+                                </a>
+                            </div>
+                            <div class="col-9 px-2 py-1 mx-2">
+                                <p class="w-auto text-black-50" style="height:5%">
+                                    <i>
+                                        @comment.PostDate.ToString("dd/MM/yyyy HH:mm")
+                                    </i>
+                                </p>
+                                <div class="bg-white w-auto h-auto rounded-4 container py-2" style="height:70%">
+                                    <p>
+                                        @comment.Content
+                                    </p>
+                                </div>
+                                <div class="container" style="height:20%">
+                                    <div class="row h-100">
+                                        <div class="col p-0">
+                                            <button class="h-auto w-auto btn btn-primary my-2 rounded-4" id="likeButton" onclick="likePost(@comment.PostId)">Like</button>
+                                            <span class="d-inline-block my-2 py-0 h-auto w-auto btn btn-primary disabled rounded-4" id="likeCount-@comment.PostId">@comment.Likes!.Count</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+@section Scripts {
+    <script>
+        function likePost(postId) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("LikePost", "UserHome")',
+                data: { postId: postId },
+                success: function (data) {
+                    // get like count span
+                    var likeCountSpan = document.getElementById('likeCount-' + postId);
+                    if (data.alreadyLiked)
+                    {
+                        // decrement like by 1
+                        likeCountSpan.innerHTML = parseInt(likeCountSpan.innerHTML) - 1;
+                    }
+                    else
+                    {
+                        // increment like by 1
+                        likeCountSpan.innerHTML = parseInt(likeCountSpan.innerHTML) + 1;
+                    }
+                },
+                error: function (xhr, status, error) {
+
+                }
+            });
+        }
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(sendPosition, showError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function sendPosition(position) {
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+
+            console.log("Latitude: " + lat + ", Longitude: " + lon);  // Debugging log
+
+            // Send the location data to the server using AJAX
+            fetch('/Home/SaveLocation', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ Latitude: lat, Longitude: lon })
+            }).then(response => {
+                if (response.ok) {
+                    console.log('Location saved successfully.');
+                } else {
+                    console.error('Error saving location.');
+                }
+            });
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            getLocation();
+        });
+    </script>
+}

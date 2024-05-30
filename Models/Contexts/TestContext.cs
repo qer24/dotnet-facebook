@@ -26,12 +26,6 @@ namespace dotnet_facebook.Models.Contexts
                 .HasOne(a => a.UserProfile)
                 .WithOne(a => a.User);
 
-            modelBuilder.Entity<Comment>()
-                .HasOne(Comment => Comment.ParentPost)
-                .WithMany()
-                .HasForeignKey(Comment => Comment.PostId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             modelBuilder.Entity<Like>()
                 .HasOne(Like => Like.User)
                 .WithMany()
@@ -52,6 +46,18 @@ namespace dotnet_facebook.Models.Contexts
                 .WithMany()
                 .UsingEntity(j => j.ToTable("MainPostTag"));
 
+            modelBuilder.Entity<MainPost>()
+                .HasMany(MainPost => MainPost.Comments)
+                .WithOne()
+                .HasForeignKey(Comment => Comment.PostId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Comment>()
+                .HasOne(Comment => Comment.ParentPost)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+
+
             modelBuilder.Entity<Group>()
                 .HasMany(MainPost => MainPost.Tags)
                 .WithMany()
@@ -59,8 +65,12 @@ namespace dotnet_facebook.Models.Contexts
         }
 
         public virtual DbSet<User> Users { get; set; }
+
         public virtual DbSet<MainPost> MainPosts { get; set; }
+        public virtual DbSet<Comment> Comments { get; set; }
+
         public virtual DbSet<PrivateMessage> PrivateMessages { get; set; }
+
         public virtual DbSet<Tag> Tags { get; set; }
         public virtual DbSet<Group> Groups { get; set; }
 
