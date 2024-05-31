@@ -34,6 +34,8 @@ namespace dotnet_facebook.Models.DatabaseObjects.Users
 
         public virtual ICollection<GroupUser>? Groups { get; set; }
 
+        public virtual ICollection<Friendship>? Friendships { get; set; }
+
         public override string ToString()
         {
             return Nickname;

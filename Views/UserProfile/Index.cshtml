@@ -60,15 +60,13 @@
     </div>
 
     <div class="common-friends">
-        <h3>Wspólni znajomi:</h3>
-        <div class="friend">
-            <img src="avatar.jpg" alt="Adam Kowalski" class="friend-avatar">
-            <div class="friend-name">Adam Kowalski</div>
-        </div>
-        <div class="friend">
-            <img src="avatar.jpg" alt="Adam Kowalski" class="friend-avatar">
-            <div class="friend-name">Adam Kowalski</div>
-        </div>
+@* @foreach (var friend in Model.Friendships)
+        {
+            <div class="friend">
+                <img src="avatar.jpg" alt="@friend.User1.UserId" class="friend-avatar">
+                <div class="friend-name">@friend.User1.Nickname</div>
+            </div>
+        } *@
     </div>
 </div>
 

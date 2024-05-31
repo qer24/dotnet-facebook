@@ -2,6 +2,7 @@
 using dotnet_facebook.Models.DatabaseObjects.Roles;
 using dotnet_facebook.Models.DatabaseObjects.Users;
 using dotnet_facebook.Utils;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -82,6 +83,32 @@ namespace dotnet_facebook.Controllers.Services
         public void GenerateLocalUserBag(dynamic viewBag, ClaimsPrincipal user)
         {
             viewBag.LocalUser = GetLocalUserAsync(user).Result;
+        }
+        public async Task<List<User>> GetUserFriendsAsync(int? id)
+        {
+            // Znajdź użytkownika w bazie danych
+            var user = await context.Users
+                .Include(u => u.Friendships)
+                .ThenInclude(f => f.User1)
+                .Include(u => u.Friendships)
+                .ThenInclude(f => f.User2)
+                .FirstOrDefaultAsync(u => u.UserId == id);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            var friendRelations = user.Friendships;
+
+            var friends = new List<User>();
+            foreach (var relation in friendRelations)
+            {
+                var friend = relation.User1.UserId == id ? relation.User2 : relation.User1;
+                friends.Add(friend);
+            }
+
+            return friends;
         }
     }
 }

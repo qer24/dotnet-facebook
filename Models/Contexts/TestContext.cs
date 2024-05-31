@@ -62,6 +62,16 @@ namespace dotnet_facebook.Models.Contexts
                 .HasMany(MainPost => MainPost.Tags)
                 .WithMany()
                 .UsingEntity(j => j.ToTable("GroupTag"));
+
+            modelBuilder.Entity<Friendship>()
+                .HasOne(f => f.User1)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Friendship>()
+                .HasOne(f => f.User2)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
         public virtual DbSet<User> Users { get; set; }
@@ -76,5 +86,7 @@ namespace dotnet_facebook.Models.Contexts
 
         public virtual DbSet<SiteRole> SiteRoles { get; set; }
         public virtual DbSet<UserSiteRole> UserSiteRoles { get; set; }
+
+        public virtual DbSet<Friendship> Friendships { get; set; }
     }
 }
