@@ -48,6 +48,9 @@ namespace dotnet_facebook.Controllers.RegularUser
                 .ToListAsync());
 
             //query users
+            searchModel.Users = await context.Users
+                .Where(u => u.Nickname.Contains(q))
+                .ToListAsync();
 
             //query groups
 

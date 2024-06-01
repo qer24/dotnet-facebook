@@ -11,9 +11,9 @@
     </div>
     <div class="container" style="height:50px;">
         <div class="row h-100">
-            <button class="col btn btn-secondary rounded-4 me-2 text-black fs-5" onclick="showTab('posts')">Posts</button>
-            <button class="col btn btn-secondary rounded-4 mx-2 text-black fs-5" onclick="showTab('users')">Users</button>
-            <button class="col btn btn-secondary rounded-4 ms-2 text-black fs-5" onclick="showTab('groups')">Groups</button>
+            <button class="col btn btn-primary rounded-4 me-2 text-white fs-5" onclick="showTab('posts')" id="postsButton">Posts</button>
+            <button class="col btn btn-secondary rounded-4 mx-2 text-black fs-5" onclick="showTab('users')" id="usersButton">Users</button>
+            <button class="col btn btn-secondary rounded-4 ms-2 text-black fs-5" onclick="showTab('groups')" id="groupsButton">Groups</button>
         </div>
     </div>
     <div class="container bg-secondary rounded-4 m-0 my-2 py-3 tab-content" id="posts">
@@ -67,7 +67,22 @@
     </div>
     <div class="container bg-secondary rounded-4 m-0 my-2 py-3 tab-content d-none" id="users">
         <div class="row m-0 p-0">
-            <p class="m-0 p-0 text-center opacity-25">No Users Found!</p>
+            @if (Model.Users.Count == 0)
+            {
+                <p class="m-0 p-0 text-center opacity-25">No Users Found!</p>
+            }
+            else
+            {
+                @foreach (var item in Model.Users)
+                {
+                    <div class="w-100 bg-white bg-opacity-25 rounded-4 my-2 py-2">
+                        <a class="w-25" asp-action="Index" asp-controller="UserProfile" asp-route-id="@item.UserId">
+                            <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="https://preview.redd.it/silly-cat-v0-ket76730w05a1.jpg?width=1080&crop=smart&auto=webp&s=5a426cf6c948be50fe23fd4d262d6461c4b84b39" alt="Profile Picture"><!--
+                         --><p class="bg-white rounded-4 m-2 d-inline-block w-auto px-3 text-center">@item.Nickname</p>
+                        </a>
+                    </div>
+                }
+            }
         </div>
     </div>
     <div class="container bg-secondary rounded-4 m-0 my-2 py-3 tab-content d-none" id="groups">
@@ -88,14 +103,27 @@
 
             // Remove active class from all tab buttons
             document.querySelectorAll('.btn').forEach(function (button) {
+                button.classList.remove('btn-primary');
+                button.classList.add('btn-secondary');
+
+                button.classList.remove('text-white');
+                button.classList.add('text-black');
+
                 button.classList.remove('active');
+
+                //remove focus
+                button.blur();
             });
 
             // Show the selected tab content
             document.getElementById(tabId).classList.remove('d-none');
 
-            // Add active class to the selected tab button
-            document.getElementById(tabId + '-tab').classList.add('active');
+            // Change the color of the selected tab button
+            document.getElementById(tabId + 'Button').classList.remove('btn-secondary');
+            document.getElementById(tabId + 'Button').classList.add('btn-primary');
+
+            document.getElementById(tabId + 'Button').classList.remove('text-black');
+            document.getElementById(tabId + 'Button').classList.add('text-white');
         }
 	</script>
 }
