@@ -66,11 +66,13 @@ namespace dotnet_facebook.Models.Contexts
             modelBuilder.Entity<Friendship>()
                 .HasOne(f => f.User1)
                 .WithMany()
+                .HasForeignKey(f => f.User1Id)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Friendship>()
                 .HasOne(f => f.User2)
                 .WithMany()
+                .HasForeignKey(f => f.User2Id)
                 .OnDelete(DeleteBehavior.Restrict);
         }
 
