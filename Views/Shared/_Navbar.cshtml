@@ -32,9 +32,9 @@
                 </ul>
             </div>
 
-            <form class="d-flex" role="search">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" autocomplete="off">
-                <button class="btn btn-primary" type="button">Search</button>
+            <form method="get" class="d-flex" role="search" asp-action="Index" asp-controller="Search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" autocomplete="off" name="q" id="searchTerm">
+                <button class="btn btn-primary disabled" type="submit" id="searchButton">Search</button>
             </form>
         </div>
     </div>

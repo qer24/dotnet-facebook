@@ -38,6 +38,23 @@
             integrity="sha384-rqhP61M9WSmzd7+ssgyoWP2I+R68vVHx7o+UmmIs6/Nxe8Lt1DoF6+0CKptZIXC0"
             crossorigin="anonymous"></script>
     @RenderSection("Scripts", required: false)
+    @if (ViewData["Navbar"] == null || (bool)ViewData["Navbar"])
+    {
+        <script>
+            // add or remove disabled attribute from search button based on if searchTerm is empty
+            document.getElementById('searchTerm').addEventListener('input', function () {
+            var searchTerm = document.getElementById('searchTerm').value;
+            var searchButton = document.getElementById('searchButton');
+            if (searchTerm.length > 0) {
+            searchButton.classList.remove('disabled');
+            searchButton.disabled = false;
+            } else {
+            searchButton.classList.add('disabled');
+            searchButton.disabled = true;
+            }
+            });
+        </script>
+    }
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
             // Initialize

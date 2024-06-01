@@ -1,0 +1,58 @@
+﻿@model dotnet_facebook.Models.SearchModel
+
+@{
+    ViewData["Title"] = "Facebuk";
+    Layout = "_LayoutRegular";
+}
+
+<div class="card">
+    <div class="bg-secondary rounded-4 my-2 py-2">
+        <h4 class="text-center m-0">Searching for: "<i>@Model.Query"</i></h4>
+    </div>
+    <div class="container" style="height:50px;">
+        <div class="row h-100">
+            <button class="col btn btn-secondary rounded-4 me-2 text-black fs-5" onclick="showTab('posts')">Posts</button>
+            <button class="col btn btn-secondary rounded-4 mx-2 text-black fs-5" onclick="showTab('users')">Users</button>
+            <button class="col btn btn-secondary rounded-4 ms-2 text-black fs-5" onclick="showTab('groups')">Groups</button>
+        </div>
+    </div>
+    <div class="container bg-secondary rounded-4 m-0 my-2 py-3 tab-content" id="posts">
+        <div class="row m-0 p-0">
+            <p class="m-0 p-0 text-center opacity-25">No Posts Found!</p>
+        </div>
+    </div>
+    <div class="container bg-secondary rounded-4 m-0 my-2 py-3 tab-content d-none" id="users">
+        <div class="row m-0 p-0">
+            <p class="m-0 p-0 text-center opacity-25">No Users Found!</p>
+        </div>
+    </div>
+    <div class="container bg-secondary rounded-4 m-0 my-2 py-3 tab-content d-none" id="groups">
+        <div class="row m-0 p-0">
+            <p class="m-0 p-0 text-center opacity-25">No Groups Found!</p>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+	<script>
+        function showTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(function (content) {
+                content.classList.add('d-none');
+            });
+
+            // Remove active class from all tab buttons
+            document.querySelectorAll('.btn').forEach(function (button) {
+                button.classList.remove('active');
+            });
+
+            // Show the selected tab content
+            document.getElementById(tabId).classList.remove('d-none');
+
+            // Add active class to the selected tab button
+            document.getElementById(tabId + '-tab').classList.add('active');
+        }
+	</script>
+}
+
