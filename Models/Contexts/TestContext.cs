@@ -57,7 +57,6 @@ namespace dotnet_facebook.Models.Contexts
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
 
-
             modelBuilder.Entity<Group>()
                 .HasMany(MainPost => MainPost.Tags)
                 .WithMany()
@@ -77,18 +76,16 @@ namespace dotnet_facebook.Models.Contexts
         }
 
         public virtual DbSet<User> Users { get; set; }
-
-        public virtual DbSet<MainPost> MainPosts { get; set; }
-        public virtual DbSet<Comment> Comments { get; set; }
-
-        public virtual DbSet<PrivateMessage> PrivateMessages { get; set; }
+        public virtual DbSet<Group> Groups { get; set; }
 
         public virtual DbSet<Tag> Tags { get; set; }
-        public virtual DbSet<Group> Groups { get; set; }
+        public virtual DbSet<MainPost> MainPosts { get; set; }
+        public virtual DbSet<Comment> Comments { get; set; }
 
         public virtual DbSet<SiteRole> SiteRoles { get; set; }
         public virtual DbSet<UserSiteRole> UserSiteRoles { get; set; }
 
         public virtual DbSet<Friendship> Friendships { get; set; }
+        public virtual DbSet<PrivateMessage> PrivateMessages { get; set; }
     }
 }

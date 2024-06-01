@@ -32,10 +32,6 @@ namespace dotnet_facebook.Models.DatabaseObjects.Users
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime AccountCreationDate { get; set; }
 
-        public virtual ICollection<GroupUser>? Groups { get; set; }
-
-        public virtual ICollection<Friendship>? Friendships { get; set; }
-
         public override string ToString()
         {
             return Nickname;

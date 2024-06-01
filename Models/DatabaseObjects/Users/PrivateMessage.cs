@@ -9,8 +9,8 @@ namespace dotnet_facebook.Models.DatabaseObjects.Users
         [Key]
         public int PrivateMessageId { get; set; }
 
-        [ValidateNever] public User Sender { get; set; }
-        [ValidateNever] public User Receiver { get; set; }
+        [ValidateNever] public virtual User Sender { get; set; }
+        [ValidateNever] public virtual User Receiver { get; set; }
 
         [Required(ErrorMessage = "Please enter {0}.")]
         [StringLength(500, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 1)]

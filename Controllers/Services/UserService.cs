@@ -84,22 +84,23 @@ namespace dotnet_facebook.Controllers.Services
         {
             viewBag.LocalUser = GetLocalUserAsync(user).Result;
         }
+
         public async Task<List<User>> GetUserFriendsAsync(int? id)
         {
             // Znajdź użytkownika w bazie danych
             var user = await context.Users
-                .Include(u => u.Friendships)
-                .ThenInclude(f => f.User1)
-                .Include(u => u.Friendships)
-                .ThenInclude(f => f.User2)
                 .FirstOrDefaultAsync(u => u.UserId == id);
 
             if (user == null)
             {
-                return null;
+                return [];
             }
 
-            var friendRelations = user.Friendships;
+            var friendRelations = await context.Friendships
+                .Where(f => f.User1Id == id || f.User2Id == id)
+                .Include(f => f.User1)
+                .Include(f => f.User2)
+                .ToListAsync();
 
             var friends = new List<User>();
             foreach (var relation in friendRelations)
