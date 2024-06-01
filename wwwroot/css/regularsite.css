@@ -48,3 +48,11 @@ body {
     --bs-primary: #583879 !important;
     --bs-primary-rgb: 88, 56, 121 !important;
 }
+
+.clickable-div {
+    transition: background-color 0.25s;
+}
+
+.clickable-div:hover {
+    background-color: #f0f0f0; 
+}

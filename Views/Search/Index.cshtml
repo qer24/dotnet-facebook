@@ -18,7 +18,51 @@
     </div>
     <div class="container bg-secondary rounded-4 m-0 my-2 py-3 tab-content" id="posts">
         <div class="row m-0 p-0">
-            <p class="m-0 p-0 text-center opacity-25">No Posts Found!</p>
+            @if (Model.Posts.Count == 0)
+            {
+                <p class="m-0 p-0 text-center opacity-25">No Posts Found!</p>
+            }
+            else
+            {
+                @foreach (var item in Model.Posts)
+                {
+                    <div class="bg-white bg-opacity-25 w-100 h-auto rounded-4 container my-3">
+                        <div class="row h-100">
+                            <div class="col p-2">
+                                <a asp-action="Index" asp-controller="UserProfile" asp-route-id="@item.OwnerUser.UserId">
+                                    <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="https://preview.redd.it/silly-cat-v0-ket76730w05a1.jpg?width=1080&crop=smart&auto=webp&s=5a426cf6c948be50fe23fd4d262d6461c4b84b39" alt="Profile Picture">
+                                    <span class="bg-white rounded-4 m-2 d-inline-block w-auto px-3 text-center">
+                                        @item.OwnerUser.Nickname
+                                    </span>
+                                </a>
+                            </div>
+                            <div class="col-9 p-2 m-2 clickable-div rounded-4" onclick="window.location='UserHome/ViewPost/@item.PostId';" style="cursor: pointer;">
+                                <p class="w-auto text-black-50" style="height:5%">
+                                    <i>
+                                        @item.PostDate.ToString("dd/MM/yyyy HH:mm")
+                                    </i>
+                                </p>
+                                <div class="bg-white w-auto h-auto rounded-4 container py-2" style="height:70%">
+                                    <p>
+                                        @item.Content
+                                    </p>
+                                </div>
+                                @if (item.Tags != null && item.Tags.Count > 0)
+                                {
+                                    <p class="w-auto h-auto mt-2">
+                                        <i>
+                                            @foreach (var tag in item.Tags)
+                                            {
+                                                <span class="badge bg-primary opacity-50 rounded-4">@tag.TagName</span>
+                                            }
+                                        </i>
+                                    </p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
         </div>
     </div>
     <div class="container bg-secondary rounded-4 m-0 my-2 py-3 tab-content d-none" id="users">

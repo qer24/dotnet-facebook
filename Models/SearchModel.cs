@@ -9,7 +9,7 @@ public class SearchModel
 {
     public string Query { get; set; }
 
-    public List<MainPost> Posts { get; set; }
-    public List<User> Users { get; set; }
-    public List<Group> Groups { get; set; }
+    public List<MainPost> Posts = [];
+    public List<User> Users = [];
+    public List<Group> Groups = [];
 }
