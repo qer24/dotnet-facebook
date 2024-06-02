@@ -1,6 +1,8 @@
 ﻿using dotnet_facebook.Controllers.Services;
 using dotnet_facebook.Models.Contexts;
 using dotnet_facebook.Models.DatabaseObjects.Users;
+using dotnet_facebook.Utils;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -63,6 +65,42 @@ namespace dotnet_facebook.Controllers.RegularUser
             await context.SaveChangesAsync();
 
             return RedirectToAction("Index");
+        }
+
+        [HttpPost("UpdateProfilePicture")]
+        [EnableCors("AllowAllOrigins")]
+        public async Task<IActionResult> UpdateProfilePicture(IFormFile file)
+        {
+            if (file != null && file.Length > 0)
+            {
+                var user = await userService.GetLocalUserAsync(User);
+
+                if (user == null)
+                {
+                    return Json(new { success = false, message = "User not found" });
+                }
+
+                var fileExtension = Path.GetExtension(file.FileName);
+                // file name is the user id + the file extension
+                var fileName = $"userpfp_{user.UserId}";
+
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles", fileName + fileExtension);
+
+                // first, delete any existing file with the same name (any extension)
+                var existingFiles = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles"), $"{fileName}.*");
+                foreach (var existingFile in existingFiles)
+                {
+                    System.IO.File.Delete(existingFile);
+                }
+
+                using var stream = new FileStream(path, FileMode.Create);
+
+                await file.CopyToAsync(stream);
+
+                return Json(new { success = true, message = "File uploaded successfully" });
+            }
+
+            return Json(new { success = false, message = "No file uploaded" });
         }
     }
 
