@@ -27,6 +27,7 @@ namespace dotnet_facebook.Controllers.RegularUser
             searchModel.Posts = await context.MainPosts
                 .Where(p => p.Content.Contains(q))            
                 .Include(p => p.OwnerUser)
+                .ThenInclude(u => u.UserProfile)
                 .Include(p => p.Tags)
                 .Include(p => p.Likes)
                 .ToListAsync();
@@ -35,6 +36,7 @@ namespace dotnet_facebook.Controllers.RegularUser
             searchModel.Posts.AddRange(await context.MainPosts
                 .Where(p => p.Tags.Any(t => t.TagName.Contains(q)))
                 .Include(p => p.OwnerUser)
+                .ThenInclude(u => u.UserProfile)
                 .Include(p => p.Tags)
                 .Include(p => p.Likes)
                 .ToListAsync());
@@ -43,6 +45,7 @@ namespace dotnet_facebook.Controllers.RegularUser
             searchModel.Posts.AddRange(await context.MainPosts
                 .Where(p => p.OwnerUser.Nickname.Contains(q))
                 .Include(p => p.OwnerUser)
+                .ThenInclude(u => u.UserProfile)
                 .Include(p => p.Tags)
                 .Include(p => p.Likes)
                 .ToListAsync());
@@ -50,6 +53,7 @@ namespace dotnet_facebook.Controllers.RegularUser
             //query users
             searchModel.Users = await context.Users
                 .Where(u => u.Nickname.Contains(q))
+                .Include(u => u.UserProfile)
                 .ToListAsync();
 
             //query groups

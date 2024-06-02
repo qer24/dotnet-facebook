@@ -61,6 +61,7 @@ public class UserHomeController(TestContext context, UserService userService, Po
             .OrderByDescending(p => p.PostId)
             .Take(_currentPostCount)
             .Include(p => p.OwnerUser)
+            .ThenInclude(u => u.UserProfile)
             .Include(p => p.Likes)
             .Include(p => p.Tags)
             .ToListAsync();
@@ -169,6 +170,7 @@ public class UserHomeController(TestContext context, UserService userService, Po
     {
         var post = await context.MainPosts
             .Include(p => p.OwnerUser)
+            .ThenInclude(u => u.UserProfile)
             .Include(p => p.Likes)
             .Include(p => p.Tags)
             .FirstOrDefaultAsync(p => p.PostId == postId);

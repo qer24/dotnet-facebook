@@ -30,7 +30,14 @@
                         <div class="row h-100">
                             <div class="col p-2">
                                 <a asp-action="Index" asp-controller="UserProfile" asp-route-id="@item.OwnerUser.UserId">
-                                    <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="https://preview.redd.it/silly-cat-v0-ket76730w05a1.jpg?width=1080&crop=smart&auto=webp&s=5a426cf6c948be50fe23fd4d262d6461c4b84b39" alt="Profile Picture">
+                                    @if (string.IsNullOrEmpty(item.OwnerUser.UserProfile.ProfilePictureFileName))
+                                    {
+                                        <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="~/defaultUser.jpg" alt="Profile Picture">
+                                    }
+                                    else
+                                    {
+                                        <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="~/uploadedFiles/@item.OwnerUser.UserProfile.ProfilePictureFileName" alt="Profile Picture">
+                                    }
                                     <span class="bg-white rounded-4 m-2 d-inline-block w-auto px-3 text-center">
                                         @item.OwnerUser.Nickname
                                     </span>
@@ -77,8 +84,15 @@
                 {
                     <div class="w-100 bg-white bg-opacity-25 rounded-4 my-2 py-2">
                         <a class="w-25" asp-action="Index" asp-controller="UserProfile" asp-route-id="@item.UserId">
-                            <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="https://preview.redd.it/silly-cat-v0-ket76730w05a1.jpg?width=1080&crop=smart&auto=webp&s=5a426cf6c948be50fe23fd4d262d6461c4b84b39" alt="Profile Picture"><!--
-                         --><p class="bg-white rounded-4 m-2 d-inline-block w-auto px-3 text-center">@item.Nickname</p>
+                            @if (string.IsNullOrEmpty(item.UserProfile.ProfilePictureFileName))
+                            {
+                                <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="~/defaultUser.jpg" alt="Profile Picture">
+                            }
+                            else
+                            {
+                                <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="~/uploadedFiles/@item.UserProfile.ProfilePictureFileName" alt="Profile Picture">
+                            }
+                            <p class="bg-white rounded-4 m-2 d-inline-block w-auto px-3 text-center">@item.Nickname</p>
                         </a>
                     </div>
                 }

@@ -5,6 +5,7 @@ using dotnet_facebook.Utils;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -15,6 +16,7 @@ namespace dotnet_facebook.Controllers.RegularUser
     {
         // GET: UserProfile
         [HttpGet("{id?}")]
+        [OutputCache(NoStore = true, Duration = 0)]
         public async Task<IActionResult> Index(int? id)
         {
             if (id == null)
@@ -84,10 +86,10 @@ namespace dotnet_facebook.Controllers.RegularUser
                 // file name is the user id + the file extension
                 var fileName = $"userpfp_{user.UserId}";
 
-                var path = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles", fileName + fileExtension);
+                var path = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot/uploadedFiles", fileName + fileExtension);
 
                 // first, delete any existing file with the same name (any extension)
-                var existingFiles = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles"), $"{fileName}.*");
+                var existingFiles = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot/uploadedFiles"), $"{fileName}.*");
                 foreach (var existingFile in existingFiles)
                 {
                     System.IO.File.Delete(existingFile);
@@ -96,6 +98,10 @@ namespace dotnet_facebook.Controllers.RegularUser
                 using var stream = new FileStream(path, FileMode.Create);
 
                 await file.CopyToAsync(stream);
+
+                user.UserProfile.ProfilePictureFileName = fileName + fileExtension;
+
+                await context.SaveChangesAsync();
 
                 return Json(new { success = true, message = "File uploaded successfully" });
             }

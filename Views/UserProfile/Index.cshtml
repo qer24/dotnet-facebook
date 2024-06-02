@@ -12,9 +12,18 @@
 
 <div class="card">
     <div class="container">
-        <div class="row">
-            <img class="col profile-img rounded-4" src="https://preview.redd.it/silly-cat-v0-ket76730w05a1.jpg?width=1080&crop=smart&auto=webp&s=5a426cf6c948be50fe23fd4d262d6461c4b84b39" alt="Jan Kowalski">
-            <div class="col container">
+        <div class="row p-0">
+            <div class="col p-0">
+                @if (string.IsNullOrEmpty(Model.UserProfile.ProfilePictureFileName))
+                {
+                    <img class="profile-img rounded-4" src="~/defaultUser.jpg" alt="Jan Kowalski">
+                }
+                else
+                {
+                    <img class="profile-img rounded-4 bg-secondary" src="~/uploadedFiles/@Model.UserProfile.ProfilePictureFileName" alt="Jan Kowalski">
+                }
+            </div>
+            <div class="col container p-0">
                 <div class="row h-25 bg-secondary mx-3 mb-3 rounded-4 justify-content-center align-items-center">
                     <p class="m-0 text-center">@Model.Nickname</p>
                 </div>
@@ -199,7 +208,8 @@
             xhr.onload = function () {
                 if (xhr.status === 200) {
                     console.log('File uploaded successfully.');
-                    // Optionally, handle successful upload here
+                    // Refresh the page (clear file cache too)
+                    window.location.reload(true)
                 } else {
                     console.error('Error uploading file.');
                     // Optionally, handle error here
