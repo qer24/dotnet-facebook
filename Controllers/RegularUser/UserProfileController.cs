@@ -149,6 +149,39 @@ namespace dotnet_facebook.Controllers.RegularUser
 
             return RedirectToAction("Index", new { id });
         }
+
+        [HttpGet("RemoveFriend")]
+        public async Task<IActionResult> RemoveFriend(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var localUser = await userService.GetLocalUserAsync(User);
+            var friendUser = await userService.GetUserByIdAsync(id);
+
+            if (localUser == null || friendUser == null)
+            {
+                return NotFound();
+            }
+
+            // check if the friendship already exists
+            var friendship = await context.Friendships
+                .FirstOrDefaultAsync(f => (f.User1.UserId == localUser.UserId && f.User2.UserId == friendUser.UserId) ||
+                                    (f.User1.UserId == friendUser.UserId && f.User2.UserId == localUser.UserId));
+
+            if (friendship == null)
+            {
+                return RedirectToAction("Index", new { id });
+            }
+
+            context.Friendships.Remove(friendship);
+
+            await context.SaveChangesAsync();
+
+            return RedirectToAction("Index", new { id });
+        }
     }
 
 }
