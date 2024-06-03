@@ -93,31 +93,30 @@ namespace dotnet_facebook.Controllers.Services
                 return;
             }
 
-            var friendShips = await context.Friendships
-                .Where(f => f.User1Id == localUser.UserId || f.User2Id == localUser.UserId)
-                .Include(f => f.User1)
-                .Include(f => f.User2)
-                .ToListAsync();
+            var friendShips = await GetFriendshipsAsync(localUser.UserId);
 
             viewBag.Friends = friendShips;
         }
 
-        public async Task<List<User>> GetUserFriendsAsync(int? id)
+        public async Task<List<Friendship>> GetFriendshipsAsync(int? id)
         {
-            // Znajdź użytkownika w bazie danych
-            var user = await context.Users
-                .FirstOrDefaultAsync(u => u.UserId == id);
+            return await context.Friendships
+                .Where(f => f.User1Id == id || f.User2Id == id)
+                .Include(f => f.User1)
+                .ThenInclude(u => u.UserProfile)
+                .Include(f => f.User2)
+                .ThenInclude(u => u.UserProfile)
+                .ToListAsync();
+        }
 
-            if (user == null)
+        public async Task<List<User>> GetFriendsAsync(int? id)
+        {
+            if (id == null)
             {
                 return [];
             }
 
-            var friendRelations = await context.Friendships
-                .Where(f => f.User1Id == id || f.User2Id == id)
-                .Include(f => f.User1)
-                .Include(f => f.User2)
-                .ToListAsync();
+            var friendRelations = await GetFriendshipsAsync(id);
 
             var friends = new List<User>();
             foreach (var relation in friendRelations)

@@ -38,6 +38,9 @@
             integrity="sha384-rqhP61M9WSmzd7+ssgyoWP2I+R68vVHx7o+UmmIs6/Nxe8Lt1DoF6+0CKptZIXC0"
             crossorigin="anonymous"></script>
     @RenderSection("Scripts", required: false)
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
     @if (ViewData["Navbar"] == null || (bool)ViewData["Navbar"])
     {
         <script>

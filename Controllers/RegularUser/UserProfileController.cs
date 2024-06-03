@@ -42,7 +42,7 @@ namespace dotnet_facebook.Controllers.RegularUser
             }
 
             var user = await userService.GetUserByIdAsync(id);
-            var friends = await userService.GetUserFriendsAsync(id);
+            var friends = await userService.GetFriendsAsync(id);
             if (user == null)
             {
                 return RedirectToAction("UserNotFound");

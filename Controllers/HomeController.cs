@@ -59,6 +59,7 @@ namespace dotnet_facebook.Controllers
             {
                 list.Add(new(ClaimTypes.Role, "Admin"));
             }
+            list.Add(new(ClaimTypes.Role, "User"));
 
             ClaimsIdentity identity = new(list, CookieAuthenticationDefaults.AuthenticationScheme);
             ClaimsPrincipal principal = new(identity);
