@@ -19,6 +19,9 @@ namespace dotnet_facebook.Controllers.RegularUser
         [OutputCache(NoStore = true, Duration = 0)]
         public async Task<IActionResult> Index(int? id)
         {
+            userService.GenerateLocalUserBag(ViewBag, User);
+            await userService.GenerateFriendsBagAsync(ViewBag, User);
+
             if (id == null)
             {
                 // get the user id from the identity
@@ -107,6 +110,44 @@ namespace dotnet_facebook.Controllers.RegularUser
             }
 
             return Json(new { success = false, message = "No file uploaded" });
+        }
+
+        [HttpGet("AddFriend")]
+        public async Task<IActionResult> AddFriend(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var localUser = await userService.GetLocalUserAsync(User);
+            var friendUser = await userService.GetUserByIdAsync(id);
+
+            if (localUser == null || friendUser == null)
+            {
+                return NotFound();
+            }
+
+            // check if the friendship already exists
+            var friendshipExists = await userService.AreFriendsAsync(localUser.UserId, friendUser.UserId);
+
+            if (friendshipExists)
+            {
+                return RedirectToAction("Index", new { id });
+            }
+
+            var friendship = new Friendship
+            {
+                User1 = localUser,
+                User2 = friendUser,
+                FriendshipDate = DateTime.Now
+            };
+
+            context.Friendships.Add(friendship);
+
+            await context.SaveChangesAsync();
+
+            return RedirectToAction("Index", new { id });
         }
     }
 

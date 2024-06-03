@@ -85,6 +85,23 @@ namespace dotnet_facebook.Controllers.Services
             viewBag.LocalUser = GetLocalUserAsync(user).Result;
         }
 
+        public async Task GenerateFriendsBagAsync(dynamic viewBag, ClaimsPrincipal user)
+        {
+            var localUser = GetLocalUserAsync(user).Result;
+            if (localUser == null)
+            {
+                return;
+            }
+
+            var friendShips = await context.Friendships
+                .Where(f => f.User1Id == localUser.UserId || f.User2Id == localUser.UserId)
+                .Include(f => f.User1)
+                .Include(f => f.User2)
+                .ToListAsync();
+
+            viewBag.Friends = friendShips;
+        }
+
         public async Task<List<User>> GetUserFriendsAsync(int? id)
         {
             // Znajdź użytkownika w bazie danych
@@ -110,6 +127,12 @@ namespace dotnet_facebook.Controllers.Services
             }
 
             return friends;
+        }
+
+        public async Task<bool> AreFriendsAsync(int id1, int id2)
+        {
+            return await context.Friendships
+                .AnyAsync(f => (f.User1Id == id1 && f.User2Id == id2) || (f.User1Id == id2 && f.User2Id == id1));
         }
     }
 }

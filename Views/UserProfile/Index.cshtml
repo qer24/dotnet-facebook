@@ -1,4 +1,5 @@
-﻿@model dotnet_facebook.Models.DatabaseObjects.Users.User
+﻿@using dotnet_facebook.Models.DatabaseObjects.Users
+@model dotnet_facebook.Models.DatabaseObjects.Users.User
 
 @{
     ViewData["Title"] = "Profile Card";
@@ -41,7 +42,15 @@
         }
         else
         {
-            <button class="btn rounded-4">Add as Friend</button>
+            @if (ViewBag.LocalUser != null && ((List<Friendship>)ViewBag.Friends).Any(f => f.User1Id == Model.UserId || f.User2Id == Model.UserId))
+			{
+                <p class="text-center my-auto opacity-50 bg-secondary rounded-4 p-2">You are friends since @(((List<Friendship>)ViewBag.Friends).FirstOrDefault(f => f.User1Id == Model.UserId || f.User2Id == Model.UserId)!.FriendshipDate.ToShortDateString())</p>
+                <button class="btn rounded-4">Message</button>
+            }
+            else
+            {
+                <a asp-action="AddFriend" asp-route-id="@Model.UserId" class="btn rounded-4">Add as Friend</a>
+            }
         }
 
         @if (User.Identity.IsAuthenticated && User.Identity.Name == Model.Nickname)
