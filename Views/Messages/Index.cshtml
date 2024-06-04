@@ -8,7 +8,7 @@
 <div class="card">
     @foreach (var user in Model)
 	{
-        <div class="w-100 bg-secondary rounded-4 my-2 p-2 clickable-div" onclick="window.location='#';" style="cursor: pointer;">
+        <div class="w-100 bg-secondary rounded-4 my-2 p-2 clickable-div" onclick="window.location='Messages/@user.UserId';" style="cursor: pointer;">
             @if (string.IsNullOrEmpty(user.UserProfile.ProfilePictureFileName))
             {
                 <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="~/defaultUser.jpg" alt="Profile Picture">

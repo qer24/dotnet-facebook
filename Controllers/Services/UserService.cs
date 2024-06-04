@@ -109,6 +109,12 @@ namespace dotnet_facebook.Controllers.Services
                 .ToListAsync();
         }
 
+        public async Task<Friendship?> GetFriendshipAsync(int id1, int id2)
+        {
+            var friendships = await GetFriendshipsAsync(id1);
+            return friendships.SingleOrDefault(f => f.User1Id == id2 || f.User2Id == id2);
+        }
+
         public async Task<List<User>> GetFriendsAsync(int? id)
         {
             if (id == null)
