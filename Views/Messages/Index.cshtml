@@ -1,0 +1,27 @@
+﻿@model IEnumerable<dotnet_facebook.Models.DatabaseObjects.Users.User>
+
+@{
+    ViewData["Title"] = "Messages";
+    Layout = "_LayoutRegular";
+}
+
+<div class="card">
+    @foreach (var user in Model)
+	{
+        <div class="w-100 bg-secondary rounded-4 my-2 p-2 clickable-div" onclick="window.location='#';" style="cursor: pointer;">
+            @if (string.IsNullOrEmpty(user.UserProfile.ProfilePictureFileName))
+            {
+                <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="~/defaultUser.jpg" alt="Profile Picture">
+            }
+            else
+            {
+                <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="~/uploadedFiles/@user.UserProfile.ProfilePictureFileName" alt="Profile Picture">
+            }
+            <p class="bg-white rounded-4 py-2 px-3 m-1 text-center h-auto w-auto d-inline">@user.Nickname</p>
+            <p class="py-2 px-3 m-1 text-center h-auto w-auto d-inline float-end">
+                Last Message:<br />
+                chuj
+            </p>
+        </div>
+	}
+</div>

@@ -84,22 +84,39 @@ namespace dotnet_facebook.Controllers.Services
         {
             viewBag.LocalUser = GetLocalUserAsync(user).Result;
         }
-        public async Task<List<User>> GetUserFriendsAsync(int? id)
-        {
-            // Znajdź użytkownika w bazie danych
-            var user = await context.Users
-                .Include(u => u.Friendships)
-                .ThenInclude(f => f.User1)
-                .Include(u => u.Friendships)
-                .ThenInclude(f => f.User2)
-                .FirstOrDefaultAsync(u => u.UserId == id);
 
-            if (user == null)
+        public async Task GenerateFriendsBagAsync(dynamic viewBag, ClaimsPrincipal user)
+        {
+            var localUser = GetLocalUserAsync(user).Result;
+            if (localUser == null)
             {
-                return null;
+                return;
             }
 
-            var friendRelations = user.Friendships;
+            var friendShips = await GetFriendshipsAsync(localUser.UserId);
+
+            viewBag.Friends = friendShips;
+        }
+
+        public async Task<List<Friendship>> GetFriendshipsAsync(int? id)
+        {
+            return await context.Friendships
+                .Where(f => f.User1Id == id || f.User2Id == id)
+                .Include(f => f.User1)
+                .ThenInclude(u => u.UserProfile)
+                .Include(f => f.User2)
+                .ThenInclude(u => u.UserProfile)
+                .ToListAsync();
+        }
+
+        public async Task<List<User>> GetFriendsAsync(int? id)
+        {
+            if (id == null)
+            {
+                return [];
+            }
+
+            var friendRelations = await GetFriendshipsAsync(id);
 
             var friends = new List<User>();
             foreach (var relation in friendRelations)
@@ -109,6 +126,12 @@ namespace dotnet_facebook.Controllers.Services
             }
 
             return friends;
+        }
+
+        public async Task<bool> AreFriendsAsync(int id1, int id2)
+        {
+            return await context.Friendships
+                .AnyAsync(f => (f.User1Id == id1 && f.User2Id == id2) || (f.User1Id == id2 && f.User2Id == id1));
         }
     }
 }

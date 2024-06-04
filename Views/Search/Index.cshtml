@@ -1,0 +1,144 @@
+﻿@model dotnet_facebook.Models.SearchModel
+
+@{
+    ViewData["Title"] = "Facebuk";
+    Layout = "_LayoutRegular";
+}
+
+<div class="card">
+    <div class="bg-secondary rounded-4 my-2 py-2">
+        <h4 class="text-center m-0">Searching for: "<i>@Model.Query"</i></h4>
+    </div>
+    <div class="container" style="height:50px;">
+        <div class="row h-100">
+            <button class="col btn btn-primary rounded-4 me-2 text-white fs-5" onclick="showTab('posts')" id="postsButton">Posts</button>
+            <button class="col btn btn-secondary rounded-4 mx-2 text-black fs-5" onclick="showTab('users')" id="usersButton">Users</button>
+            <button class="col btn btn-secondary rounded-4 ms-2 text-black fs-5" onclick="showTab('groups')" id="groupsButton">Groups</button>
+        </div>
+    </div>
+    <div class="container bg-secondary rounded-4 m-0 my-2 py-3 tab-content" id="posts">
+        <div class="row m-0 p-0">
+            @if (Model.Posts.Count == 0)
+            {
+                <p class="m-0 p-0 text-center opacity-25">No Posts Found!</p>
+            }
+            else
+            {
+                @foreach (var item in Model.Posts)
+                {
+                    <div class="bg-white bg-opacity-25 w-100 h-auto rounded-4 container my-3">
+                        <div class="row h-100">
+                            <div class="col p-2">
+                                <a asp-action="Index" asp-controller="UserProfile" asp-route-id="@item.OwnerUser.UserId">
+                                    @if (string.IsNullOrEmpty(item.OwnerUser.UserProfile.ProfilePictureFileName))
+                                    {
+                                        <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="~/defaultUser.jpg" alt="Profile Picture">
+                                    }
+                                    else
+                                    {
+                                        <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="~/uploadedFiles/@item.OwnerUser.UserProfile.ProfilePictureFileName" alt="Profile Picture">
+                                    }
+                                    <span class="bg-white rounded-4 m-2 d-inline-block w-auto px-3 text-center">
+                                        @item.OwnerUser.Nickname
+                                    </span>
+                                </a>
+                            </div>
+                            <div class="col-9 p-2 m-2 clickable-div rounded-4" onclick="window.location='UserHome/ViewPost/@item.PostId';" style="cursor: pointer;">
+                                <p class="w-auto text-black-50" style="height:5%">
+                                    <i>
+                                        @item.PostDate.ToString("dd/MM/yyyy HH:mm")
+                                    </i>
+                                </p>
+                                <div class="bg-white w-auto h-auto rounded-4 container py-2" style="height:70%">
+                                    <p>
+                                        @item.Content
+                                    </p>
+                                </div>
+                                @if (item.Tags != null && item.Tags.Count > 0)
+                                {
+                                    <p class="w-auto h-auto mt-2">
+                                        <i>
+                                            @foreach (var tag in item.Tags)
+                                            {
+                                                <span class="badge bg-primary opacity-50 rounded-4">@tag.TagName</span>
+                                            }
+                                        </i>
+                                    </p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    <div class="container bg-secondary rounded-4 m-0 my-2 py-3 tab-content d-none" id="users">
+        <div class="row m-0 p-0">
+            @if (Model.Users.Count == 0)
+            {
+                <p class="m-0 p-0 text-center opacity-25">No Users Found!</p>
+            }
+            else
+            {
+                @foreach (var item in Model.Users)
+                {
+                    <div class="w-100 bg-white bg-opacity-25 rounded-4 my-2 py-2">
+                        <a class="w-25" asp-action="Index" asp-controller="UserProfile" asp-route-id="@item.UserId">
+                            @if (string.IsNullOrEmpty(item.UserProfile.ProfilePictureFileName))
+                            {
+                                <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="~/defaultUser.jpg" alt="Profile Picture">
+                            }
+                            else
+                            {
+                                <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="~/uploadedFiles/@item.UserProfile.ProfilePictureFileName" alt="Profile Picture">
+                            }
+                            <p class="bg-white rounded-4 m-2 d-inline-block w-auto px-3 text-center">@item.Nickname</p>
+                        </a>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    <div class="container bg-secondary rounded-4 m-0 my-2 py-3 tab-content d-none" id="groups">
+        <div class="row m-0 p-0">
+            <p class="m-0 p-0 text-center opacity-25">No Groups Found!</p>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+	<script>
+        function showTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(function (content) {
+                content.classList.add('d-none');
+            });
+
+            // Remove active class from all tab buttons
+            document.querySelectorAll('.btn').forEach(function (button) {
+                button.classList.remove('btn-primary');
+                button.classList.add('btn-secondary');
+
+                button.classList.remove('text-white');
+                button.classList.add('text-black');
+
+                button.classList.remove('active');
+
+                //remove focus
+                button.blur();
+            });
+
+            // Show the selected tab content
+            document.getElementById(tabId).classList.remove('d-none');
+
+            // Change the color of the selected tab button
+            document.getElementById(tabId + 'Button').classList.remove('btn-secondary');
+            document.getElementById(tabId + 'Button').classList.add('btn-primary');
+
+            document.getElementById(tabId + 'Button').classList.remove('text-black');
+            document.getElementById(tabId + 'Button').classList.add('text-white');
+        }
+	</script>
+}
+

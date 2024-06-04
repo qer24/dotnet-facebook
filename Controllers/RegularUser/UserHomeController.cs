@@ -61,6 +61,7 @@ public class UserHomeController(TestContext context, UserService userService, Po
             .OrderByDescending(p => p.PostId)
             .Take(_currentPostCount)
             .Include(p => p.OwnerUser)
+            .ThenInclude(u => u.UserProfile)
             .Include(p => p.Likes)
             .Include(p => p.Tags)
             .ToListAsync();
@@ -102,12 +103,14 @@ public class UserHomeController(TestContext context, UserService userService, Po
 
         Post? post = await context.MainPosts
             .Include(p => p.Likes)
+            .ThenInclude(l => l.User)
             .FirstOrDefaultAsync(p => p.PostId == postId);
 
         if (post == null || post.Likes == null)
         {
             post = await context.Comments
                 .Include(p => p.Likes)
+                .ThenInclude(l => l.User)
                 .FirstOrDefaultAsync(p => p.PostId == postId);
         }
 
@@ -169,6 +172,7 @@ public class UserHomeController(TestContext context, UserService userService, Po
     {
         var post = await context.MainPosts
             .Include(p => p.OwnerUser)
+            .ThenInclude(u => u.UserProfile)
             .Include(p => p.Likes)
             .Include(p => p.Tags)
             .FirstOrDefaultAsync(p => p.PostId == postId);
@@ -180,6 +184,7 @@ public class UserHomeController(TestContext context, UserService userService, Po
 
         post.Comments = await context.Comments
             .Include(c => c.OwnerUser)
+            .ThenInclude(u => u.UserProfile)
             .Include(c => c.Likes)
             .Where(c => c.ParentPost.PostId == postId)
             .OrderByDescending(c => c.PostId)

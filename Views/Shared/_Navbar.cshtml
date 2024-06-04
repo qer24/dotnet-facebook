@@ -1,6 +1,6 @@
 ﻿<nav class="navbar navbar-expand-xl bg-primary bg-opacity-50 position-fixed vw-100">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="@Url.Action("Index", "UserHome")">
             <img src="https://upload.wikimedia.org/wikipedia/en/3/3d/Bad_Dragon_logo.png" alt="Logo" style="width:40px; height:40px;">
             <span>&nbsp;&nbsp;Facebuk</span>
         </a>
@@ -23,8 +23,12 @@
                         <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarDarkDropdownMenuLink">
                             <li><a class="dropdown-item" href="@Url.Action("Index", "UserHome")">Home</a></li>
                             <li><a class="dropdown-item" href="@Url.Action("Index", "UserProfile")">Your Profile</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="@Url.Action("Index", "Home")">Admin Panel</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("Index", "Messages")">Messages</a></li>
+                            @if (User.IsInRole("Admin"))
+							{
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="@Url.Action("Index", "Home")">Admin Panel</a></li>
+							}
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="@Url.Action("Logout", "Home")">Log Out</a></li>
                         </ul>
@@ -32,9 +36,9 @@
                 </ul>
             </div>
 
-            <form class="d-flex" role="search">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" autocomplete="off">
-                <button class="btn btn-primary" type="button">Search</button>
+            <form method="get" class="d-flex" role="search" asp-action="Index" asp-controller="Search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" autocomplete="off" name="q" id="searchTerm">
+                <button class="btn btn-primary disabled" type="submit" id="searchButton">Search</button>
             </form>
         </div>
     </div>

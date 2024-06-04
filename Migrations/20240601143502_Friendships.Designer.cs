@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using dotnet_facebook.Models.Contexts;
 
@@ -11,9 +12,11 @@ using dotnet_facebook.Models.Contexts;
 namespace dotnet_facebook.Migrations
 {
     [DbContext(typeof(TestContext))]
-    partial class TestContextModelSnapshot : ModelSnapshot
+    [Migration("20240601143502_Friendships")]
+    partial class Friendships
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -262,11 +265,16 @@ namespace dotnet_facebook.Migrations
                     b.Property<int>("User2Id")
                         .HasColumnType("int");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("FriendshipId");
 
                     b.HasIndex("User1Id");
 
                     b.HasIndex("User2Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Friendships");
                 });
@@ -278,6 +286,9 @@ namespace dotnet_facebook.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PrivateMessageId"));
+
+                    b.Property<int?>("FriendshipId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Message")
                         .IsRequired()
@@ -294,6 +305,8 @@ namespace dotnet_facebook.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("PrivateMessageId");
+
+                    b.HasIndex("FriendshipId");
 
                     b.HasIndex("ReceiverUserId");
 
@@ -425,7 +438,7 @@ namespace dotnet_facebook.Migrations
                         .IsRequired();
 
                     b.HasOne("dotnet_facebook.Models.DatabaseObjects.Users.User", "User")
-                        .WithMany()
+                        .WithMany("Groups")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -506,6 +519,10 @@ namespace dotnet_facebook.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Users.User", null)
+                        .WithMany("Friendships")
+                        .HasForeignKey("UserId");
+
                     b.Navigation("User1");
 
                     b.Navigation("User2");
@@ -513,6 +530,10 @@ namespace dotnet_facebook.Migrations
 
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Users.PrivateMessage", b =>
                 {
+                    b.HasOne("dotnet_facebook.Models.DatabaseObjects.Users.Friendship", null)
+                        .WithMany("Messages")
+                        .HasForeignKey("FriendshipId");
+
                     b.HasOne("dotnet_facebook.Models.DatabaseObjects.Users.User", "Receiver")
                         .WithMany()
                         .HasForeignKey("ReceiverUserId")
@@ -579,8 +600,17 @@ namespace dotnet_facebook.Migrations
                     b.Navigation("Likes");
                 });
 
+            modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Users.Friendship", b =>
+                {
+                    b.Navigation("Messages");
+                });
+
             modelBuilder.Entity("dotnet_facebook.Models.DatabaseObjects.Users.User", b =>
                 {
+                    b.Navigation("Friendships");
+
+                    b.Navigation("Groups");
+
                     b.Navigation("UserProfile")
                         .IsRequired();
                 });

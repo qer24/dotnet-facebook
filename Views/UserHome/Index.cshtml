@@ -9,7 +9,14 @@
         <div class="row p-0 m-0">
             <div class="col p-0 m-0">
                 <div class="d-inline-block">
-                    <img class="rounded-4 d-inline-block mx-2" style="height:48px; width:48px" src="https://preview.redd.it/silly-cat-v0-ket76730w05a1.jpg?width=1080&crop=smart&auto=webp&s=5a426cf6c948be50fe23fd4d262d6461c4b84b39" alt="pfp">
+                    @if (string.IsNullOrEmpty(ViewBag.LocalUser.UserProfile.ProfilePictureFileName))
+                    {
+                        <img class="rounded-4 d-inline-block mx-2" style="height:48px; width:48px" src="~/defaultUser.jpg" alt="pfp">
+                    }
+                    else
+                    {
+                        <img class="rounded-4 d-inline-block mx-2" style="height:48px; width:48px" src="~/uploadedFiles/@ViewBag.LocalUser.UserProfile.ProfilePictureFileName" alt="pfp">
+                    }
                     <span>@ViewBag.LocalUser.Nickname</span>
                 </div>
                 <div class="form-floating multi-select w-50 float-end me-2 rounded-top-4">
@@ -43,7 +50,15 @@
         <div class="row h-100">
             <div class="col p-2">
                 <a asp-action="Index" asp-controller="UserProfile" asp-route-id="@item.OwnerUser.UserId">
-                    <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="https://preview.redd.it/silly-cat-v0-ket76730w05a1.jpg?width=1080&crop=smart&auto=webp&s=5a426cf6c948be50fe23fd4d262d6461c4b84b39" alt="Profile Picture">
+                    @if (string.IsNullOrEmpty(item.OwnerUser.UserProfile.ProfilePictureFileName))
+                    {
+                        <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="~/defaultUser.jpg" alt="Profile Picture">
+                    }
+                    else
+                    {
+                        <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="~/uploadedFiles/@item.OwnerUser.UserProfile.ProfilePictureFileName" alt="Profile Picture">
+                    }
+
                     <span class="bg-white rounded-4 m-2 d-inline-block w-auto px-3 text-center">
                         @item.OwnerUser.Nickname
                     </span>
