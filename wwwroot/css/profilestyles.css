@@ -11,10 +11,10 @@
     max-width: 30vw;
     min-width: 275px;
     min-height: 85px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
+    margin-top: 10px;
     overflow: hidden;
     float: left;
-
 }
 
 .buttons {
