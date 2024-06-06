@@ -21,6 +21,8 @@ namespace dotnet_facebook.Controllers.Services
             }
 
             return await context.Groups
+                .Include(g => g.Users)
+                .ThenInclude(gu => gu.User)
                 .SingleOrDefaultAsync(g => g.GroupId == id);
         }
     }
