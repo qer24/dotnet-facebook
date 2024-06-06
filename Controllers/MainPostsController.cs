@@ -27,6 +27,7 @@ namespace dotnet_facebook.Controllers
 
             return View(await context.MainPosts
                 .Include(p => p.OwnerUser)
+                .OrderByDescending(p => p.PostDate)
                 .ToListAsync());
         }
 
@@ -159,6 +160,47 @@ namespace dotnet_facebook.Controllers
         private bool MainPostExists(int id)
         {
             return context.MainPosts.Any(e => e.PostId == id);
+        }
+
+        public async Task<IActionResult> Manage(int id)
+        {
+            var mainPost = await context.MainPosts
+                .Include(p => p.OwnerUser)
+                .Include(p => p.Tags)
+                .FirstOrDefaultAsync(m => m.PostId == id);
+
+            var comments = await context.Comments
+                .Include(c => c.OwnerUser)
+                .Where(c => c.ParentPost == mainPost)
+                .ToListAsync();
+
+            ViewBag.Comments = comments;
+
+            return View(mainPost);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteComment(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var comment = await context.Comments
+                .Include(c => c.ParentPost)
+                .FirstOrDefaultAsync(m => m.PostId == id);
+            if (comment == null)
+            {
+                return NotFound();
+            }
+
+            var parentPostId = comment.ParentPost.PostId;
+
+            context.Comments.Remove(comment);
+            await context.SaveChangesAsync();
+
+            return RedirectToAction("Manage", new { id = parentPostId });
         }
     }
 }

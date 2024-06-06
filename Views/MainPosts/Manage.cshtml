@@ -1,14 +1,16 @@
-﻿@model IEnumerable<dotnet_facebook.Models.DatabaseObjects.Posts.MainPost>
+﻿@using dotnet_facebook.Models.DatabaseObjects.Posts
+@model dotnet_facebook.Models.DatabaseObjects.Posts.MainPost
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Manage Post";
 }
 
-<h1>Index</h1>
+<h1>Comments for post @(@Model.PostId):</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -21,14 +23,11 @@
             <th>
                 @Html.DisplayNameFor(model => model.Content)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PostLocation)
-            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (Comment item in ViewBag.Comments) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.OwnerUser.Nickname)
@@ -40,13 +39,10 @@
                 @Html.DisplayFor(modelItem => item.Content)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.PostLocation)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.PostId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.PostId">Details</a> |
-                <a asp-action="Manage" asp-route-id="@item.PostId">Manage</a>
-                <a asp-action="Delete" asp-route-id="@item.PostId">Delete</a>
+                <form asp-action="DeleteComment">
+                    <input type="hidden" name="id" value="@item.PostId" />
+                    <button type="submit">Delete</button>
+                </form>
             </td>
         </tr>
 }
