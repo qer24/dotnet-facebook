@@ -17,7 +17,7 @@ public class UserHomeController(TestContext context, UserService userService, Po
     public async Task<IActionResult> Index(string? error = null)
     {
         // if error is a name of any action, show just the index
-        if (error != null && error == nameof(LoadMorePosts))
+        if (error != null && error == nameof(LoadMorePosts) && !error.Equals("Index", StringComparison.CurrentCultureIgnoreCase))
         {
             error = null;
         }

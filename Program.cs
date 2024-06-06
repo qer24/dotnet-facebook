@@ -15,6 +15,7 @@ namespace dotnet_facebook
                 {
                     s.LoginPath = "/Home/Login";
                     s.LogoutPath = "/Home/Login";
+                    s.AccessDeniedPath = "/UserHome";
                 }
                     );
 
