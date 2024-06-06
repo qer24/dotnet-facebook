@@ -41,7 +41,7 @@
         {
         <p>Welcome, admin!</p>
         }
-        else if (User.Identity.IsAuthenticated && Model.Users.Any(u => u.User.Nickname == User.Identity.Name))
+        else if ((bool)ViewBag.IsMember)
         {
             <p class="m-0 text-center">joined</p>
         }

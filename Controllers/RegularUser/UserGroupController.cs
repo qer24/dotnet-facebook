@@ -43,7 +43,7 @@ namespace dotnet_facebook.Controllers.RegularUser
 
 
             ViewBag.IsAdmin = userRole == GroupRole.Admin;
-
+            ViewBag.IsMember = userRole == GroupRole.Member;
             return View(group);
         }
         [HttpGet("GroupNotFound")]
