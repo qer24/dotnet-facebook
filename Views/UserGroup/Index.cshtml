@@ -18,10 +18,10 @@
             </div>
             <div class="col container p-0">
                 <div class="row h-25 bg-secondary mx-3 mb-3 rounded-4 justify-content-center align-items-center">
-                    <p class="m-0 text-center">Grupa o kosmosie</p>
+                    <p class="m-0 text-center">@Model.GroupName</p>
                 </div>
                 <div class="row h-25 bg-secondary mx-3 my-3 rounded-4 justify-content-center align-items-center">
-                    <p class="m-0 text-center">Created:</p>
+                    <p class="m-0 text-center">Created: @Model.GroupCreationDate.ToShortDateString()</p>
                 </div>
                 <div class="row h-25 bg-secondary mx-3 my-3 rounded-4 justify-content-center align-items-center">
                     <p class="m-0 text-center">Joined:</p>
@@ -38,7 +38,7 @@
     <div class="buttons my-2">
        
     </div>
-    <div class="bio rounded-4" id="bio-text">Lorem ipsum </div>
+    <div class="bio rounded-4" id="bio-text">@Model.GroupDescription</div>
 
     <div class="edit-bio-form" id="edit-bio-form" style="display: none;">
     </div>
