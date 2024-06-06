@@ -29,7 +29,7 @@ namespace dotnet_facebook
             builder.Services.AddTransient<Controllers.Services.UserService>();
             builder.Services.AddTransient<Controllers.Services.TagsService>();
             builder.Services.AddTransient<Controllers.Services.PostService>();
-
+            builder.Services.AddTransient<Controllers.Services.GroupService>();
             var app = builder.Build();
 
 
@@ -60,6 +60,11 @@ namespace dotnet_facebook
                     name: "userProfile",
                     pattern: "UserProfile/{id?}",
                     defaults: new { controller = "UserProfile", action = "Index" });
+
+            app.MapControllerRoute(
+                    name: "userGroup",
+                    pattern: "UserGroup/{id?}",
+                    defaults: new { controller = "UserGroup", action = "Index" });
 
             app.UseCors(
              options => options
