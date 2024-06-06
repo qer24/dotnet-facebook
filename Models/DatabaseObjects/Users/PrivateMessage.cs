@@ -13,7 +13,7 @@ namespace dotnet_facebook.Models.DatabaseObjects.Users
         [ValidateNever] public virtual User Receiver { get; set; }
 
         [Required(ErrorMessage = "Please enter {0}.")]
-        [StringLength(500, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 1)]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long and at most {1} characters long.", MinimumLength = 1)]
         public string Message { get; set; }
 
         [DataType(DataType.Date)]

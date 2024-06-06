@@ -1,4 +1,5 @@
-﻿@model dotnet_facebook.Models.DatabaseObjects.Users.Friendship
+﻿@using dotnet_facebook.Models.DatabaseObjects.Users
+@model dotnet_facebook.Models.DatabaseObjects.Users.User
 
 @{
     ViewData["Title"] = "Messages";
@@ -6,5 +7,89 @@
 }
 
 <div class="card">
-    
+    <a asp-action="Index" class="btn btn-secondary rounded-4 px-3 w-25 text-black">Back</a>
+
+    <div class="w-100 bg-secondary rounded-4 my-2 p-2 mb-5">
+        <p class="py-2 px-3 m-1 my-auto text-center d-inline">Chatting with:</p>
+        @if (string.IsNullOrEmpty(Model.UserProfile.ProfilePictureFileName))
+        {
+            <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="~/defaultUser.jpg" alt="Profile Picture">
+        }
+        else
+        {
+            <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="~/uploadedFiles/@Model.UserProfile.ProfilePictureFileName" alt="Profile Picture">
+        }
+        <p class="py-2 px-3 m-1 my-auto text-center d-inline fs-2">@Model.Nickname</p>
+    </div>
+
+    @foreach (PrivateMessage message in ViewBag.Messages)
+    {
+        @if (message.Sender == ViewBag.LocalUser)
+        {
+            <p class="m-0 mx-1 h-auto w-auto d-inline float-end opacity-50">
+                <i>@message.MessageDate.ToString("dd/MM/yyyy HH:mm")</i>
+            </p>
+            <div class="w-100 bg-secondary rounded-4 my-2 p-2">
+                @if (string.IsNullOrEmpty(message.Sender.UserProfile.ProfilePictureFileName))
+                {
+                    <img class="rounded-4 m-2 d-inline-block" style="height:48px; width:48px" src="~/defaultUser.jpg" alt="Profile Picture">
+                }
+                else
+                {
+                    <img class="rounded-4 m-2 d-inline-block" style="height:48px; width:48px" src="~/uploadedFiles/@message.Sender.UserProfile.ProfilePictureFileName" alt="Profile Picture">
+                }
+                <p class="py-2 px-3 m-1 text-center h-auto w-auto d-inline float-end">
+                    @message.Message
+                </p>
+            </div>
+        }
+        else
+        {
+            <p class="m-0 mx-1 h-auto w-auto d-inline float-end opacity-50 text-end">
+                <i>@message.MessageDate.ToString("dd/MM/yyyy HH:mm")</i>
+            </p>
+            <div class="w-100 bg-secondary bg-opacity-50 rounded-4 my-2 p-2">
+                <p class="py-2 px-3 m-1 my-2 text-center d-inline">
+                    @message.Message
+                </p>
+                @if (string.IsNullOrEmpty(message.Sender.UserProfile.ProfilePictureFileName))
+                {
+                    <img class="rounded-4 m-2 d-inline-block float-end" style="height:48px; width:48px" src="~/defaultUser.jpg" alt="Profile Picture">
+                }
+                else
+                {
+                    <img class="rounded-4 m-2 d-inline-block float-end" style="height:48px; width:48px" src="~/uploadedFiles/@message.Sender.UserProfile.ProfilePictureFileName" alt="Profile Picture">
+                }
+            </div>
+        }
+    }
+
+
+    <form asp-action="SendMessage" asp-route-id="@Model.UserId">
+        <div class="row p-0 m-0 mt-5">
+            <div class="col p-0 m-0">
+                <div class="d-inline-block mb-2">
+                    @if (string.IsNullOrEmpty(ViewBag.LocalUser.UserProfile.ProfilePictureFileName))
+                    {
+                        <img class="rounded-4 d-inline-block mx-2" style="height:48px; width:48px" src="~/defaultUser.jpg" alt="pfp">
+                    }
+                    else
+                    {
+                        <img class="rounded-4 d-inline-block mx-2" style="height:48px; width:48px" src="~/uploadedFiles/@ViewBag.LocalUser.UserProfile.ProfilePictureFileName" alt="pfp">
+                    }
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="form-floating form-floating-outlined-primary w-75 me-2 d-flex rounded-4">
+                        <textarea maxlength="100" type="text" class="form-control overflow-visible" name="Message" id="post-outline" autocomplete="off" style="resize:none; height:40px"></textarea>
+                        <label for="post-outline">Send Message</label>
+                    </div>
+                    <button type="submit" value="SendMessage" class="btn btn-outline-primary ms-2 rounded-4 w-25 d-inline-block">
+                        >
+                        <span class="ripple-surface"></span>
+                    </button>
+                </div>
+                <span class="text-danger m-2">@Html.ValidationMessage("Message")</span>
+            </div>
+        </div>
+    </form>
 </div>

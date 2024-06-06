@@ -11,9 +11,11 @@ using dotnet_facebook.Models.DatabaseObjects.Roles;
 using dotnet_facebook.Utils;
 using Microsoft.AspNetCore.Identity;
 using dotnet_facebook.Controllers.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace dotnet_facebook.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UsersController : Controller
     {
         private readonly TestContext _context;

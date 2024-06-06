@@ -46,12 +46,11 @@
 			{
                 <p class="text-center my-auto opacity-50 bg-secondary rounded-4 p-2">You are friends since @(((List<Friendship>)ViewBag.Friends).FirstOrDefault(f => f.User1Id == Model.UserId || f.User2Id == Model.UserId)!.FriendshipDate.ToShortDateString())</p>
                 <a asp-action="RemoveFriend" asp-route-id="@Model.UserId" class="btn rounded-4 px-3">Remove Friend</a>
-                <a href="@Url.Action("Create", "PrivateMessages", new { userId = Model.UserId })">Message</a>
+                <a asp-action="Messages" asp-controller="Messages" asp-route-id="@Model.UserId" class="btn rounded-4 px-3">Message</a>
             }
             else
             {
                 <a asp-action="AddFriend" asp-route-id="@Model.UserId" class="btn rounded-4 px-3">Add as Friend</a>
-
             }
         }
 

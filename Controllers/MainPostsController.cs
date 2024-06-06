@@ -12,9 +12,11 @@ using dotnet_facebook.Controllers.Services;
 using dotnet_facebook.Utils;
 using System.Globalization;
 using dotnet_facebook.Models.DatabaseObjects.Groups;
+using Microsoft.AspNetCore.Authorization;
 
 namespace dotnet_facebook.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class MainPostsController(TestContext context, TagsService tagsService, PostService postService) : Controller
     {
 
