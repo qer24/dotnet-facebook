@@ -37,11 +37,15 @@
         <button class="row h-25 bg-secondary mx-3 my-3 rounded-4 justify-content-center align-items-center" data-bs-toggle="modal" data-bs-target="#membersModal">
             <p class="m-0 text-center">Show members</p>
         </button>
-        @if (User.Identity.IsAuthenticated && Model.Users.Any(u => u.User.Nickname == User.Identity.Name))
+        @if ((bool)ViewBag.IsAdmin)
+        {
+        <p>Welcome, admin!</p>
+        }
+        else if (User.Identity.IsAuthenticated && Model.Users.Any(u => u.User.Nickname == User.Identity.Name))
         {
             <p class="m-0 text-center">joined</p>
         }
-        else if (User.Identity.IsAuthenticated && Model.Users.Any(u => u.User.Nickname == User.Identity.Name) && Model.Users)
+
         else
         {
             <form id="join-group-form" class="row h-25 bg-secondary mx-3 my-3 rounded-4 justify-content-center align-items-center"  method="post" action="@Url.Action("AddUser", "UserGroup", new { id = @Model.GroupId })">

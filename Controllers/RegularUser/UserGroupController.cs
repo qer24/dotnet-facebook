@@ -39,6 +39,10 @@ namespace dotnet_facebook.Controllers.RegularUser
             {
                 return RedirectToAction("GroupNotFound");
             }
+            var userRole = group.Users.FirstOrDefault(u => u.User.Nickname == User.Identity.Name)?.GroupRole;
+
+
+            ViewBag.IsAdmin = userRole == GroupRole.Admin;
 
             return View(group);
         }
