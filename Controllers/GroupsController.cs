@@ -9,9 +9,11 @@ using dotnet_facebook.Models.Contexts;
 using dotnet_facebook.Models.DatabaseObjects.Groups;
 using Microsoft.IdentityModel.Tokens;
 using dotnet_facebook.Models.DatabaseObjects.Users;
+using Microsoft.AspNetCore.Authorization;
 
 namespace dotnet_facebook.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class GroupsController : Controller
     {
         private readonly TestContext _context;

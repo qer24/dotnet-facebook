@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using dotnet_facebook.Models.Contexts;
 using dotnet_facebook.Models.DatabaseObjects.Roles;
+using Microsoft.AspNetCore.Authorization;
 
 namespace dotnet_facebook.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class SiteRolesController : Controller
     {
         private readonly TestContext _context;

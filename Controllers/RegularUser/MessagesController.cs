@@ -1,6 +1,7 @@
 ﻿using dotnet_facebook.Controllers.Services;
 using dotnet_facebook.Models.Contexts;
 using dotnet_facebook.Models.DatabaseObjects.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

@@ -90,11 +90,12 @@ namespace dotnet_facebook.Controllers
 
         private readonly ILogger<HomeController> _logger;
 
-  //      public HomeController(ILogger<HomeController> logger)
-    //    {
-      //      _logger = logger;
+        //      public HomeController(ILogger<HomeController> logger)
+        //    {
+        //      _logger = logger;
         //}
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Index()
         {
             // if not logged in, redirect to login page
@@ -103,11 +104,6 @@ namespace dotnet_facebook.Controllers
                 return RedirectToAction("Login");
             }
 
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
             return View();
         }
 
