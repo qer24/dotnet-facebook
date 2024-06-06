@@ -5,13 +5,14 @@ using dotnet_facebook.Models.DatabaseObjects;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Collections;
+using Azure.Core;
+using Microsoft.AspNetCore.Mvc;
 
 
 namespace dotnet_facebook.Controllers.Services
 {
     public class GroupService(TestContext context)
     {
-        private readonly TestContext _context;
 
         public async Task<Group?> GetGroupByIdAsync(int? id)
         {
@@ -25,5 +26,7 @@ namespace dotnet_facebook.Controllers.Services
                 .ThenInclude(gu => gu.User)
                 .SingleOrDefaultAsync(g => g.GroupId == id);
         }
+
     }
+
 }
