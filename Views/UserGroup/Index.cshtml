@@ -33,7 +33,7 @@
                 @if ((bool)ViewBag.IsAdmin)
                 {
                     <div class="row h-25 bg-secondary mx-3 my-3 rounded-4 justify-content-center align-items-center">
-                        <p class="m-0 text-center">Welcome, admin </p>
+                        <p class="m-0 text-center">Welcome, Admin </p>
                         
                     </div>
                     
@@ -42,7 +42,13 @@
                 else if ((bool)ViewBag.IsModerator)
                 {
                     <div class="row h-25 bg-secondary mx-3 my-3 rounded-4 justify-content-center align-items-center">
-                        <p class="m-0 text-center">Welcome, mod</p>
+                        <p class="m-0 text-center">Welcome, Mod</p>
+                    </div>
+                }
+                else if ((bool)ViewBag.IsMember)
+                {
+                    <div class="row h-25 bg-secondary mx-3 my-3 rounded-4 justify-content-center align-items-center">
+                        <p class="m-0 text-center">Welcome, Member</p>
                     </div>
                 }
                 @*
@@ -53,10 +59,28 @@
             </div>
         </div>
     </div>
-
     <div class="buttons my-2">
         <button class="btn rounded-4" data-bs-toggle="modal" data-bs-target="#membersModal">
             <p class="m-0 text-center">Show members</p>
+        </button>
+        @if((bool)ViewBag.IsMember || (bool)ViewBag.IsModerator)
+        {
+            <button class="btn rounded-4" data-bs-toggle="modal" data-bs-target="#membersModal">
+                <p class="m-0 text-center">Leave Group</p>
+            </button>
+        }
+        else
+        {
+            <form asp-action="AddUser" asp-route-id="@ViewBag.localUser" id=" join-group-form" class="row h-25 bg-secondary mx-3 rounded-4 justify-content-center align-items-center">
+                <button type="submit" class="btn rounded-4">
+                    <p class="m-0 text-center">Join Group</p>
+                </button>
+            </form>
+
+        }
+
+    </div>
+    <div class="buttons my-2">
         </button>
         @if ((bool)ViewBag.IsAdmin){
             <button class="btn rounded-4" id="delete-btn" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete Group</button>
@@ -71,19 +95,12 @@
         }
         else if ((bool)ViewBag.IsMember)
         {
-            <p class="m-0 text-center">joined</p>
-        }
-
-        else
-        {
-            <form asp-action="AddUser" asp-route-id="@ViewBag.localUser" id=" join-group-form" class="row h-25 bg-secondary mx-3 my-3 rounded-4 justify-content-center align-items-center">
-                <button type="submit" class="btn rounded-4">
-                <p class="m-0 text-center">Join Group</p>
-                </button>
-            </form>
             
         }
+
+
     </div>
+
     <div class="bio rounded-4" id="bio-text">@Model.GroupDescription</div>
 
     <div class="edit-bio-form" id="edit-bio-form" style="display: none;">
@@ -109,6 +126,11 @@
                         <tr>
                             <th>Nickname</th>
                             <th>Role</th>
+                             @if ((bool)ViewBag.IsAdmin)
+                            {
+                                <th>Change Role</th>
+                                <th>Remove</th>
+                            }
                         </tr>
                     </thead>
                     <tbody>
@@ -117,6 +139,18 @@
                             <tr>
                                 <td>@Html.DisplayFor(modelItem => user.User.Nickname)</td>
                                 <td>@Html.DisplayFor(modelItem => user.GroupRole)</td>
+                                @if ((bool)ViewBag.IsAdmin)
+                                {
+                                    <td><button class="btn rounded-4" onclick="">Change</button></td>
+                                    <td>
+                                    <form asp-action="RemoveUser" method="post" id="delete-form">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="groupId" value="@Model.GroupId" />
+                                        <input type="hidden" name="userId" value="@user.User.UserId"/>
+                                        <button type="submit" class="btn btn-danger">Remove</button>
+                                    </form>
+                                    </td>
+                                }
                             </tr>
                         }
                     </tbody>

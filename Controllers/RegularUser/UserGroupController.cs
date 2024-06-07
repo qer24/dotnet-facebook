@@ -212,8 +212,46 @@ namespace dotnet_facebook.Controllers.RegularUser
             await _context.SaveChangesAsync();
             return RedirectToAction("GroupNotFound");
         }
+        [HttpPost("RemoveUser")]
+        public async Task<IActionResult> RemoveUser(int? userId, int? groupId)
+        {
+            if (userId == null || groupId == null)
+            {
+                return NotFound();
+            }
 
+            var @group = await _context.Groups
+                .Include(g => g.Users)
+                .ThenInclude(gu => gu.User)
+                .FirstOrDefaultAsync(m => m.GroupId == groupId);
+            if (@group == null)
+            {
+                return NotFound();
+            }
 
+            var @user = await _context.Users.FindAsync(userId);
+            if (@user == null)
+            {
+                return NotFound();
+            }
+
+            // Can't remove last admin
+            if (@group.Users.Count(gu => gu.GroupRole == GroupRole.Admin) == 1 && @group.Users.Any(gu => gu.User.UserId == userId && gu.GroupRole == GroupRole.Admin))
+            {
+                return RedirectToAction("GroupNotFound");
+            }
+
+            var groupUser = @group.Users.FirstOrDefault(gu => gu.User.UserId == userId);
+            if (groupUser != null)
+            {
+                @group.Users.Remove(groupUser);
+
+                _context.Update(@group);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Index", new { id = @group.GroupId });
+        }
         [HttpGet("GroupNotFound")]
         public IActionResult GroupNotFound()
         {
