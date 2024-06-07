@@ -23,7 +23,13 @@
                 <div class="row h-25 bg-secondary mx-3 my-3 rounded-4 justify-content-center align-items-center">
                     <p class="m-0 text-center">Created: @Model.GroupCreationDate.ToShortDateString()</p>
                 </div>
-                
+                @if ((bool)ViewBag.IsAdmin)
+                {
+                    <div class="row h-25 bg-secondary mx-3 my-3 rounded-4 justify-content-center align-items-center">
+                        <p class="m-0 text-center">Welcome, admin </p>
+                    </div>
+                  
+                }
                 @*
                 <div class="row h-25 bg-secondary mx-3 my-3 rounded-4 justify-content-center align-items-center">
                 <p class="m-0 text-center">Join</p>
@@ -34,12 +40,16 @@
     </div>
 
     <div class="buttons my-2">
-        <button class="row h-25 bg-secondary mx-3 my-3 rounded-4 justify-content-center align-items-center" data-bs-toggle="modal" data-bs-target="#membersModal">
+        <button class="btn rounded-4" data-bs-toggle="modal" data-bs-target="#membersModal">
             <p class="m-0 text-center">Show members</p>
         </button>
         @if ((bool)ViewBag.IsAdmin)
         {
-        <p>Welcome, admin!</p>
+            <button class="btn rounded-4" data-bs-toggle="modal" data-bs-target="#changePfp">Change Group Picture</button>
+            <button class="btn rounded-4" id="edit-btn" onclick="showEditForm()">Edit bio</button>
+            <button class="btn rounded-4" id="save-btn" style="display:none;" onclick="submitForm()">Save</button>
+            <button class="btn rounded-4" id="cancel-btn" style="display:none;" onclick="hideEditForm()">Cancel</button>
+            
         }
         else if ((bool)ViewBag.IsMember)
         {
@@ -49,7 +59,7 @@
         else
         {
             <form asp-action="AddUser" asp-route-id="@ViewBag.localUser" id=" join-group-form" class="row h-25 bg-secondary mx-3 my-3 rounded-4 justify-content-center align-items-center">
-                <button type="submit" class="row h-25 bg-secondary mx-3 rounded-4 justify-content-center align-items-center">
+                <button type="submit" class="btn rounded-4">
                 <p class="m-0 text-center">Join Group</p>
                 </button>
             </form>
@@ -59,6 +69,12 @@
     <div class="bio rounded-4" id="bio-text">@Model.GroupDescription</div>
 
     <div class="edit-bio-form" id="edit-bio-form" style="display: none;">
+        <form asp-action="UpdateBio" method="post" id="bio-form">
+            @Html.AntiForgeryToken()
+            <textarea style="min-height: 85px; margin-bottom: 15px;" name="UserBio" class="form-control rounded-4" oninput="validateBioLength()">@Model.GroupDescription</textarea>
+            <input type="hidden" name="GroupId" value="@Model.GroupId" />
+            <div id="bio-error" style="color: red; display: none;">Bio needs to be less than 200 characters long.</div>
+        </form>
     </div>
 </div>
 
@@ -113,3 +129,48 @@
         </div>
     </div>
 </div>
+@section Scripts
+{
+    <script>
+        function showEditForm() {
+            document.getElementById('bio-text').style.display = 'none';
+            document.getElementById('edit-bio-form').style.display = 'block';
+            document.getElementById('edit-btn').style.display = 'none';
+            document.getElementById('save-btn').style.display = 'inline-block';
+            document.getElementById('cancel-btn').style.display = 'inline-block';
+            document.getElementById('btn-cont').style.display = 'inline-block';
+        }
+
+        function hideEditForm() {
+            document.getElementById('bio-text').style.display = 'block';
+            document.getElementById('edit-bio-form').style.display = 'none';
+            document.getElementById('edit-btn').style.display = 'inline-block';
+            document.getElementById('save-btn').style.display = 'none';
+            document.getElementById('cancel-btn').style.display = 'none';
+            document.getElementById('btn-cont').style.display = 'none';
+        }
+
+        function validateBioLength() {
+            var bioTextarea = document.querySelector('textarea[name="UserBio"]');
+            var submitButton = document.getElementById('save-btn');
+            var bioLength = bioTextarea.value.length;
+
+            if (bioLength > 200) {
+                submitButton.disabled = true;
+                document.getElementById('bio-error').style.display = 'block';
+            } else {
+                submitButton.disabled = false;
+                document.getElementById('bio-error').style.display = 'none';
+            }
+        }
+
+        function submitForm() {
+            document.getElementById('bio-form').submit();
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var bioTextarea = document.querySelector('textarea[name="UserBio"]');
+            bioTextarea.addEventListener('input', validateBioLength);
+        });
+    </script>
+}

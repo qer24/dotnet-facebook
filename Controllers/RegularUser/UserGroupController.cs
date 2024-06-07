@@ -51,7 +51,7 @@ namespace dotnet_facebook.Controllers.RegularUser
         {
             if (id == null)
             {
-                return GroupNotFound();
+                return RedirectToAction("GroupNotFound");
             }
 
             var @group = await _context.Groups
@@ -60,7 +60,7 @@ namespace dotnet_facebook.Controllers.RegularUser
                 .FirstOrDefaultAsync(m => m.GroupId == id);
             if (@group == null)
             {
-                return GroupNotFound();
+                return RedirectToAction("GroupNotFound");
             }
 
             var userStringError = "";
@@ -98,7 +98,7 @@ namespace dotnet_facebook.Controllers.RegularUser
                     {
                         if (!GroupExists(@group.GroupId))
                         {
-                            return GroupNotFound();
+                            return RedirectToAction("GroupNotFound");
                         }
                         else
                         {
@@ -111,7 +111,7 @@ namespace dotnet_facebook.Controllers.RegularUser
             GenerateUsersBag();
             GenerateRolesBag();
 
-            return GroupNotFound();
+            return RedirectToAction("GroupNotFound");
         }
 
         private bool GroupExists(int id)
@@ -138,6 +138,23 @@ namespace dotnet_facebook.Controllers.RegularUser
                 Text = r.ToString()
             }).ToList();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateBio(int GroupID, string UserBio)
+        {
+            var group = await _groupService.GetGroupByIdAsync(GroupID);
+            if (group == null)
+            {
+                return RedirectToAction("GroupNotFound");
+            }
+
+            group.GroupDescription = UserBio;
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+
         [HttpGet("GroupNotFound")]
         public IActionResult GroupNotFound()
         {
