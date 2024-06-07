@@ -1,12 +1,14 @@
 ﻿using dotnet_facebook.Controllers.Services;
 using dotnet_facebook.Models.Contexts;
 using dotnet_facebook.Models.DatabaseObjects.Groups;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace dotnet_facebook.Controllers.RegularUser
@@ -29,7 +31,7 @@ namespace dotnet_facebook.Controllers.RegularUser
         [HttpGet("{id?}")]
         [OutputCache(NoStore = true, Duration = 0)]
         public async Task<IActionResult> Index(int? id)
-        {
+            {
             if (id == null)
             {
                 return RedirectToAction("GroupNotFound");
@@ -47,6 +49,7 @@ namespace dotnet_facebook.Controllers.RegularUser
             ViewBag.IsMember = userRole == GroupRole.Member;
             return View(group);
         }
+        [HttpGet("AddUser")]
         public async Task<IActionResult> AddUser(int? id)
         {
             if (id == null)
@@ -140,21 +143,59 @@ namespace dotnet_facebook.Controllers.RegularUser
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateBio(int GroupID, string UserBio)
+        public async Task<IActionResult> UpdateBio(int GroupId, string GroupDescription)
         {
-            var group = await _groupService.GetGroupByIdAsync(GroupID);
+            var group = await _groupService.GetGroupByIdAsync(GroupId);
             if (group == null)
             {
                 return RedirectToAction("GroupNotFound");
             }
 
-            group.GroupDescription = UserBio;
+            group.GroupDescription = GroupDescription;
 
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { id = GroupId });
         }
+        [HttpPost("UpdateGroupPicture")]
+        [EnableCors("AllowAllOrigins")]
+        public async Task<IActionResult> UpdateGroupPicture(IFormFile file, int GroupId)
+        {
+            if (file != null && file.Length > 0)
+            {
+                var group = await _groupService.GetGroupByIdAsync(GroupId);
 
+                if (group == null)
+                {
+                    return Json(new { success = false, message = "Group not found" });
+                }
+
+                var fileExtension = Path.GetExtension(file.FileName);
+                // file name is the user id + the file extension
+                var fileName = $"grouppfp_{group.GroupId}";
+
+                var path = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot/uploadedFiles", fileName + fileExtension);
+
+                // first, delete any existing file with the same name (any extension)
+                var existingFiles = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot/uploadedFiles"), $"{fileName}.*");
+                foreach (var existingFile in existingFiles)
+                {
+                    System.IO.File.Delete(existingFile);
+                }
+
+                using var stream = new FileStream(path, FileMode.Create);
+
+                await file.CopyToAsync(stream);
+
+                group.GroupPictureFileName = fileName + fileExtension;
+
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = "File uploaded successfully" });
+            }
+
+            return Json(new { success = false, message = "No file uploaded" });
+        }
         [HttpGet("GroupNotFound")]
         public IActionResult GroupNotFound()
         {
