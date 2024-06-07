@@ -48,7 +48,69 @@ namespace dotnet_facebook.Controllers.RegularUser
             ViewBag.IsAdmin = userRole == GroupRole.Admin;
             ViewBag.IsMember = userRole == GroupRole.Member || userRole == GroupRole.Moderator || userRole == GroupRole.Admin;
             ViewBag.IsModerator = userRole == GroupRole.Moderator || userRole == GroupRole.Admin;
+            ViewBag.Roles = Enum.GetValues(typeof(GroupRole)).Cast<GroupRole>().Select(r => new SelectListItem
+            {
+                Value = r.ToString(),
+                Text = r.ToString()
+            }).ToList();
             return View(group);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Manage(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var @group = await _context.Groups
+                .Include(g => g.Users)
+                .ThenInclude(gu => gu.User)
+                .FirstOrDefaultAsync(m => m.GroupId == id);
+            if (@group == null)
+            {
+                return NotFound();
+            }
+
+            var selectedUserRoleString = Request.Form["selectedUserRole"];
+            var selectedUserIdStrings = Request.Form["changedRoleUserId"];
+
+            // select first non empty array element from selected user id string
+            var selectedUserIdString = selectedUserIdStrings.FirstOrDefault(s => !string.IsNullOrWhiteSpace(s));
+
+            if (string.IsNullOrWhiteSpace(selectedUserIdString))
+            {
+                ModelState.AddModelError("selectedUserId", "Please select a user.");
+            }
+            else
+            {
+                var selectedUserId = Convert.ToInt32(selectedUserIdString);
+                var groupUser = @group.Users.FirstOrDefault(gu => gu.User.UserId == selectedUserId);
+
+                if (groupUser == null)
+                {
+                    ModelState.AddModelError("selectedUserId", "User not found in group.");
+                }
+                // make sure user is not the last admin in the group
+                else if (groupUser.GroupRole == GroupRole.Admin && @group.Users.Count(gu => gu.GroupRole == GroupRole.Admin) == 1)
+                {
+                    ModelState.AddModelError("selectedUserId", "Cannot remove the last admin from the group.");
+                }
+                else
+                {
+                    var selectedUserRole = Enum.Parse<GroupRole>(selectedUserRoleString);
+                    groupUser.GroupRole = selectedUserRole;
+
+                    _context.Update(@group);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            GenerateUsersBag();
+            GenerateRolesBag();
+
+            return View(@group);
         }
         [HttpGet("AddUser")]
         public async Task<IActionResult> AddUser(int? id)

@@ -141,7 +141,18 @@
                                 <td>@Html.DisplayFor(modelItem => user.GroupRole)</td>
                                 @if ((bool)ViewBag.IsAdmin)
                                 {
-                                    <td><button class="btn rounded-4" onclick="">Change</button></td>
+                                    <td>
+                                        <form asp-action="Manage" method="post" class="form-group form-inline role-change-form">
+                                            <input type="hidden" asp-for="GroupId" value="@Model.GroupId" />
+                                            <select name="selectedUserRole" class="form-control-inline" onchange="updateUserRole(this, @user.User.UserId)">
+                                                <option value="">Change role</option>
+                                                @foreach (var role in ViewBag.Roles)
+                                                {
+                                                    <option value="@role.Value">@role.Text</option>
+                                                }
+                                            </select>
+                                        </form>
+                                    </td>
                                     <td>
                                     <form asp-action="RemoveUser" method="post" id="delete-form">
                                         @Html.AntiForgeryToken()
@@ -353,5 +364,32 @@
             // change the dragText
             document.getElementById('dragText').innerHTML = "Drag a file <i>here</i>.";
         }
+        function updateUserRole(select, userId) {
+            var form = select.closest('form'); // Get the closest form element
+            var formData = new FormData(form); // Create a FormData object from the form
+            formData.append('UserId', userId); // Append the user ID to the form data
+
+            // Perform an AJAX request
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', form.action, true); // Use the form's action attribute as the endpoint
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest'); // Optional: For distinguishing AJAX requests
+
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    console.log('Role updated successfully.');
+                } else {
+                    console.error('Error updating role:', xhr.responseText);
+                }
+            };
+
+            xhr.send(formData); // Send the form data via AJAX
+        }
+
+        // Add an event listener to prevent the form's default submit action
+        document.querySelectorAll('.role-change-form').forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent the default form submission
+            });
+        });
     </script>
 }
