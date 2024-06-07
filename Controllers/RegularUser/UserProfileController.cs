@@ -65,6 +65,11 @@ namespace dotnet_facebook.Controllers.RegularUser
                 return RedirectToAction("UserNotFound");
             }
 
+            if (UserBio == null)
+            {
+                UserBio = "";
+            }
+
             user.UserProfile.UserBio = UserBio;
 
             await context.SaveChangesAsync();

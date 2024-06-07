@@ -151,6 +151,9 @@ namespace dotnet_facebook.Controllers.RegularUser
                 return RedirectToAction("GroupNotFound");
             }
 
+            // if the group bio is null, set it to an empty string
+            GroupDescription ??= "";
+
             group.GroupDescription = GroupDescription;
 
             await _context.SaveChangesAsync();
