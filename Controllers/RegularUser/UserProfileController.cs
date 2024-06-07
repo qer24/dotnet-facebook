@@ -65,10 +65,8 @@ namespace dotnet_facebook.Controllers.RegularUser
                 return RedirectToAction("UserNotFound");
             }
 
-            if (UserBio == null)
-            {
-                UserBio = "";
-            }
+            // if the user bio is null, set it to an empty string
+            UserBio ??= "";
 
             user.UserProfile.UserBio = UserBio;
 
