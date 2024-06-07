@@ -46,7 +46,8 @@ namespace dotnet_facebook.Controllers.RegularUser
 
             ViewBag.localUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
             ViewBag.IsAdmin = userRole == GroupRole.Admin;
-            ViewBag.IsMember = userRole == GroupRole.Member;
+            ViewBag.IsMember = userRole == GroupRole.Member || userRole == GroupRole.Moderator || userRole == GroupRole.Admin;
+            ViewBag.IsModerator = userRole == GroupRole.Moderator || userRole == GroupRole.Admin;
             return View(group);
         }
         [HttpGet("AddUser")]
@@ -142,7 +143,7 @@ namespace dotnet_facebook.Controllers.RegularUser
             }).ToList();
         }
 
-        [HttpPost]
+        [HttpPost("UpdateBio")]
         public async Task<IActionResult> UpdateBio(int GroupId, string GroupDescription)
         {
             var group = await _groupService.GetGroupByIdAsync(GroupId);
@@ -199,6 +200,20 @@ namespace dotnet_facebook.Controllers.RegularUser
 
             return Json(new { success = false, message = "No file uploaded" });
         }
+        [HttpPost("Delete")]
+        public async Task<IActionResult> Delete(int GroupId)
+        {
+            var @group = await _context.Groups.FindAsync(GroupId);
+            if (@group != null)
+            {
+                _context.Groups.Remove(@group);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("GroupNotFound");
+        }
+
+
         [HttpGet("GroupNotFound")]
         public IActionResult GroupNotFound()
         {
