@@ -27,6 +27,6 @@ namespace dotnet_facebook.Models.DatabaseObjects.Groups
 
         public virtual ICollection<Post>? GroupPosts { get; set; }
         [ValidateNever] public virtual ICollection<GroupUser> Users { get; set; }
-        public virtual ICollection<Tag>? Tags { get; set; }
+        [ValidateNever] public virtual ICollection<Tag>? Tags { get; set; }
     }
 }

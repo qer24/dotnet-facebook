@@ -63,6 +63,15 @@
             <input type="text" id="GroupDescription" name="GroupDescription" class="form-control">
         </div>
         <!-- Include other form fields as needed -->
+        <div class="form-floating multi-select w-50 float-end me-2 rounded-top-4">
+            <select class="form-select" name="selectedTagIds" multiple>
+                @foreach (var tag in ViewBag.Tags)
+                {
+                    <option value="@tag.Value">@tag.Text</option>
+                }
+            </select>
+            <label>Select Tags</label>
+        </div>
         <button type="submit" class="btn btn-success">Create</button>
         <button type="button" class="btn btn-secondary" onclick="toggleCreateGroupPanel()">Cancel</button>
     </form>
