@@ -10,23 +10,26 @@ namespace dotnet_facebook.Controllers.RegularUser;
 
 public class UserHomeController(TestContext context, UserService userService, PostService postService, TagsService tagsService) : Controller
 {
-    private static int _currentPostCount = 0;
-
     // GET: UserHome/Error
-    [HttpGet("UserHome/{error?}")]
-    public async Task<IActionResult> Index(string? error = null)
+    [HttpGet("UserHome/{route?}")]
+    public async Task<IActionResult> Index(string? route = null)
     {
         // if error is a name of any action, show just the index
-        if (error != null && error == nameof(LoadMorePosts) && !error.Equals("Index", StringComparison.CurrentCultureIgnoreCase))
+        if (route != null && route == nameof(LoadPosts) && !route.Equals("Index", StringComparison.CurrentCultureIgnoreCase))
         {
-            error = null;
+            route = null;
         }
 
-        return await Index(new List<MainPost>(), error);
+        if (int.TryParse(route, out var tagFilter))
+        {
+            return await Index([], null, tagFilter);
+        }
+
+        return await Index([], route);
     }
 
     // GET: UserHome
-    public async Task<IActionResult> Index(List<MainPost> postsToView, string? error = null)
+    public async Task<IActionResult> Index(List<MainPost> postsToView, string? error = null, int? tagFilter = null)
     {
         tagsService.GenerateTagsBag(ViewBag);
         userService.GenerateLocalUserBag(ViewBag, User);
@@ -38,8 +41,7 @@ public class UserHomeController(TestContext context, UserService userService, Po
 
         if (postsToView.Count == 0)
         {
-            _currentPostCount = 0;
-            return await LoadMorePosts(error);
+            return await LoadPosts(error, tagFilter);
         }
 
         if (error != null)
@@ -50,23 +52,57 @@ public class UserHomeController(TestContext context, UserService userService, Po
         return View(postsToView);
     }
 
-    public async Task<IActionResult> LoadMorePosts(string? error = null)
+    public async Task<IActionResult> LoadPosts(string? error = null, int? tagFilter = null)
     {
         tagsService.GenerateTagsBag(ViewBag);
         userService.GenerateLocalUserBag(ViewBag, User);
 
-        _currentPostCount += 5;
+        // tagFilter = -2 - all posts
+        // tagFilter = -1 - all posts made by friends or user
+        // tagFilter >= 0 - all posts with the tag id
+        List<MainPost> posts = [];
+        if (tagFilter == null || tagFilter == -2)
+        {
+            posts = await context.MainPosts
+                .OrderByDescending(p => p.PostId)
+                .Include(p => p.OwnerUser)
+                .ThenInclude(u => u.UserProfile)
+                .Include(p => p.Likes)
+                .Include(p => p.Tags)
+                .ToListAsync();
+        }
+        else if (tagFilter == -1)
+        {
+            var localUser = await userService.GetLocalUserAsync(User);
 
-        var posts = await context.MainPosts
-            .OrderByDescending(p => p.PostId)
-            .Take(_currentPostCount)
-            .Include(p => p.OwnerUser)
-            .ThenInclude(u => u.UserProfile)
-            .Include(p => p.Likes)
-            .Include(p => p.Tags)
-            .ToListAsync();
+            if (localUser == null)
+            {
+                return RedirectToAction("Login", "Home");
+            }
 
-        _currentPostCount = posts.Count;
+            var userFriends = await userService.GetFriendsAsync(localUser.UserId);
+            var friendIds = userFriends.Select(f => f.UserId).ToList();
+
+            posts = await context.MainPosts
+                .OrderByDescending(p => p.PostId)
+                .Where(p => p.OwnerUser.UserId == localUser.UserId || friendIds.Contains(p.OwnerUser.UserId))
+                .Include(p => p.OwnerUser)
+                .ThenInclude(u => u.UserProfile)
+                .Include(p => p.Likes)
+                .Include(p => p.Tags)
+                .ToListAsync();
+        }
+        else
+        {
+            posts = await context.MainPosts
+                .Where(p => p.Tags.Any(t => t.TagId == tagFilter))
+                .OrderByDescending(p => p.PostId)
+                .Include(p => p.OwnerUser)
+                .ThenInclude(u => u.UserProfile)
+                .Include(p => p.Likes)
+                .Include(p => p.Tags)
+                .ToListAsync();
+        }
 
         if (error != null)
         {
@@ -163,7 +199,7 @@ public class UserHomeController(TestContext context, UserService userService, Po
         {
             return RedirectToAction(nameof(Index));
         }
-        return RedirectToAction("Index", new { error = ModelState.IsValid ? null : ModelState.Values.First().Errors.First().ErrorMessage });
+        return RedirectToAction("Index", new { route = ModelState.IsValid ? null : ModelState.Values.First().Errors.First().ErrorMessage });
     }
 
     // GET: UserHome/ViewPost/5

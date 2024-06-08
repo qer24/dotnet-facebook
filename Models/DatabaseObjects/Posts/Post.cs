@@ -21,6 +21,7 @@ namespace dotnet_facebook.Models.DatabaseObjects.Posts
         [StringLength(200, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 1)]
         public string Content { get; set; }
 
-        public virtual ICollection<Like>? Likes { get; set; }
+        [ValidateNever]
+        public virtual ICollection<Like> Likes { get; set; }
     }
 }
