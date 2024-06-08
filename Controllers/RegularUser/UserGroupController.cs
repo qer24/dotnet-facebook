@@ -107,7 +107,9 @@ public class UserGroupController(TestContext context, GroupService groupService,
     [HttpPost("AddUser")]
     public async Task<IActionResult> AddUser(int? GroupId)
     {
+
         var localUser = await userService.GetLocalUserAsync(User);
+        int userId = localUser.UserId;
 
         if (GroupId == null)
         {
@@ -126,14 +128,13 @@ public class UserGroupController(TestContext context, GroupService groupService,
         var userStringError = "";
 
         // if user is already in the group, throw error
-        var selectedUserId= localUser.UserId;
-        if (selectedUserId == null)
+        if (localUser.UserId == null)
         {
             userStringError = "Please select a user.";
         }
         else
         {
-            var userAlreadyInGroup = @group.Users.Any(gu => gu.User.UserId == selectedUserId);
+            var userAlreadyInGroup = @group.Users.Any(gu => gu.User.UserId == localUser.UserId);
 
             if (userAlreadyInGroup)
             {
@@ -141,7 +142,7 @@ public class UserGroupController(TestContext context, GroupService groupService,
             }
             else
             {
-                var user = context.Users.Find(selectedUserId);
+                var user = context.Users.Find(localUser.UserId);
                 @group.Users.Add(new GroupUser
                 {
                     User = user,
@@ -269,10 +270,8 @@ public class UserGroupController(TestContext context, GroupService groupService,
         return RedirectToAction("GroupList");
     }
     [HttpPost("RemoveUser")]
-    public async Task<IActionResult> RemoveUser(int? groupId)
+    public async Task<IActionResult> RemoveUser(int? userId, int? groupId)
     {
-        var localUser = await userService.GetLocalUserAsync(User);
-        int userId = localUser.UserId;
         if (userId == null || groupId == null)
         {
             return NotFound();
