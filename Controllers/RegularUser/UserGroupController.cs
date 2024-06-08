@@ -19,12 +19,14 @@ namespace dotnet_facebook.Controllers.RegularUser
         private readonly TestContext _context;
         private readonly GroupService _groupService;
         private readonly UserService _userservice;
+        private readonly TagsService _tagsService;
 
-        public UserGroupController(TestContext context, GroupService groupService, UserService userservice)
+        public UserGroupController(TestContext context, GroupService groupService, UserService userservice, TagsService tagsService)
         {
             _context = context;
             _groupService = groupService;
             _userservice = userservice;
+            _tagsService = tagsService;
         }
 
         // GET: UserGroup
@@ -44,15 +46,19 @@ namespace dotnet_facebook.Controllers.RegularUser
             }
             var userRole = group.Users.FirstOrDefault(u => u.User.Nickname == User.Identity.Name)?.GroupRole;
 
+            _tagsService.GenerateTagsBag(ViewBag);
+
             ViewBag.localUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
             ViewBag.IsAdmin = userRole == GroupRole.Admin;
             ViewBag.IsMember = userRole == GroupRole.Member || userRole == GroupRole.Moderator || userRole == GroupRole.Admin;
             ViewBag.IsModerator = userRole == GroupRole.Moderator || userRole == GroupRole.Admin;
+            ViewBag.Tags = group.Tags;
             ViewBag.Roles = Enum.GetValues(typeof(GroupRole)).Cast<GroupRole>().Select(r => new SelectListItem
             {
                 Value = r.ToString(),
                 Text = r.ToString()
             }).ToList();
+
             return View(group);
         }
 
@@ -290,7 +296,7 @@ namespace dotnet_facebook.Controllers.RegularUser
             // Can't remove last admin
             if (@group.Users.Count(gu => gu.GroupRole == GroupRole.Admin) == 1 && @group.Users.Any(gu => gu.User.UserId == userId && gu.GroupRole == GroupRole.Admin))
             {
-                return RedirectToAction("GroupNotFound");
+                return RedirectToAction("Index", new { id = @group.GroupId });
             }
 
             var groupUser = @group.Users.FirstOrDefault(gu => gu.User.UserId == userId);
@@ -307,34 +313,33 @@ namespace dotnet_facebook.Controllers.RegularUser
         [HttpGet("GroupList")]
         public async Task<IActionResult> GroupList()
         {
+            _tagsService.GenerateTagsBag(ViewBag);
             ViewBag.localUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var groups = await _userservice.GetGroupsForLocalUserAsync(User);
             return View(groups); // Or return Json(groups) if you prefer a JSON response
         }
         [HttpPost("Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("GroupId,GroupName,GroupDescription,GroupPictureFileName")] dotnet_facebook.Models.DatabaseObjects.Groups.Group @group)
+        public async Task<IActionResult> Create([Bind("GroupName,GroupDescription,Tags")] dotnet_facebook.Models.DatabaseObjects.Groups.Group group, string selectedUserId, string[] selectedTagIds)
         {
-            var selectedUserIdString = Request.Form["selectedUserId"];
-
-            if (string.IsNullOrWhiteSpace(selectedUserIdString))
+            if (string.IsNullOrWhiteSpace(selectedUserId))
             {
                 ModelState.AddModelError("selectedUserId", "Please select a user.");
             }
             else
             {
-                var selectedUserId = Convert.ToInt32(selectedUserIdString);
-                var user = _context.Users.Find(selectedUserId);
-                group.Users =
-                [
-                    new GroupUser
-                    {
-                        User = user,
-                        Group = group,
-                        GroupRole = GroupRole.Admin
-                    },
-                ];
+                var selectedUserIdInt = Convert.ToInt32(selectedUserId);
+                var user = await _context.Users.FindAsync(selectedUserIdInt);
+                group.Users = new List<GroupUser>
+        {
+            new GroupUser
+            {
+                User = user,
+                GroupRole = GroupRole.Admin
             }
+        };
+            }
+
             group.GroupCreationDate = DateTime.Now;
 
             if (_context.Groups.Any(g => g.GroupName == group.GroupName))
@@ -342,17 +347,26 @@ namespace dotnet_facebook.Controllers.RegularUser
                 ModelState.AddModelError("GroupName", "Group Name already exists!");
             }
 
+            // Retrieve selected tags from their IDs
+            var selectedTags = await _context.Tags.Where(t => selectedTagIds.Contains(t.TagId.ToString())).ToListAsync();
+
+            // Assign selected tags to the group
+            group.Tags = selectedTags;
+
             if (ModelState.IsValid)
             {
-                _context.Add(@group);
+                _context.Add(group);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index", new { id = @group.GroupId });
+                return RedirectToAction("Index", new { id = group.GroupId });
             }
 
             // Repopulate ViewBag.Users to maintain the data on validation failure
             GenerateUsersBag();
 
-            return View(@group);
+            // Populate ViewBag.Tags to maintain the data on validation failure
+            ViewBag.Tags = await _context.Tags.Select(t => new SelectListItem { Value = t.TagId.ToString(), Text = t.TagName }).ToListAsync();
+
+            return View(group);
         }
 
         [HttpGet("GroupNotFound")]
