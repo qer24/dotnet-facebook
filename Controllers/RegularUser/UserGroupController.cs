@@ -269,8 +269,10 @@ public class UserGroupController(TestContext context, GroupService groupService,
         return RedirectToAction("GroupList");
     }
     [HttpPost("RemoveUser")]
-    public async Task<IActionResult> RemoveUser(int? userId, int? groupId)
+    public async Task<IActionResult> RemoveUser(int? groupId)
     {
+        var localUser = await userService.GetLocalUserAsync(User);
+        int userId = localUser.UserId;
         if (userId == null || groupId == null)
         {
             return NotFound();

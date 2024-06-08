@@ -65,9 +65,12 @@
         </button>
         @if((bool)ViewBag.IsMember || (bool)ViewBag.IsModerator)
         {
-            <button class="btn btn-secondary rounded-4" data-bs-toggle="modal" data-bs-target="#membersModal">
-                <p class="m-0 text-center text-black">Leave Group</p>
-            </button>
+            <form asp-action="RemoveUser" method="post" id=" leave-group-form" class="row h-25 bg-secondary mx-3 rounded-4 justify-content-center align-items-center">
+                <button type="submit" class="btn btn-secondary rounded-4">
+                    <p class="m-0 text-center text-black">Leave Group</p>
+                </button>
+                <input type="hidden" name="GroupId" value="@Model.GroupId" />
+            </form>
         }
         else
         {
