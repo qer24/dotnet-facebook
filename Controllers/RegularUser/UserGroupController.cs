@@ -317,6 +317,7 @@ namespace dotnet_facebook.Controllers.RegularUser
         [HttpGet("GroupList")]
         public async Task<IActionResult> GroupList()
         {
+            ViewBag.localUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var groups = await _userservice.GetGroupsForLocalUserAsync(User);
             return View(groups); // Or return Json(groups) if you prefer a JSON response
         }

@@ -54,7 +54,7 @@
 <div class="create-group-panel" id="createGroupPanel" style="display: none;">
     <h3>Create New Group</h3>
     <form asp-action="Create" method="post">
-        <input type="hidden" name="selectedUserId" value="4" />
+        <input type="hidden" name="selectedUserId" value="@ViewBag.localUser" />
         <!-- Include your form fields for creating a new group here -->
         <div class="form-group">
             <label for="groupName">Group Name</label>
