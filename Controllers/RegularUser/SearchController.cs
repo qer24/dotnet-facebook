@@ -57,6 +57,11 @@ namespace dotnet_facebook.Controllers.RegularUser
                 .ToListAsync();
 
             //query groups
+            searchModel.Groups = await context.Groups
+                .Where(g => g.GroupName.Contains(q))
+                .Include(g => g.Tags)
+                .Include(g => g.Users)
+                .ToListAsync();
 
             //order posts by id
             searchModel.Posts = searchModel.Posts.OrderByDescending(p => p.PostId).ToList();

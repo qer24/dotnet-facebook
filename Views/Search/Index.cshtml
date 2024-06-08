@@ -92,6 +92,7 @@
                             {
                                 <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="~/uploadedFiles/@item.UserProfile.ProfilePictureFileName" alt="Profile Picture">
                             }
+                            <br />
                             <p class="bg-white rounded-4 m-2 d-inline-block w-auto px-3 text-center">@item.Nickname</p>
                         </a>
                     </div>
@@ -101,7 +102,30 @@
     </div>
     <div class="container bg-secondary rounded-4 m-0 my-2 py-3 tab-content d-none" id="groups">
         <div class="row m-0 p-0">
-            <p class="m-0 p-0 text-center opacity-25">No Groups Found!</p>
+            @if (Model.Users.Count == 0)
+            {
+                <p class="m-0 p-0 text-center opacity-25">No Groups Found!</p>
+            }
+            else
+            {
+                @foreach (var item in Model.Groups)
+                {
+                    <div class="w-100 bg-white bg-opacity-25 rounded-4 my-2 py-2">
+                        <a class="w-25" asp-action="Index" asp-controller="UserGroup" asp-route-id="@item.GroupId">
+                            @if (string.IsNullOrEmpty(item.GroupPictureFileName))
+                            {
+                                <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="~/defaultUser.jpg" alt="Group Picture">
+                            }
+                            else
+                            {
+                                <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="~/uploadedFiles/@item.GroupPictureFileName" alt="Group Picture">
+                            }
+                            <br />
+                            <p class="bg-white rounded-4 m-2 d-inline-block w-auto px-3 text-center">@item.GroupName - @item.Users.Count user(s)</p>
+                        </a>
+                    </div>
+                }
+            }
         </div>
     </div>
 </div>
