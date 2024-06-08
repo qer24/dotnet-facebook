@@ -104,10 +104,12 @@ public class UserGroupController(TestContext context, GroupService groupService,
         return Json(new { success = true });
     }
 
-    [HttpGet("AddUser")]
-    public async Task<IActionResult> AddUser(int? id)
+    [HttpPost("AddUser")]
+    public async Task<IActionResult> AddUser(int? GroupId)
     {
-        if (id == null)
+        var localUser = await userService.GetLocalUserAsync(User);
+
+        if (GroupId == null)
         {
             return RedirectToAction("GroupNotFound");
         }
@@ -115,7 +117,7 @@ public class UserGroupController(TestContext context, GroupService groupService,
         var @group = await context.Groups
             .Include(g => g.Users)
             .ThenInclude(gu => gu.User)
-            .FirstOrDefaultAsync(m => m.GroupId == id);
+            .FirstOrDefaultAsync(m => m.GroupId == GroupId);
         if (@group == null)
         {
             return RedirectToAction("GroupNotFound");
@@ -124,14 +126,14 @@ public class UserGroupController(TestContext context, GroupService groupService,
         var userStringError = "";
 
         // if user is already in the group, throw error
-        var selectedUserIdString = Request.Form["selectedUserId"];
-        if (string.IsNullOrWhiteSpace(selectedUserIdString))
+        var selectedUserId= localUser.UserId;
+        if (selectedUserId == null)
         {
             userStringError = "Please select a user.";
         }
         else
         {
-            var userAlreadyInGroup = @group.Users.Any(gu => gu.User.UserId == Convert.ToInt32(selectedUserIdString));
+            var userAlreadyInGroup = @group.Users.Any(gu => gu.User.UserId == selectedUserId);
 
             if (userAlreadyInGroup)
             {
@@ -139,7 +141,7 @@ public class UserGroupController(TestContext context, GroupService groupService,
             }
             else
             {
-                var user = context.Users.Find(Convert.ToInt32(selectedUserIdString));
+                var user = context.Users.Find(selectedUserId);
                 @group.Users.Add(new GroupUser
                 {
                     User = user,
@@ -169,7 +171,7 @@ public class UserGroupController(TestContext context, GroupService groupService,
         GenerateUsersBag();
         GenerateRolesBag();
 
-        return RedirectToAction("GroupNotFound");
+        return RedirectToAction("Index", new { id = @group.GroupId });
     }
 
     private bool GroupExists(int id)
