@@ -31,6 +31,8 @@ public class PostService(TestContext context, UserService userService)
             {
                 mainPost.PostLocation = "";
             }
+
+            mainPost.Tags = [];
         }
         else if (post is Comment comment)
         {
@@ -44,6 +46,8 @@ public class PostService(TestContext context, UserService userService)
                 comment.ParentPost = parentPost;
             }
         }
+
+        post.Likes = [];
 
         var localUser = await userService.GetLocalUserAsync(user);
         if (localUser == null)
