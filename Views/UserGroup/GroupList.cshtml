@@ -8,12 +8,32 @@
 @section Styles
 {
     <link rel="stylesheet" href="~/css/profilestyles.css" />
+    <style>
+        .create-group-panel {
+            position: fixed;
+            top: 50px; /* Adjust as needed */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            z-index: 1000;
+            display: none; /* Initially hidden */
+        }
+    </style>
 }
 
 <div class="card">
+    <!-- Button for creating a new group -->
+    <div class="bio">
+        <button class="btn btn-primary" onclick="toggleCreateGroupPanel()">Create New Group</button>
+    </div>
+
+    <!-- Display existing groups -->
     @foreach (var group in Model)
     {
-
         <div class="w-100 bg-secondary rounded-4 my-2 p-2 clickable-div"
              onclick="window.location='@Url.Action("Index", "UserGroup", new { id = group.GroupId })';"
              style="cursor: pointer;">
@@ -29,3 +49,31 @@
         </div>
     }
 </div>
+
+<!-- Create group panel -->
+<div class="create-group-panel" id="createGroupPanel" style="display: none;">
+    <h3>Create New Group</h3>
+    <form asp-action="Create" method="post">
+        <input type="hidden" name="selectedUserId" value="4" />
+        <!-- Include your form fields for creating a new group here -->
+        <div class="form-group">
+            <label for="groupName">Group Name</label>
+            <input type="text" id="groupName" name="groupName" class="form-control" required>
+            <label for="GroupDescription">Group Description</label>
+            <input type="text" id="GroupDescription" name="GroupDescription" class="form-control">
+        </div>
+        <!-- Include other form fields as needed -->
+        <button type="submit" class="btn btn-success">Create</button>
+        <button type="button" class="btn btn-secondary" onclick="toggleCreateGroupPanel()">Cancel</button>
+    </form>
+</div>
+
+@section Scripts
+{
+    <script>
+        function toggleCreateGroupPanel() {
+            var panel = document.getElementById('createGroupPanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
+}

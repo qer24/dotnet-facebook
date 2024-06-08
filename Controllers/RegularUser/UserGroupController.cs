@@ -272,7 +272,7 @@ namespace dotnet_facebook.Controllers.RegularUser
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction("GroupNotFound");
+            return RedirectToAction("GroupList");
         }
         [HttpPost("RemoveUser")]
         public async Task<IActionResult> RemoveUser(int? userId, int? groupId)
@@ -319,6 +319,49 @@ namespace dotnet_facebook.Controllers.RegularUser
         {
             var groups = await _userservice.GetGroupsForLocalUserAsync(User);
             return View(groups); // Or return Json(groups) if you prefer a JSON response
+        }
+        [HttpPost("Create")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("GroupId,GroupName,GroupDescription,GroupPictureFileName")] dotnet_facebook.Models.DatabaseObjects.Groups.Group @group)
+        {
+            var selectedUserIdString = Request.Form["selectedUserId"];
+
+            if (string.IsNullOrWhiteSpace(selectedUserIdString))
+            {
+                ModelState.AddModelError("selectedUserId", "Please select a user.");
+            }
+            else
+            {
+                var selectedUserId = Convert.ToInt32(selectedUserIdString);
+                var user = _context.Users.Find(selectedUserId);
+                group.Users =
+                [
+                    new GroupUser
+                    {
+                        User = user,
+                        Group = group,
+                        GroupRole = GroupRole.Admin
+                    },
+                ];
+            }
+            group.GroupCreationDate = DateTime.Now;
+
+            if (_context.Groups.Any(g => g.GroupName == group.GroupName))
+            {
+                ModelState.AddModelError("GroupName", "Group Name already exists!");
+            }
+
+            if (ModelState.IsValid)
+            {
+                _context.Add(@group);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index", new { id = @group.GroupId });
+            }
+
+            // Repopulate ViewBag.Users to maintain the data on validation failure
+            GenerateUsersBag();
+
+            return View(@group);
         }
 
         [HttpGet("GroupNotFound")]
