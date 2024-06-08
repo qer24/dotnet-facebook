@@ -64,6 +64,7 @@ public class UserHomeController(TestContext context, UserService userService, Po
         if (tagFilter == null || tagFilter == -2)
         {
             posts = await context.MainPosts
+                .Where(p => p.ParentGroup == null)
                 .OrderByDescending(p => p.PostId)
                 .Include(p => p.OwnerUser)
                 .ThenInclude(u => u.UserProfile)
@@ -84,6 +85,7 @@ public class UserHomeController(TestContext context, UserService userService, Po
             var friendIds = userFriends.Select(f => f.UserId).ToList();
 
             posts = await context.MainPosts
+                .Where(p => p.ParentGroup == null)
                 .OrderByDescending(p => p.PostId)
                 .Where(p => p.OwnerUser.UserId == localUser.UserId || friendIds.Contains(p.OwnerUser.UserId))
                 .Include(p => p.OwnerUser)
@@ -95,6 +97,7 @@ public class UserHomeController(TestContext context, UserService userService, Po
         else
         {
             posts = await context.MainPosts
+                .Where(p => p.ParentGroup == null)
                 .Where(p => p.Tags.Any(t => t.TagId == tagFilter))
                 .OrderByDescending(p => p.PostId)
                 .Include(p => p.OwnerUser)

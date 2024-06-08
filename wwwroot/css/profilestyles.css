@@ -23,14 +23,14 @@
     /* float: left; */
     display: flex;
     justify-content: space-between;
-    overflow: hidden;
+    /*overflow: hidden;*/
 
 
 }
 
-.btn {
+/*.btn {
     background-color: #e0e0e0;
-}
+}*/
 
     .btn:hover {
         background: linear-gradient(135deg, #8e44ad, #3498db);

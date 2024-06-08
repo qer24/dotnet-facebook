@@ -38,7 +38,7 @@
     <div class="buttons my-2">
         @if (User.Identity.IsAuthenticated && User.Identity.Name == Model.Nickname)
         {
-            <button class="btn rounded-4" data-bs-toggle="modal" data-bs-target="#changePfp">Change Profile Picture</button>
+            <button class="btn rounded-4 text-black btn-secondary" data-bs-toggle="modal" data-bs-target="#changePfp">Change Profile Picture</button>
         }
         else
         {
@@ -56,10 +56,10 @@
 
         @if (User.Identity.IsAuthenticated && User.Identity.Name == Model.Nickname)
         {
-            <button class="btn rounded-4" id="edit-btn" onclick="showEditForm()">Edit bio</button>
+            <button class="btn btn-secondary rounded-4 text-black" id="edit-btn" onclick="showEditForm()">Edit bio</button>
             <div id="btn-cont" style="display: none;">
-            <button class="btn rounded-4" id="save-btn" style="display:none;" onclick="submitForm()">Save</button>
-            <button class="btn rounded-4" id="cancel-btn" style="display:none;" onclick="hideEditForm()">Cancel</button>
+                <button class="btn btn-secondary rounded-4 text-black" id="save-btn" style="display:none;" onclick="submitForm()">Save</button>
+                <button class="btn btn-secondary rounded-4 text-black" id="cancel-btn" style="display:none;" onclick="hideEditForm()">Cancel</button>
             </div>
         }
         @* else 

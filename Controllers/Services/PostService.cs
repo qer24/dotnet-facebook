@@ -32,7 +32,10 @@ public class PostService(TestContext context, UserService userService)
                 mainPost.PostLocation = "";
             }
 
-            mainPost.Tags = [];
+            if (mainPost.Tags == null)
+            {
+                mainPost.Tags = [];
+            }
         }
         else if (post is Comment comment)
         {

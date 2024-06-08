@@ -60,20 +60,20 @@
         </div>
     </div>
     <div class="buttons my-2">
-        <button class="btn rounded-4" data-bs-toggle="modal" data-bs-target="#membersModal">
-            <p class="m-0 text-center">Show members</p>
+        <button class="btn btn-secondary rounded-4" data-bs-toggle="modal" data-bs-target="#membersModal">
+            <p class="m-0 text-center text-black">Show members</p>
         </button>
         @if((bool)ViewBag.IsMember || (bool)ViewBag.IsModerator)
         {
-            <button class="btn rounded-4" data-bs-toggle="modal" data-bs-target="#membersModal">
-                <p class="m-0 text-center">Leave Group</p>
+            <button class="btn btn-secondary rounded-4" data-bs-toggle="modal" data-bs-target="#membersModal">
+                <p class="m-0 text-center text-black">Leave Group</p>
             </button>
         }
         else
         {
-            <form asp-action="AddUser" asp-route-id="@ViewBag.localUser" id=" join-group-form" class="row h-25 bg-secondary mx-3 rounded-4 justify-content-center align-items-center">
-                <button type="submit" class="btn rounded-4">
-                    <p class="m-0 text-center">Join Group</p>
+            <form asp-action="AddUser" asp-route-id="@ViewBag.LocalUser.UserId" id=" join-group-form" class="row h-25 bg-secondary mx-3 rounded-4 justify-content-center align-items-center">
+                <button type="submit" class="btn btn-secondary rounded-4">
+                    <p class="m-0 text-center text-black">Join Group</p>
                 </button>
             </form>
 
@@ -81,26 +81,26 @@
 
     </div>
     <!-- Tags section -->
-        <div id="tags-section">
-            <h5>Tags</h5>
-            <ul>
-                @foreach (var tag in ViewBag.Tags)
-                {
-                    <li>@tag.TagName</li>
-                }
-            </ul>
-        </div>
+    <p class="w-auto h-auto mt-2">
+        <i>
+            @foreach (var tag in ViewBag.GroupTags)
+            {
+                <span class="badge bg-primary opacity-50 rounded-4">@tag.TagName</span>
+            }
+        </i>
+    </p>
+
     <div class="buttons my-2">
         </button>
         @if ((bool)ViewBag.IsAdmin){
-            <button class="btn rounded-4" id="delete-btn" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete Group</button>
+            <button class="btn btn-secondary rounded-4 text-black" id="delete-btn" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete Group</button>
         }
         @if ((bool)ViewBag.IsModerator)
         {
-            <button class="btn rounded-4" data-bs-toggle="modal" data-bs-target="#changePfp">Change Picture</button>
-            <button class="btn rounded-4" id="edit-btn" onclick="showEditForm()">Edit bio</button>
-            <button class="btn rounded-4" id="save-btn" style="display:none;" onclick="submitForm()">Save</button>
-            <button class="btn rounded-4" id="cancel-btn" style="display:none;" onclick="hideEditForm()">Cancel</button>
+            <button class="btn btn-secondary rounded-4 text-black" data-bs-toggle="modal" data-bs-target="#changePfp">Change Picture</button>
+            <button class="btn btn-secondary rounded-4 text-black" id="edit-btn" onclick="showEditForm()">Edit bio</button>
+            <button class="btn btn-secondary rounded-4 text-black" id="save-btn" style="display:none;" onclick="submitForm()">Save</button>
+            <button class="btn btn-secondary rounded-4 text-black" id="cancel-btn" style="display:none;" onclick="hideEditForm()">Cancel</button>
             
         }
         else if ((bool)ViewBag.IsMember)
@@ -121,6 +121,114 @@
             <div id="bio-error" style="color: red; display: none;">Bio needs to be less than 200 characters long.</div>
         </form>
     </div>
+
+    <hr class="my-5 mx-5" />
+
+    <form asp-action="NewPost">
+        <input type="hidden" value="@Model.GroupId" name="GroupId"/>
+        <div class="row p-0 m-0">
+            <div class="col p-0 m-0">
+                <div class="d-inline-block">
+                    @if (string.IsNullOrEmpty(ViewBag.LocalUser.UserProfile.ProfilePictureFileName))
+                    {
+                        <img class="rounded-4 d-inline-block mx-2" style="height:48px; width:48px" src="~/defaultUser.jpg" alt="pfp">
+                    }
+                    else
+                    {
+                        <img class="rounded-4 d-inline-block mx-2" style="height:48px; width:48px" src="~/uploadedFiles/@ViewBag.LocalUser.UserProfile.ProfilePictureFileName" alt="pfp">
+                    }
+                    <span>@ViewBag.LocalUser.Nickname</span>
+                </div>
+                <div class="form-floating multi-select w-50 float-end me-2 rounded-top-4">
+                    <select class="form-select" name="selectedTagIds" multiple>
+                        @foreach (var tag in ViewBag.Tags)
+                        {
+                            <option value="@tag.Value">@tag.Text</option>
+                        }
+                    </select>
+                    <label>Select Tags</label>
+                </div>
+                <div class="form-floating form-floating-outlined-primary w-100 p-2 m-0 d-flex rounded-4">
+                    <textarea maxlength="200" type="text" class="form-control overflow-visible" name="Content" id="post-outline" autocomplete="off" style="resize:none; height:150px"></textarea>
+                    <label for="post-outline">New Post</label>
+                </div>
+                <span class="text-danger">@Html.ValidationMessage("Content")</span>
+                <button type="submit" value="NewPost" class="btn btn-outline-primary p-2 my-2 w-100 rounded-4">
+                    Post!
+                    <span class="ripple-surface"></span>
+                </button>
+
+            </div>
+        </div>
+    </form>
+
+    <hr class="my-5 mx-5" />
+
+    @foreach (var post in ViewBag.GroupPosts)
+    {
+        <div class="bg-secondary w-100 h-auto rounded-4 container my-3">
+            <div class="row h-100">
+                <div class="col p-2">
+                    <a asp-action="Index" asp-controller="UserProfile" asp-route-id="@post.OwnerUser.UserId">
+                        @if (string.IsNullOrEmpty(post.OwnerUser.UserProfile.ProfilePictureFileName))
+                        {
+                            <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="~/defaultUser.jpg" alt="Profile Picture">
+                        }
+                        else
+                        {
+                            <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="~/uploadedFiles/@post.OwnerUser.UserProfile.ProfilePictureFileName" alt="Profile Picture">
+                        }
+
+                        <span class="bg-white rounded-4 m-2 d-inline-block w-auto px-3 text-center">
+                            @post.OwnerUser.Nickname
+                        </span>
+                    </a>
+                </div>
+                <div class="col-9 p-2 m-2">
+                    <p class="w-auto text-black-50" style="height:5%">
+                        <i>
+                            @post.PostDate.ToString("dd/MM/yyyy HH:mm")
+                        </i>
+                    </p>
+                    <div class="bg-white w-auto h-auto rounded-4 container py-2" style="height:70%">
+                        <p>
+                            @post.Content
+                        </p>
+                    </div>
+                    @if (post.Tags != null && post.Tags.Count > 0)
+                    {
+                        <p class="w-auto h-auto mt-2">
+                            <i>
+                                @foreach (var tag in post.Tags)
+                                {
+                                    <span class="badge bg-primary opacity-50 rounded-4">@tag.TagName</span>
+                                }
+                            </i>
+                        </p>
+                    }
+                    <div class="container" style="height:20%">
+                        <div class="row h-100">
+                            <div class="col p-0">
+                                <button class="h-auto w-auto btn btn-primary my-2 rounded-4" id="likeButton" onclick="likePost(@post.PostId)">Like</button>
+                                <span class="d-inline-block my-2 py-0 h-auto w-auto btn btn-primary disabled rounded-4" id="likeCount-@post.PostId">@post.Likes!.Count</span>
+                            </div>
+                            <div class="col p-0">
+                                <a asp-action="ViewPost" asp-route-id="@post.PostId" asp-controller="UserHome" class="h-auto w-auto btn btn-primary my-2 rounded-4">Reply</a>
+                            </div>
+                            <div class="col-6 p-0">
+                                @if (post.PostLocation != null)
+                                {
+                                    <span class="h-auto w-auto btn disabled btn-primary my-2 float-end opacity-100 rounded-4">
+                                        <i>@post.PostLocation</i>
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 </div>
 
 <div class="modal fade" id="membersModal" tabindex="-1" aria-labelledby="membersModalLabel" aria-hidden="true">
@@ -404,6 +512,78 @@
             form.addEventListener('submit', function (event) {
                 event.preventDefault(); // Prevent the default form submission
             });
+
+            getLocation();
         });
+
+        function likePost(postId) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("LikePost", "UserHome")',
+                data: { postId: postId },
+                success: function (data) {
+                    // get like count span
+                    var likeCountSpan = document.getElementById('likeCount-' + postId);
+                    if (data.alreadyLiked) {
+                        // decrement like by 1
+                        likeCountSpan.innerHTML = parseInt(likeCountSpan.innerHTML) - 1;
+                    }
+                    else {
+                        // increment like by 1
+                        likeCountSpan.innerHTML = parseInt(likeCountSpan.innerHTML) + 1;
+                    }
+                },
+                error: function (xhr, status, error) {
+
+                }
+            });
+        }
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(sendPosition, showError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function sendPosition(position) {
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+
+            console.log("Latitude: " + lat + ", Longitude: " + lon);  // Debugging log
+
+            // Send the location data to the server using AJAX
+            fetch('/Home/SaveLocation', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ Latitude: lat, Longitude: lon })
+            }).then(response => {
+                if (response.ok) {
+                    console.log('Location saved successfully.');
+                } else {
+                    console.error('Error saving location.');
+                }
+            });
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        }
     </script>
 }
