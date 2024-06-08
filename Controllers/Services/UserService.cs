@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 
 namespace dotnet_facebook.Controllers.Services
 {
@@ -138,6 +139,21 @@ namespace dotnet_facebook.Controllers.Services
         {
             return await context.Friendships
                 .AnyAsync(f => (f.User1Id == id1 && f.User2Id == id2) || (f.User1Id == id2 && f.User2Id == id1));
+        }
+
+
+        public async Task<List<dotnet_facebook.Models.DatabaseObjects.Groups.Group>> GetGroupsForLocalUserAsync(ClaimsPrincipal user)
+        {
+            var localUser = await GetLocalUserAsync(user);
+            if (localUser == null)
+            {
+                return new List<dotnet_facebook.Models.DatabaseObjects.Groups.Group>();
+            }
+
+            return await context.GroupUsers
+                                 .Where(gu => gu.UserId == localUser.UserId)
+                                 .Select(gu => gu.Group)
+                                 .ToListAsync();
         }
     }
 }

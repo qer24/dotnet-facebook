@@ -57,9 +57,9 @@ namespace dotnet_facebook.Controllers.RegularUser
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Manage(int? id)
+        public async Task<IActionResult> Manage(int? GroupId)
         {
-            if (id == null)
+            if (GroupId == null)
             {
                 return NotFound();
             }
@@ -67,7 +67,7 @@ namespace dotnet_facebook.Controllers.RegularUser
             var @group = await _context.Groups
                 .Include(g => g.Users)
                 .ThenInclude(gu => gu.User)
-                .FirstOrDefaultAsync(m => m.GroupId == id);
+                .FirstOrDefaultAsync(m => m.GroupId == GroupId);
             if (@group == null)
             {
                 return NotFound();
@@ -314,6 +314,13 @@ namespace dotnet_facebook.Controllers.RegularUser
 
             return RedirectToAction("Index", new { id = @group.GroupId });
         }
+        [HttpGet("GroupList")]
+        public async Task<IActionResult> GroupList()
+        {
+            var groups = await _userservice.GetGroupsForLocalUserAsync(User);
+            return View(groups); // Or return Json(groups) if you prefer a JSON response
+        }
+
         [HttpGet("GroupNotFound")]
         public IActionResult GroupNotFound()
         {

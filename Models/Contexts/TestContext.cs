@@ -87,5 +87,7 @@ namespace dotnet_facebook.Models.Contexts
 
         public virtual DbSet<Friendship> Friendships { get; set; }
         public virtual DbSet<PrivateMessage> PrivateMessages { get; set; }
+
+        public virtual DbSet<GroupUser> GroupUsers { get; set; }
     }
 }

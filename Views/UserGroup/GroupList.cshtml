@@ -1,0 +1,31 @@
+﻿@model List<dotnet_facebook.Models.DatabaseObjects.Groups.Group>
+
+@{
+    ViewData["Title"] = "Group List";
+    Layout = "_LayoutRegular";
+}
+
+@section Styles
+{
+    <link rel="stylesheet" href="~/css/profilestyles.css" />
+}
+
+<div class="card">
+    @foreach (var group in Model)
+    {
+
+        <div class="w-100 bg-secondary rounded-4 my-2 p-2 clickable-div"
+             onclick="window.location='@Url.Action("Index", "UserGroup", new { id = group.GroupId })';"
+             style="cursor: pointer;">
+            @if (string.IsNullOrEmpty(group.GroupPictureFileName))
+            {
+                <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="~/defaultUser.jpg" alt="Profile Picture">
+            }
+            else
+            {
+                <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="~/uploadedFiles/@group.GroupPictureFileName" alt="Profile Picture">
+            }
+            <p class="bg-white rounded-4 py-2 px-3 m-1 text-center h-auto w-auto d-inline">@group.GroupName</p>
+        </div>
+    }
+</div>
