@@ -152,6 +152,8 @@ namespace dotnet_facebook.Controllers.Services
 
             return await context.GroupUsers
                                  .Where(gu => gu.UserId == localUser.UserId)
+                                 .Include(gu => gu.Group)
+                                 .ThenInclude(g => g.Users)
                                  .Select(gu => gu.Group)
                                  .ToListAsync();
         }

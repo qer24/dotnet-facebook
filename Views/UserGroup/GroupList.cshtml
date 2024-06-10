@@ -27,9 +27,15 @@
 
 <div class="card">
     <!-- Button for creating a new group -->
-    <div class="bio">
-        <button class="btn btn-primary" onclick="toggleCreateGroupPanel()">Create New Group</button>
+    <div class="w-100 rounded-4 my-2 p-2 container">
+        <div class="row justify-content-center">
+            <button class="btn btn-primary rounded-4 m-2 w-25" onclick="toggleCreateGroupPanel()">Create New Group</button>
+        </div>
     </div>
+
+    <hr class="mx-5 mt-3 mb-5">
+
+    <p class="mx-2">Your Groups: </p>
 
     <!-- Display existing groups -->
     @foreach (var group in Model)
@@ -45,25 +51,26 @@
             {
                 <img class="rounded-4 m-2 d-inline-block" style="height:76px; width:76px" src="~/uploadedFiles/@group.GroupPictureFileName" alt="Profile Picture">
             }
-            <p class="bg-white rounded-4 py-2 px-3 m-1 text-center h-auto w-auto d-inline">@group.GroupName</p>
+            <p class="bg-white rounded-4 m-2 d-inline-block w-auto px-3 text-center">@group.GroupName - @group.Users.Count user(s)</p>
         </div>
     }
 </div>
 
 <!-- Create group panel -->
-<div class="create-group-panel" id="createGroupPanel" style="display: none;">
+<div class="create-group-panel rounded-4" id="createGroupPanel" style="display: none;">
     <h3>Create New Group</h3>
     <form asp-action="Create" method="post">
         <input type="hidden" name="selectedUserId" value="@ViewBag.localUser" />
-        <!-- Include your form fields for creating a new group here -->
         <div class="form-group">
             <label for="groupName">Group Name</label>
-            <input type="text" id="groupName" name="groupName" class="form-control" required>
+            <input type="text" id="groupName" name="groupName" class="form-control rounded-4" required>
             <label for="GroupDescription">Group Description</label>
-            <input type="text" id="GroupDescription" name="GroupDescription" class="form-control">
+            <input type="text" id="GroupDescription" name="GroupDescription" class="form-control rounded-4">
         </div>
-        <!-- Include other form fields as needed -->
-        <div class="form-floating multi-select w-50 float-end me-2 rounded-top-4">
+
+        <div class="my-3"></div>
+
+        <div class="form-floating multi-select w-50 mx-auto rounded-top-4">
             <select class="form-select" name="selectedTagIds" multiple>
                 @foreach (var tag in ViewBag.Tags)
                 {
@@ -72,8 +79,12 @@
             </select>
             <label>Select Tags</label>
         </div>
-        <button type="submit" class="btn btn-success">Create</button>
-        <button type="button" class="btn btn-secondary" onclick="toggleCreateGroupPanel()">Cancel</button>
+
+        <div class="my-3"></div>
+        
+        <button type="submit" class="btn btn-success rounded-4">Create</button>
+        <button type="button" class="btn btn-secondary rounded-4 float-end" onclick="toggleCreateGroupPanel()">Cancel</button>
+        
     </form>
 </div>
 
