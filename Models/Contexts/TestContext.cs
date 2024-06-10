@@ -7,6 +7,9 @@ using System.Diagnostics.Metrics;
 using dotnet_facebook.Models.DatabaseObjects.Groups;
 using Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore;
 using dotnet_facebook.Models.DatabaseObjects.Roles;
+using dotnet_facebook.Migrations;
+using dotnet_facebook.Utils;
+using System.Data;
 
 namespace dotnet_facebook.Models.Contexts
 {
@@ -14,12 +17,67 @@ namespace dotnet_facebook.Models.Contexts
     {
         public TestContext(DbContextOptions options) : base(options)
         {
+            // check if Models/Contexts/dbcreated.txt exists
+            // if it doesn't, create the default roles (user, admin) and admin user and create the file
 
-        }
-        protected TestContext()
-        {
+            if (!File.Exists("Models/Contexts/dbcreated.txt"))
+            {
+                Console.WriteLine("Creating default roles and admin user");
 
+                var userRole = new SiteRole
+                {
+                    SiteRoleName = "User",
+                    IsDefault = true,
+                    AdministrativePerms = false,
+                    SiteRoleId = 0
+                };
+
+                var adminRole = new SiteRole
+                {
+                    SiteRoleName = "Admin",
+                    IsDefault = true,
+                    AdministrativePerms = true,
+                    SiteRoleId = 1
+                };
+
+                SiteRoles.Add(userRole);
+                SiteRoles.Add(adminRole);
+
+                var adminUser = new User
+                {
+                    Nickname = "admin123",
+                    HashedPassword = PasswordHash.Create("admin123"),
+                    Password = "",
+                    AccountCreationDate = DateTime.Now,
+                    UserId = 0,
+                };
+
+                adminUser.UserProfile = new UserProfile
+                {
+                    User = adminUser,
+                    UserBio = "Hey, I'm a user!"
+                };
+
+                Users.Add(adminUser);
+
+                UserSiteRoles.Add(new UserSiteRole()
+                {
+                    User = adminUser,
+                    Role = userRole
+                });
+
+                UserSiteRoles.Add(new UserSiteRole()
+                {
+                    User = adminUser,
+                    Role = adminRole
+                });
+
+                SaveChanges();
+
+                File.Create("Models/Contexts/dbcreated.txt");
+            }
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>()

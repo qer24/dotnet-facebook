@@ -78,3 +78,4 @@ _[Ss]cripts
 
 # user uploads
 wwwroot/uploadedFiles/*
+Models/Contexts/dbcreated.txt
