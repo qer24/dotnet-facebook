@@ -25,7 +25,7 @@ namespace dotnet_facebook.Controllers.RegularUser
 
             // match content
             searchModel.Posts = await context.MainPosts
-                .Where(p => p.Content.Contains(q))            
+                .Where(p => p.Content.Contains(q))
                 .Include(p => p.OwnerUser)
                 .ThenInclude(u => u.UserProfile)
                 .Include(p => p.Tags)
@@ -49,6 +49,10 @@ namespace dotnet_facebook.Controllers.RegularUser
                 .Include(p => p.Tags)
                 .Include(p => p.Likes)
                 .ToListAsync());
+
+            // delete all posts from groups
+            var postsInGroups = context.MainPosts.Where(p => p.ParentGroup != null);
+            searchModel.Posts.RemoveAll(p => postsInGroups.Contains(p));
 
             //query users
             searchModel.Users = await context.Users

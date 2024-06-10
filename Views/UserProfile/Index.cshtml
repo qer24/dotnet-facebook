@@ -222,6 +222,9 @@
                     window.location.reload(true)
                 } else {
                     console.error('Error uploading file.');
+                    console.error(xhr.status);
+                    console.error(xhr.statusText);
+                    console.error(xhr.response);
                     // Optionally, handle error here
                 }
             };
