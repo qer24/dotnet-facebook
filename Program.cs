@@ -33,7 +33,12 @@ namespace dotnet_facebook
             builder.Services.AddTransient<Controllers.Services.GroupService>();
             var app = builder.Build();
 
-
+            // Run CreateDefaults method
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<TestContext>();
+                dbContext.CreateDefaults();
+            }
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

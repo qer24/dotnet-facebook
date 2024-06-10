@@ -2,12 +2,14 @@
 using dotnet_facebook.Models.Contexts;
 using dotnet_facebook.Models.DatabaseObjects.Posts;
 using dotnet_facebook.Models.DatabaseObjects.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
 namespace dotnet_facebook.Controllers.RegularUser;
 
+[Authorize]
 public class UserHomeController(TestContext context, UserService userService, PostService postService, TagsService tagsService) : Controller
 {
     // GET: UserHome/Error
@@ -31,13 +33,13 @@ public class UserHomeController(TestContext context, UserService userService, Po
     // GET: UserHome
     public async Task<IActionResult> Index(List<MainPost> postsToView, string? error = null, int? tagFilter = null)
     {
-        tagsService.GenerateTagsBag(ViewBag);
-        userService.GenerateLocalUserBag(ViewBag, User);
-
         if (User.Identity == null || !User.Identity.IsAuthenticated)
         {
             return RedirectToAction("Login", "Home");
         }
+
+        tagsService.GenerateTagsBag(ViewBag);
+        userService.GenerateLocalUserBag(ViewBag, User);
 
         if (postsToView.Count == 0)
         {

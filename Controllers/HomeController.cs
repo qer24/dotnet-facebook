@@ -99,7 +99,7 @@ namespace dotnet_facebook.Controllers
         public IActionResult Index()
         {
             // if not logged in, redirect to login page
-            if (!User.Identity.IsAuthenticated)
+            if (User.Identity == null || !User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Login");
             }

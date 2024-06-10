@@ -17,6 +17,16 @@ namespace dotnet_facebook.Models.Contexts
     {
         public TestContext(DbContextOptions options) : base(options)
         {
+            
+        }
+
+        public TestContext() 
+        {
+            
+        }
+
+        public void CreateDefaults()
+        {
             // check if Models/Contexts/dbcreated.txt exists
             // if it doesn't, create the default roles (user, admin) and admin user and create the file
 
@@ -29,7 +39,6 @@ namespace dotnet_facebook.Models.Contexts
                     SiteRoleName = "User",
                     IsDefault = true,
                     AdministrativePerms = false,
-                    SiteRoleId = 0
                 };
 
                 var adminRole = new SiteRole
@@ -37,7 +46,6 @@ namespace dotnet_facebook.Models.Contexts
                     SiteRoleName = "Admin",
                     IsDefault = true,
                     AdministrativePerms = true,
-                    SiteRoleId = 1
                 };
 
                 SiteRoles.Add(userRole);
@@ -49,7 +57,6 @@ namespace dotnet_facebook.Models.Contexts
                     HashedPassword = PasswordHash.Create("admin123"),
                     Password = "",
                     AccountCreationDate = DateTime.Now,
-                    UserId = 0,
                 };
 
                 adminUser.UserProfile = new UserProfile
@@ -75,6 +82,7 @@ namespace dotnet_facebook.Models.Contexts
                 SaveChanges();
 
                 File.Create("Models/Contexts/dbcreated.txt");
+                Directory.CreateDirectory("wwwroot/uploadedFiles");
             }
         }
 
