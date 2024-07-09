@@ -74,7 +74,7 @@ public static class GeocodingService
         public GeoLocation Southwest { get; set; }
     }
 
-    private const string API_KEY = "AIzaSyCx_DipJ1F4-No4jfYwGCCPkXXfMfaI6Bc";
+    private const string API_KEY = "DONT TRY TO USE OLD KEY I DISABLED IT";
 
     public static async Task<GeoResponse?> GetCityCountryAsync(double latitude, double longitude)
     {
